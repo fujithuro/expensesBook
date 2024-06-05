@@ -32,6 +32,10 @@ class ExpensesBookController {
                         type: Int) {
         // とりあえずパラメータを受け取れたことを確認するために標準出力している
         println("きたのは、$date, $price, $store, $type です")
+
+        // TODO パラメータに問題がなければ、Serviceにパラメータを渡して登録処理に移る
+
+        // TODO その先は、Service > Repository の順で処理していき、DBアクセスには`Spring JdbcClient`あたりを使う
     }
 
     /**
