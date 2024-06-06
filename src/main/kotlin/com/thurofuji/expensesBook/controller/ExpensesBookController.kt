@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 
+/**
+ * 家計簿に関するリクエストを受け付けるRestController
+ */
 @RestController
 @RequestMapping("/api/expenseBook")
 class ExpensesBookController(private val expenseBookService: ExpensesBookService) {
