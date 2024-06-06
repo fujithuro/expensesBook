@@ -1,11 +1,13 @@
 package com.thurofuji.expensesBook.controller
 
+import com.thurofuji.expensesBook.model.ExpenseRequest
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -30,12 +32,9 @@ class ExpensesBookController(private val expenseBookService: ExpensesBookService
      * TODO パラメータに対する入力値検証を追加する
      */
     @PostMapping
-    fun registerExpense(date: String,
-                        price: Int,
-                        store: String,
-                        type: Int) {
+    fun registerExpense(@RequestBody expense: ExpenseRequest) {
         // とりあえずパラメータを受け取れたことを確認するために標準出力している
-        println("きたのは、$date, $price, $store, $type です")
+        println("きたのは、${expense.date}, ${expense.price}, ${expense.store}, ${expense.type} です")
 
         // TODO パラメータに問題がなければ、Serviceにパラメータを渡して登録処理に移る
 
