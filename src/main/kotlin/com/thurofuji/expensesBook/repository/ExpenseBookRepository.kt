@@ -1,5 +1,6 @@
 package com.thurofuji.expensesBook.repository
 
+import com.thurofuji.expensesBook.model.ExpenseRequest
 import org.springframework.stereotype.Repository
 import org.springframework.jdbc.core.simple.JdbcClient
 
@@ -9,4 +10,12 @@ import org.springframework.jdbc.core.simple.JdbcClient
 @Repository
 class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     // TODO JdbcClientを通してDBアクセス
+
+    /**
+     * 出費情報（[expense]）を永続化する
+     */
+    fun register(expense: ExpenseRequest) {
+        // TODO 出費情報のINSERT
+    }
+
 }

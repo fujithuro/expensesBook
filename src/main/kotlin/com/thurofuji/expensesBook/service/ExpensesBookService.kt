@@ -1,5 +1,6 @@
 package com.thurofuji.expensesBook.service
 
+import com.thurofuji.expensesBook.model.ExpenseRequest
 import com.thurofuji.expensesBook.repository.ExpenseBookRepository
 import org.springframework.stereotype.Service
 
@@ -8,5 +9,12 @@ import org.springframework.stereotype.Service
  */
 @Service
 class ExpensesBookService(private val expenseBookRepository: ExpenseBookRepository) {
-    // TODO Controllerからの要求に応じた処理を実装
+
+    /**
+     * 出費情報（[expense]）を登録する
+     */
+    fun register(expense: ExpenseRequest) {
+        expenseBookRepository.register(expense)
+    }
+
 }

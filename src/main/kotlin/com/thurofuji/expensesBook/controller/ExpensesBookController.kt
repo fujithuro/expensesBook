@@ -36,9 +36,7 @@ class ExpensesBookController(private val expenseBookService: ExpensesBookService
         // とりあえずパラメータを受け取れたことを確認するために標準出力している
         println("きたのは、${expense.date}, ${expense.price}, ${expense.store}, ${expense.type} です")
 
-        // TODO パラメータに問題がなければ、Serviceにパラメータを渡して登録処理に移る
-
-        // TODO その先は、Service > Repository の順で処理していき、DBアクセスには`Spring JdbcClient`あたりを使う
+        expenseBookService.register(expense)
     }
 
     /**
