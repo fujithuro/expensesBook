@@ -1,5 +1,6 @@
 package com.thurofuji.expensesBook.controller
 
+import com.thurofuji.expensesBook.service.ExpensesBookService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -12,7 +13,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 @RestController
 @RequestMapping("/api/expenseBook")
-class ExpensesBookController {
+class ExpensesBookController(private val expenseBookService: ExpensesBookService) {
 
     @GetMapping
     fun getExpensesList(@RequestParam(name = "name") name: String): String {
