@@ -13,8 +13,6 @@ import java.util.UUID
  */
 @Repository
 class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
-    // TODO JdbcClientを通してDBアクセス
-
     /**
      * [start]から[end]までの期間の出費一覧を[Expense]の[List]として取得する。
      * [start]および[end]と同日の出費も取得される。
