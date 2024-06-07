@@ -3,6 +3,7 @@ package com.thurofuji.expensesBook.service
 import com.thurofuji.expensesBook.model.ExpenseRequest
 import com.thurofuji.expensesBook.repository.ExpenseBookRepository
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 /**
  * 家計簿のビジネスロジックを取り扱うServiceクラス
@@ -11,10 +12,10 @@ import org.springframework.stereotype.Service
 class ExpensesBookService(private val expenseBookRepository: ExpenseBookRepository) {
 
     /**
-     * 出費情報（[expense]）を登録する
+     * 出費情報（[expense]）を登録し、登録された出費のidを[UUID]で返す
      */
-    fun register(expense: ExpenseRequest) {
-        expenseBookRepository.register(expense)
+    fun register(expense: ExpenseRequest): UUID {
+        return expenseBookRepository.register(expense)
     }
 
 }

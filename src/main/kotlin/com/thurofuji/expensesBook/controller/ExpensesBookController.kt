@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import java.util.UUID
 
 /**
  * 家計簿に関するリクエストを受け付けるRestController
@@ -30,13 +31,17 @@ class ExpensesBookController(private val expenseBookService: ExpensesBookService
      * POSTで送信された出費を登録する
      *
      * TODO パラメータに対する入力値検証を追加する
+     * TODO 戻り値をひとまずMapにしているが、（レスポンス用の）クラスを用意するほうがいいかもしれないので、追って考える
      */
     @PostMapping
-    fun registerExpense(@RequestBody expense: ExpenseRequest) {
-        // とりあえずパラメータを受け取れたことを確認するために標準出力している
-        println("きたのは、${expense.date}, ${expense.price}, ${expense.store}, ${expense.type} です")
+    fun registerExpense(@RequestBody expense: ExpenseRequest): ResponseEntity<Map<String, UUID>> {
+        val id: UUID = expenseBookService.register(expense)
 
-        expenseBookService.register(expense)
+        // TODO レスポンスで返す内容（idだけでいいのか？keyの名称は適切か？など）については暫定的なので、追って検討する
+        return ResponseEntity(
+            mapOf("id" to id)
+            , HttpStatus.CREATED
+        )
     }
 
     /**
