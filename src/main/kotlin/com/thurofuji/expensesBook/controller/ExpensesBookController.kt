@@ -25,11 +25,12 @@ import java.util.UUID
 class ExpensesBookController(private val expenseBookService: ExpensesBookService) {
 
     @GetMapping("/list/{yyyyMM}")
-    fun getExpensesList(@PathVariable yyyyMM: String): String {
+    fun getExpensesList(@PathVariable yyyyMM: String): ResponseEntity<List<Expense>> {
         val yearMonth: YearMonth = YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM"))
 
-        // TODO とりあえず年月を受け取れるところまで実装している。その月の出費一覧を取得する
-        return yearMonth.toString()
+        val list = expenseBookService.findList(yearMonth)
+
+        return ResponseEntity(list, HttpStatus.OK)
     }
 
     /**
