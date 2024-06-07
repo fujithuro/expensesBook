@@ -2,8 +2,8 @@ package com.thurofuji.expensesBook.repository
 
 import com.thurofuji.expensesBook.model.Expense
 import org.springframework.jdbc.core.RowMapper
-import org.springframework.stereotype.Repository
 import org.springframework.jdbc.core.simple.JdbcClient
+import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 import java.time.LocalDate
 import java.util.UUID
