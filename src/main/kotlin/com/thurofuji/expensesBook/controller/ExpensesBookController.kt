@@ -1,6 +1,6 @@
 package com.thurofuji.expensesBook.controller
 
-import com.thurofuji.expensesBook.model.ExpenseRequest
+import com.thurofuji.expensesBook.model.Expense
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -34,7 +34,7 @@ class ExpensesBookController(private val expenseBookService: ExpensesBookService
      * TODO 戻り値をひとまずMapにしているが、（レスポンス用の）クラスを用意するほうがいいかもしれないので、追って考える
      */
     @PostMapping
-    fun registerExpense(@RequestBody expense: ExpenseRequest): ResponseEntity<Map<String, UUID>> {
+    fun registerExpense(@RequestBody expense: Expense): ResponseEntity<Map<String, UUID>> {
         val id: UUID = expenseBookService.register(expense)
 
         // TODO レスポンスで返す内容（idだけでいいのか？keyの名称は適切か？など）については暫定的なので、追って検討する

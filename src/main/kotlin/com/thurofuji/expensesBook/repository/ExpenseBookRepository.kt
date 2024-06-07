@@ -1,6 +1,6 @@
 package com.thurofuji.expensesBook.repository
 
-import com.thurofuji.expensesBook.model.ExpenseRequest
+import com.thurofuji.expensesBook.model.Expense
 import org.springframework.stereotype.Repository
 import org.springframework.jdbc.core.simple.JdbcClient
 import java.util.UUID
@@ -15,7 +15,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     /**
      * 出費情報（[expense]）を永続化し、登録されたidを[UUID]で返す
      */
-    fun register(expense: ExpenseRequest): UUID {
+    fun register(expense: Expense): UUID {
         return jdbcClient.sql("""
             INSERT INTO 出費 (購入日, 金額, 店舗, 費目cd)
             VALUES (?, ?, ?, ?)

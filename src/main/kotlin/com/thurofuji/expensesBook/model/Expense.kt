@@ -1,11 +1,13 @@
 package com.thurofuji.expensesBook.model
 
 import java.time.LocalDate
+import java.util.UUID
 
 /**
- * リクエストに含まれる出費の情報
+ * 出費の情報を表すデータクラス
  */
-data class ExpenseRequest(
+data class Expense(
+    val id: UUID? = null,
     val date: LocalDate,
     val price: Int,
     val store: String = "",
