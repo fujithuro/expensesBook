@@ -6,12 +6,15 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.util.UUID
 
 /**
@@ -21,10 +24,12 @@ import java.util.UUID
 @RequestMapping("/api/expenseBook")
 class ExpensesBookController(private val expenseBookService: ExpensesBookService) {
 
-    @GetMapping
-    fun getExpensesList(@RequestParam(name = "name") name: String): String {
-        // 現状はリクエストを受け取れていることを確認するだけの関数
-        return ""
+    @GetMapping("/list/{yyyyMM}")
+    fun getExpensesList(@PathVariable yyyyMM: String): String {
+        val yearMonth: YearMonth = YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM"))
+
+        // TODO とりあえず年月を受け取れるところまで実装している。その月の出費一覧を取得する
+        return yearMonth.toString()
     }
 
     /**
@@ -51,6 +56,22 @@ class ExpensesBookController(private val expenseBookService: ExpensesBookService
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException::class)
     fun handleTypeMismatchException(ex: MethodArgumentTypeMismatchException): ResponseEntity<Map<String, String>> {
+        return ResponseEntity(
+            mapOf(
+                "result" to "NG"
+                , "error" to "Type mismatch error: ${ex.message}"
+            )
+            , HttpStatus.BAD_REQUEST
+        )
+    }
+
+    /**
+     * パラメータの日付指定に誤りがあり[DateTimeParseException]がスローされた場合のハンドリング
+     * TODO ひとまず例外のハンドリングが行えるようにしているだけで、レスポンスのメッセージ内容は暫定的なものなので、追って修正する
+     * TODO レスポンス内容は暫定的にMapにしているが、これは専用クラスに置き換えたい（CUD用のresponseクラスなど）
+     */
+    @ExceptionHandler(DateTimeParseException::class)
+    fun handleDateTimeParseException(ex: DateTimeParseException): ResponseEntity<Map<String, String>> {
         return ResponseEntity(
             mapOf(
                 "result" to "NG"
