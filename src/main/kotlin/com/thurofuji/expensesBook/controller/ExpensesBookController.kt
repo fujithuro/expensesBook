@@ -42,7 +42,7 @@ class ExpensesBookController(private val expenseBookService: ExpensesBookService
     }
 
     /**
-     * POSTで送信された出費を登録する
+     * 出費を新規登録する
      *
      * TODO パラメータに対する入力値検証を追加する
      */
