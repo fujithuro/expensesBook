@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import java.time.YearMonth
@@ -25,7 +26,8 @@ import java.util.UUID
 class ExpensesBookController(private val expenseBookService: ExpensesBookService) {
 
     @GetMapping("/list/{yyyyMM}")
-    fun getExpensesList(@PathVariable yyyyMM: String): ResponseEntity<List<Expense>> {
+    fun getExpensesList(@PathVariable yyyyMM: String,
+                        @RequestParam(required = false) types: List<Int>?): ResponseEntity<List<Expense>> {
         val yearMonth: YearMonth = YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM"))
 
         val list = expenseBookService.findList(yearMonth)
