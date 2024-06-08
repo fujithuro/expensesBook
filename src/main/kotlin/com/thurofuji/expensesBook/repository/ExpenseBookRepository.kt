@@ -22,7 +22,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
             SELECT
               id, 支払日, 費目cd, 金額, 支払先
             FROM
-              出費
+              出費履歴
             WHERE
               支払日 BETWEEN ? AND ?
         """.trimIndent())
@@ -36,7 +36,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
      */
     fun register(expense: Expense): UUID {
         return jdbcClient.sql("""
-            INSERT INTO 出費 (支払日, 金額, 支払先, 費目cd)
+            INSERT INTO 出費履歴 (支払日, 金額, 支払先, 費目cd)
             VALUES (?, ?, ?, ?)
             RETURNING id
         """.trimIndent())
@@ -50,7 +50,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     }
 
     /**
-     * テーブル「出費」の[ResultSet]を[Expense]にマッピングするための[RowMapper]
+     * テーブル「出費履歴」の[ResultSet]を[Expense]にマッピングするための[RowMapper]
      * TODO Repositoryのprivateなプロパティとして持つのが正しいのか（何かそれ用にクラスやファイルを用意すべきでないか）は要検討
      * TODO カラム名がベタ書きなのも要改善点。テーブルの情報を管理するクラスを作るか？
      */

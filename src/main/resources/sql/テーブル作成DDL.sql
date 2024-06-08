@@ -4,7 +4,7 @@ CREATE TABLE 費目マスター (
     有効区分 BOOLEAN DEFAULT true NOT NULL
 );
 
-CREATE TABLE 出費 (
+CREATE TABLE 出費履歴 (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
     支払日 DATE NOT NULL,
     費目cd INTEGER NOT NULL,
