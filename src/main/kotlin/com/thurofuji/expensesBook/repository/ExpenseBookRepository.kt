@@ -20,11 +20,11 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     fun findList(start: LocalDate, end: LocalDate): List<Expense> {
         return jdbcClient.sql("""
             SELECT
-              id, 購入日, 費目cd, 金額, 店舗
+              id, 支払日, 費目cd, 金額, 支払先
             FROM
               出費
             WHERE
-              購入日 BETWEEN ? AND ?
+              支払日 BETWEEN ? AND ?
         """.trimIndent())
             .params(start, end)
             .query(expenseMapper)
@@ -36,7 +36,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
      */
     fun register(expense: Expense): UUID {
         return jdbcClient.sql("""
-            INSERT INTO 出費 (購入日, 金額, 店舗, 費目cd)
+            INSERT INTO 出費 (支払日, 金額, 支払先, 費目cd)
             VALUES (?, ?, ?, ?)
             RETURNING id
         """.trimIndent())
@@ -57,9 +57,9 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     private val expenseMapper = RowMapper { rs: ResultSet, _: Int ->
         Expense(
             id = UUID.fromString(rs.getString("id")),
-            date = rs.getDate("購入日").toLocalDate(),
+            date = rs.getDate("支払日").toLocalDate(),
             price = rs.getInt("金額"),
-            store = rs.getString("店舗"),
+            store = rs.getString("支払先"),
             type = rs.getInt("費目cd")
         )
     }

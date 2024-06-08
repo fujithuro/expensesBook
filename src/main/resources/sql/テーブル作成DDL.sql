@@ -6,10 +6,10 @@ CREATE TABLE 費目マスター (
 
 CREATE TABLE 出費 (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-    購入日 DATE NOT NULL,
+    支払日 DATE NOT NULL,
     費目cd INTEGER NOT NULL,
     金額 INTEGER NOT NULL,
-    店舗 TEXT NOT NULL,
+    支払先 TEXT NOT NULL,
     最終更新日時 TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY (費目cd) REFERENCES 費目マスター(費目cd)
 );
