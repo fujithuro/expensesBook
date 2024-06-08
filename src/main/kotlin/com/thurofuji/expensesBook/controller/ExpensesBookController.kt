@@ -53,28 +53,22 @@ class ExpensesBookController(private val expenseBookService: ExpensesBookService
     }
 
     /**
-     * パラメータの型不一致により[MethodArgumentTypeMismatchException]がスローされた場合のハンドリング
+     * リクエストされた情報が不正で例外がスローされた場合のハンドリングを行う
+     *
+     * [DateTimeParseException]: パラメータの日付指定に誤りがある場合にスローされる
+     * [IllegalArgumentException]: パラメータに不正があった場合全般にスローされる
+     * [MethodArgumentTypeMismatchException]: パラメータの型が不正な場合にスローされる
+     *
+     * TODO まだ入力値検証をほとんど実装していないので、実装後に必要な例外ハンドリングの精査が必要
      * TODO ひとまず例外のハンドリングが行えるようにしているだけで、レスポンスのメッセージ内容は暫定的なものなので、追って修正する
      * TODO レスポンス内容は暫定的にMapにしているが、これは専用クラスに置き換えたい（CUD用のresponseクラスなど）
      */
-    @ExceptionHandler(MethodArgumentTypeMismatchException::class)
-    fun handleTypeMismatchException(ex: MethodArgumentTypeMismatchException): ResponseEntity<Map<String, String>> {
-        return ResponseEntity(
-            mapOf(
-                "result" to "NG"
-                , "error" to "Type mismatch error: ${ex.message}"
-            )
-            , HttpStatus.BAD_REQUEST
-        )
-    }
-
-    /**
-     * パラメータの日付指定に誤りがあり[DateTimeParseException]がスローされた場合のハンドリング
-     * TODO ひとまず例外のハンドリングが行えるようにしているだけで、レスポンスのメッセージ内容は暫定的なものなので、追って修正する
-     * TODO レスポンス内容は暫定的にMapにしているが、これは専用クラスに置き換えたい（CUD用のresponseクラスなど）
-     */
-    @ExceptionHandler(DateTimeParseException::class)
-    fun handleDateTimeParseException(ex: DateTimeParseException): ResponseEntity<Map<String, String>> {
+    @ExceptionHandler(
+        DateTimeParseException::class
+        , IllegalArgumentException::class
+        , MethodArgumentTypeMismatchException::class
+    )
+    fun handleException(ex: Exception): ResponseEntity<Map<String, String>> {
         return ResponseEntity(
             mapOf(
                 "result" to "NG"
