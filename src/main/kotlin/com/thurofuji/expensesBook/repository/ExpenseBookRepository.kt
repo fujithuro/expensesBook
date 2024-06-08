@@ -19,17 +19,22 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
      * [typeList]が空でない場合、費目での絞り込みも行う。
      */
     fun findList(start: LocalDate, end: LocalDate, typeList: List<Int>): List<Expense> {
-
-        // TODO typeListによる費目の絞り込み
-
-        return jdbcClient.sql("""
+        val sql = """
             SELECT
               id, 支払日, 費目cd, 金額, 支払先
             FROM
               出費履歴
             WHERE
               支払日 BETWEEN ? AND ?
-        """.trimIndent())
+        """ + if (typeList.isNotEmpty()) {
+            // TODO 一応動きに問題はないが、動的SQLにFWとして対応していないようなので不格好
+            //  条件が増えた場合など、if文が増えて可読性や保守性がかなり落ちると思われる
+            //  一旦このままいくが、改善は追って検討する必要がある
+            //  （動的SQLをサポートしているFWへ変更する、Repositoryの関数を条件ごとに分ける、など）
+            " AND 費目cd in (${typeList.joinToString(",")})"
+        } else { "" }
+
+        return jdbcClient.sql(sql.trimIndent())
             .params(start, end)
             .query(expenseMapper)
             .list()
