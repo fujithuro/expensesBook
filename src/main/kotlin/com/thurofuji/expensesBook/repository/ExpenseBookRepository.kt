@@ -60,6 +60,45 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     }
 
     /**
+     * 既存の出費情報（[Expense]）を更新し、更新された行数を返す
+     */
+    fun update(expense: Expense): Int {
+        return jdbcClient.sql("""
+            UPDATE
+              出費履歴
+            SET
+              支払日 = ?
+              , 費目cd = ?
+              , 金額 = ?
+              , 支払先 = ?
+              , 最終更新日時 = CURRENT_TIMESTAMP
+            WHERE
+              id = ?
+            """.trimIndent())
+            .params(
+                expense.date
+                , expense.type
+                , expense.price
+                , expense.store
+                , expense.id)
+            .update()
+    }
+
+    /**
+     * [id]で指定された出費情報を削除し、削除された行数を返す
+     */
+    fun delete(id: UUID): Int {
+        return jdbcClient.sql("""
+            DELETE FROM
+              出費履歴
+            WHERE
+              id = ?
+        """.trimIndent())
+            .param(id)
+            .update()
+    }
+
+    /**
      * テーブル「出費履歴」の[ResultSet]を[Expense]にマッピングするための[RowMapper]
      * TODO Repositoryのprivateなプロパティとして持つのが正しいのか（何かそれ用にクラスやファイルを用意すべきでないか）は要検討
      * TODO カラム名がベタ書きなのも要改善点。テーブルの情報を管理するクラスを作るか？

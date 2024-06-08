@@ -30,4 +30,18 @@ class ExpensesBookService(private val expenseBookRepository: ExpenseBookReposito
         return expenseBookRepository.register(expense)
     }
 
+    /**
+     * 既存の出費（[Expense]）の内容を更新し、更新された行数を返す
+     */
+    fun update(expense: Expense): Int {
+        return expenseBookRepository.update(expense)
+    }
+
+    /**
+     * [id]で指定された既存の出費を削除し、削除された行数を返す
+     */
+    fun delete(id: UUID): Int {
+        return expenseBookRepository.delete(id)
+    }
+
 }

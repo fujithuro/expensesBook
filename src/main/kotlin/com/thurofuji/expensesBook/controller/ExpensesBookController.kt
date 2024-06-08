@@ -4,10 +4,12 @@ import com.thurofuji.expensesBook.model.Expense
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -51,6 +53,40 @@ class ExpensesBookController(private val expenseBookService: ExpensesBookService
         val registered: Expense = expenseBookService.register(expense)
 
         return ResponseEntity(registered, HttpStatus.CREATED)
+    }
+
+    /**
+     * 指定された[id]の出費情報を[expense]の内容に更新する
+     *
+     * 更新が成功した場合には`204 No Content`を返す。
+     * 指定された[id]の出費が存在しないなど、更新できなかった場合には`404 Not Found`を返す。新規登録は行わない。
+     *
+     * TODO パラメータに対する入力値検証を追加する
+     */
+    @PutMapping("/{id}")
+    fun updateExpense(@PathVariable id: UUID, @RequestBody expense: Expense): ResponseEntity<Void> {
+        val updatedRows = expenseBookService.update(expense.copy(id = id))
+        return if (updatedRows > 0) {
+            ResponseEntity.noContent().build()
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    /**
+     * 指定された[id]の出費情報を削除する
+     *
+     * 更新が成功した場合には`204 No Content`を返す。
+     * 指定された[id]の出費が存在しないなど、削除できなかった場合には`404 Not Found`を返す。
+     */
+    @DeleteMapping("/{id}")
+    fun deleteExpense(@PathVariable id: UUID): ResponseEntity<Void> {
+        val deletedRows = expenseBookService.delete(id)
+        return if (deletedRows > 0) {
+            ResponseEntity.noContent().build()
+        } else {
+            ResponseEntity.notFound().build()
+        }
     }
 
     /**
