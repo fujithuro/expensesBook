@@ -22,7 +22,7 @@
 
 ##### 年月の指定
 
-###### request /list/:yyyyMM
+###### request /list/{yyyyMM}
 
 指定された年月の家計一覧を取得
 
