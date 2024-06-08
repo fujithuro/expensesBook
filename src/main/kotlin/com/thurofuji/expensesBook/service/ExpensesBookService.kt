@@ -13,12 +13,13 @@ import java.util.UUID
 class ExpensesBookService(private val expenseBookRepository: ExpenseBookRepository) {
 
     /**
-     * 指定された年月（[YearMonth]）の出費一覧を[Expense]の[List]で取得する
+     * 指定された年月（[YearMonth]）および費目の出費一覧を[Expense]の[List]で取得する
      */
-    fun findList(yearMonth: YearMonth): List<Expense> {
+    fun findList(yearMonth: YearMonth, typeList: List<Int>): List<Expense> {
         return expenseBookRepository.findList(
             yearMonth.atDay(1)
             , yearMonth.atEndOfMonth()
+            , typeList
         )
     }
 

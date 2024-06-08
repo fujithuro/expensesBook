@@ -30,7 +30,7 @@ class ExpensesBookController(private val expenseBookService: ExpensesBookService
                         @RequestParam(required = false) types: List<Int>?): ResponseEntity<List<Expense>> {
         val yearMonth: YearMonth = YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM"))
 
-        val list = expenseBookService.findList(yearMonth)
+        val list = expenseBookService.findList(yearMonth, types ?: emptyList())
 
         return ResponseEntity(list, HttpStatus.OK)
     }

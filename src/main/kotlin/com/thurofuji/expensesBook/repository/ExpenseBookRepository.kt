@@ -16,8 +16,12 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     /**
      * [start]から[end]までの期間の出費一覧を[Expense]の[List]として取得する。
      * [start]および[end]と同日の出費も取得される。
+     * [typeList]が空でない場合、費目での絞り込みも行う。
      */
-    fun findList(start: LocalDate, end: LocalDate): List<Expense> {
+    fun findList(start: LocalDate, end: LocalDate, typeList: List<Int>): List<Expense> {
+
+        // TODO typeListによる費目の絞り込み
+
         return jdbcClient.sql("""
             SELECT
               id, 支払日, 費目cd, 金額, 支払先
