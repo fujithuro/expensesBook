@@ -10,13 +10,13 @@ import java.util.UUID
  * 家計簿のビジネスロジックを取り扱うServiceクラス
  */
 @Service
-class ExpensesBookService(private val expenseBookRepository: ExpenseBookRepository) {
+class ExpensesBookService(private val repository: ExpenseBookRepository) {
 
     /**
      * 指定された年月（[YearMonth]）および費目の出費一覧を[Expense]の[List]で取得する
      */
     fun findList(yearMonth: YearMonth, typeList: List<Int>): List<Expense> {
-        return expenseBookRepository.findList(
+        return repository.findList(
             yearMonth.atDay(1)
             , yearMonth.atEndOfMonth()
             , typeList
@@ -27,21 +27,21 @@ class ExpensesBookService(private val expenseBookRepository: ExpenseBookReposito
      * 出費情報（[expense]）を登録し、登録された出費（[Expense]）を返す
      */
     fun register(expense: Expense): Expense {
-        return expenseBookRepository.register(expense)
+        return repository.register(expense)
     }
 
     /**
      * 既存の出費（[Expense]）の内容を更新し、更新された行数を返す
      */
     fun update(expense: Expense): Int {
-        return expenseBookRepository.update(expense)
+        return repository.update(expense)
     }
 
     /**
      * [id]で指定された既存の出費を削除し、削除された行数を返す
      */
     fun delete(id: UUID): Int {
-        return expenseBookRepository.delete(id)
+        return repository.delete(id)
     }
 
 }

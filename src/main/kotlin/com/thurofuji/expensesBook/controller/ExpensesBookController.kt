@@ -25,7 +25,7 @@ import java.util.UUID
  */
 @RestController
 @RequestMapping("/api/expenseBook")
-class ExpensesBookController(private val expenseBookService: ExpensesBookService) {
+class ExpensesBookController(private val service: ExpensesBookService) {
 
     /**
      * 指定された条件に合致する出費（[Expense]）の[List]をレスポンスで返す
@@ -38,7 +38,7 @@ class ExpensesBookController(private val expenseBookService: ExpensesBookService
                         @RequestParam(required = false) types: List<Int>?): ResponseEntity<List<Expense>> {
         val yearMonth: YearMonth = YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM"))
 
-        val list = expenseBookService.findList(yearMonth, types ?: emptyList())
+        val list = service.findList(yearMonth, types ?: emptyList())
 
         return ResponseEntity(list, HttpStatus.OK)
     }
@@ -50,7 +50,7 @@ class ExpensesBookController(private val expenseBookService: ExpensesBookService
      */
     @PostMapping
     fun registerExpense(@RequestBody expense: Expense): ResponseEntity<Expense> {
-        val registered: Expense = expenseBookService.register(expense)
+        val registered: Expense = service.register(expense)
 
         return ResponseEntity(registered, HttpStatus.CREATED)
     }
@@ -65,7 +65,7 @@ class ExpensesBookController(private val expenseBookService: ExpensesBookService
      */
     @PutMapping("/{id}")
     fun updateExpense(@PathVariable id: UUID, @RequestBody expense: Expense): ResponseEntity<Void> {
-        val updatedRows = expenseBookService.update(expense.copy(id = id))
+        val updatedRows = service.update(expense.copy(id = id))
         return if (updatedRows > 0) {
             ResponseEntity.noContent().build()
         } else {
@@ -81,7 +81,7 @@ class ExpensesBookController(private val expenseBookService: ExpensesBookService
      */
     @DeleteMapping("/{id}")
     fun deleteExpense(@PathVariable id: UUID): ResponseEntity<Void> {
-        val deletedRows = expenseBookService.delete(id)
+        val deletedRows = service.delete(id)
         return if (deletedRows > 0) {
             ResponseEntity.noContent().build()
         } else {
