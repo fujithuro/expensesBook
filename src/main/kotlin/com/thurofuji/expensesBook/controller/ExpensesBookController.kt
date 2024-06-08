@@ -40,7 +40,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
 
         val list = service.findList(yearMonth, types ?: emptyList())
 
-        return ResponseEntity(list, HttpStatus.OK)
+        return ok(list)
     }
 
     /**
@@ -52,7 +52,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     fun registerExpense(@RequestBody expense: Expense): ResponseEntity<Expense> {
         val registered: Expense = service.register(expense)
 
-        return ResponseEntity(registered, HttpStatus.CREATED)
+        return ok(registered)
     }
 
     /**
@@ -67,9 +67,9 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     fun updateExpense(@PathVariable id: UUID, @RequestBody expense: Expense): ResponseEntity<Void> {
         val updatedRows = service.update(expense.copy(id = id))
         return if (updatedRows > 0) {
-            ResponseEntity.noContent().build()
+            noContent()
         } else {
-            ResponseEntity.notFound().build()
+            notFound()
         }
     }
 
@@ -83,9 +83,9 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     fun deleteExpense(@PathVariable id: UUID): ResponseEntity<Void> {
         val deletedRows = service.delete(id)
         return if (deletedRows > 0) {
-            ResponseEntity.noContent().build()
+            noContent()
         } else {
-            ResponseEntity.notFound().build()
+            notFound()
         }
     }
 
@@ -106,13 +106,32 @@ class ExpensesBookController(private val service: ExpensesBookService) {
         , MethodArgumentTypeMismatchException::class
     )
     fun handleException(ex: Exception): ResponseEntity<Map<String, String>> {
-        return ResponseEntity(
+        return badRequest(
             mapOf(
                 "result" to "NG"
                 , "error" to "Type mismatch error: ${ex.message}"
             )
-            , HttpStatus.BAD_REQUEST
         )
     }
+
+    /**
+     * `200 OK`を表す[ResponseEntity]を返す。レスポンスボディに含める情報は[body]に設定する。
+     */
+    private fun <T> ok(body: T? = null): ResponseEntity<T> = ResponseEntity.ok(body)
+
+    /**
+     * `204 No Content`を表す[ResponseEntity]を返す。レスポンスボディに含める情報は[body]に設定する。
+     */
+    private fun <T> noContent(body: T? = null): ResponseEntity<T> = ResponseEntity(body, HttpStatus.NO_CONTENT)
+
+    /**
+     * `400 Bad Request`を表す[ResponseEntity]を返す。レスポンスボディに含める情報は[body]に設定する。
+     */
+    private fun <T> badRequest(body: T? = null): ResponseEntity<T> = ResponseEntity(body, HttpStatus.BAD_REQUEST)
+
+    /**
+     * `404 Not Found`を表す[ResponseEntity]を返す。レスポンスボディに含める情報は[body]に設定する。
+     */
+    private fun <T> notFound(body: T? = null): ResponseEntity<T> = ResponseEntity(body, HttpStatus.NOT_FOUND)
 
 }
