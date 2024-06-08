@@ -43,21 +43,20 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     }
 
     /**
-     * 出費情報（[expense]）を永続化し、登録されたidを[UUID]で返す
+     * 出費情報（[expense]）を永続化し、登録された出費([Expense])を返す
      */
-    fun register(expense: Expense): UUID {
-        return jdbcClient.sql("""
+    fun register(expense: Expense): Expense {
+        val registeredID: UUID = jdbcClient.sql("""
             INSERT INTO 出費履歴 (支払日, 金額, 支払先, 費目cd)
             VALUES (?, ?, ?, ?)
             RETURNING id
         """.trimIndent())
             .params(
-                expense.date
-                , expense.price
-                , expense.store
-                , expense.type
+                expense.date, expense.price, expense.store, expense.type
             ).query(UUID::class.java)
             .single()
+
+        return expense.copy(id = registeredID)
     }
 
     /**

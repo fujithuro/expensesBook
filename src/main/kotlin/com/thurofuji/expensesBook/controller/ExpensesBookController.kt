@@ -39,17 +39,12 @@ class ExpensesBookController(private val expenseBookService: ExpensesBookService
      * POSTで送信された出費を登録する
      *
      * TODO パラメータに対する入力値検証を追加する
-     * TODO 戻り値をひとまずMapにしているが、（レスポンス用の）クラスを用意するほうがいいかもしれないので、追って考える
      */
     @PostMapping
-    fun registerExpense(@RequestBody expense: Expense): ResponseEntity<Map<String, UUID>> {
-        val id: UUID = expenseBookService.register(expense)
+    fun registerExpense(@RequestBody expense: Expense): ResponseEntity<Expense> {
+        val registered: Expense = expenseBookService.register(expense)
 
-        // TODO レスポンスで返す内容（idだけでいいのか？keyの名称は適切か？など）については暫定的なので、追って検討する
-        return ResponseEntity(
-            mapOf("id" to id)
-            , HttpStatus.CREATED
-        )
+        return ResponseEntity(registered, HttpStatus.CREATED)
     }
 
     /**

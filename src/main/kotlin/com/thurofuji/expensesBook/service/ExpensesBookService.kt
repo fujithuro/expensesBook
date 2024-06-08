@@ -24,9 +24,9 @@ class ExpensesBookService(private val expenseBookRepository: ExpenseBookReposito
     }
 
     /**
-     * 出費情報（[expense]）を登録し、登録された出費のidを[UUID]で返す
+     * 出費情報（[expense]）を登録し、登録された出費（[Expense]）を返す
      */
-    fun register(expense: Expense): UUID {
+    fun register(expense: Expense): Expense {
         return expenseBookRepository.register(expense)
     }
 
