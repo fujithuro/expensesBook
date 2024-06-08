@@ -42,7 +42,7 @@
 
 ##### 詳細の取得
 
-###### request /detail/:hash
+###### request /detail/{id}
 
 指定された出費1件の取得
 
@@ -52,7 +52,7 @@
 |--------|----------------------------------------------------------------------------|
 | result | 成功したらOK,失敗したらNG                                                            |
 | error  | NGの場合に、エラー内容                                                               |
-| hash   | 出費のハッシュ値                                                                   |
+| id     | 出費のid                                                                      |
 | date   | 購入した日付                                                                     |
 | price  | 支払金額                                                                       |
 | store  | 支払先                                                                        |
@@ -76,21 +76,21 @@ JSONで送信
 
 ##### response
 
-| name   | description          |
-|--------|----------------------|
-| result | 成功したらOK,失敗したらNG      |
-| hash   | OKの場合に、登録された家計のハッシュ値 |
-| error  | NGの場合に、エラー内容         |
+| name   | description       |
+|--------|-------------------|
+| result | 成功したらOK,失敗したらNG   |
+| id     | OKの場合に、登録された家計のid |
+| error  | NGの場合に、エラー内容      |
 
 #### PUT
 
 登録済みの出費1件を更新する
 
-##### request /detail/:hash
+##### request /detail/{id}
 
 | name  | required | description                                                                |
 |-------|----------|----------------------------------------------------------------------------|
-| hash  | O        | 更新対象の家計のハッシュ値                                                              |
+| id    | O        | 更新対象の家計のid                                                                 |
 | date  | O        | 購入した日付を指定（yyyy/MM/dd）、未指定であればシステム日                                         |
 | price | O        | 購入した金額                                                                     |
 | store | O        | 購入した店舗                                                                     |
@@ -98,27 +98,27 @@ JSONで送信
 
 ##### response
 
-| name   | description         |
-|--------|---------------------|
-| result | 成功したらOK,失敗したらNG     |
-| hash   | OKの場合に、更新した出費のハッシュ値 |
-| error  | NGの場合に、エラー内容        |
+| name   | description      |
+|--------|------------------|
+| result | 成功したらOK,失敗したらNG  |
+| id     | OKの場合に、更新した出費のid |
+| error  | NGの場合に、エラー内容     |
 
 #### DELETE
 
 登録済みの出費1件を削除する
 
-##### request /detail/:hash
+##### request /detail/{id}
 
 指定された出費1件の削除
 
 ##### response
 
-| name   | description         |
-|--------|---------------------|
-| result | 成功したらOK,失敗したらNG     |
-| hash   | OKの場合に、削除した出費のハッシュ値 |
-| error  | NGの場合に、エラー内容        |
+| name   | description      |
+|--------|------------------|
+| result | 成功したらOK,失敗したらNG  |
+| id     | OKの場合に、削除した出費のid |
+| error  | NGの場合に、エラー内容     |
 
 ### DB
 
