@@ -25,6 +25,12 @@ import java.util.UUID
 @RequestMapping("/api/expenseBook")
 class ExpensesBookController(private val expenseBookService: ExpensesBookService) {
 
+    /**
+     * 指定された条件に合致する出費（[Expense]）の[List]をレスポンスで返す
+     *
+     * パスパラメータ [yyyyMM]: 年月指定（yyyyMM形式）
+     * クエリパラメータ [types]: 費目の絞り込み。複数指定可。省略可。
+     */
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
                         @RequestParam(required = false) types: List<Int>?): ResponseEntity<List<Expense>> {
