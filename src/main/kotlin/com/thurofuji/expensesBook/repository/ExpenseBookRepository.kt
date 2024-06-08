@@ -32,7 +32,9 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
             //  一旦このままいくが、改善は追って検討する必要がある
             //  （動的SQLをサポートしているFWへ変更する、Repositoryの関数を条件ごとに分ける、など）
             " AND 費目cd in (${typeList.joinToString(",")})"
-        } else { "" }
+        } else { "" } + """
+           ORDER BY 支払日, id
+        """
 
         return jdbcClient.sql(sql.trimIndent())
             .params(start, end)
