@@ -47,6 +47,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * 出費を新規登録する
      *
      * TODO パラメータに対する入力値検証を追加する
+     * TODO 登録に失敗した場合の処理は必要ないか？
      */
     @PostMapping
     fun registerExpense(@RequestBody expense: Expense): ResponseEntity<Expense> {
