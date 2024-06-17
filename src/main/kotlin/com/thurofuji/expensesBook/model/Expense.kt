@@ -11,5 +11,6 @@ data class Expense(
     val date: LocalDate,
     val price: Int,
     val store: String = "",
+    val usage: String = "",
     val type: Int
 )

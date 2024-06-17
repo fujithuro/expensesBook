@@ -21,7 +21,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     fun findList(start: LocalDate, end: LocalDate, typeList: List<Int>): List<Expense> {
         val sql = """
             SELECT
-              id, 支払日, 費目cd, 金額, 支払先
+              id, 支払日, 費目cd, 金額, 支払先, 使途
             FROM
               出費履歴
             WHERE
@@ -47,12 +47,12 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
      */
     fun register(expense: Expense): Expense {
         val registeredID: UUID = jdbcClient.sql("""
-            INSERT INTO 出費履歴 (支払日, 金額, 支払先, 費目cd)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO 出費履歴 (支払日, 金額, 支払先, 使途, 費目cd)
+            VALUES (?, ?, ?, ?, ?)
             RETURNING id
         """.trimIndent())
             .params(
-                expense.date, expense.price, expense.store, expense.type
+                expense.date, expense.price, expense.store, expense.usage, expense.type
             ).query(UUID::class.java)
             .single()
 
@@ -71,6 +71,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
               , 費目cd = ?
               , 金額 = ?
               , 支払先 = ?
+              , 使途 = ?
               , 最終更新日時 = CURRENT_TIMESTAMP
             WHERE
               id = ?
@@ -80,6 +81,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
                 , expense.type
                 , expense.price
                 , expense.store
+                , expense.usage
                 , expense.id)
             .update()
     }
@@ -109,6 +111,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
             date = rs.getDate("支払日").toLocalDate(),
             price = rs.getInt("金額"),
             store = rs.getString("支払先"),
+            usage = rs.getString("使途"),
             type = rs.getInt("費目cd")
         )
     }
