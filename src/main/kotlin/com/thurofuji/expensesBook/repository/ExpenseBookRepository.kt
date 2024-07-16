@@ -25,19 +25,21 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
             FROM
               出費履歴
             WHERE
-              支払日 BETWEEN ? AND ?
+              支払日 BETWEEN :start AND :end
         """ + if (typeList.isNotEmpty()) {
             // TODO 一応動きに問題はないが、動的SQLにFWとして対応していないようなので不格好
             //  条件が増えた場合など、if文が増えて可読性や保守性がかなり落ちると思われる
             //  一旦このままいくが、改善は追って検討する必要がある
             //  （動的SQLをサポートしているFWへ変更する、Repositoryの関数を条件ごとに分ける、など）
-            " AND 費目cd in (${typeList.joinToString(",")})"
+            " AND 費目cd in (:types)"
         } else { "" } + """
            ORDER BY 支払日, id
         """
 
         return jdbcClient.sql(sql.trimIndent())
-            .params(start, end)
+            .param("start", start)
+            .param("end", end)
+            .param("types", typeList)
             .query(expenseMapper)
             .list()
     }
