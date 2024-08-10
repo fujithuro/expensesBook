@@ -43,7 +43,18 @@ class ExpensesBookController(private val service: ExpensesBookService) {
         return ok(list)
     }
 
-    // TODO id指定された出費1件の取得を実装
+    /**
+     * 指定された[id]に合致する出費（[Expense]）を取得する。
+     *
+     * 該当するものが見つかれば`200 OK`としてレスポンスボディで詳細を返す。
+     * 該当するものがなければ`404 Not Found`を返す。
+     */
+    @GetMapping("/detail/{id}")
+    fun getExpensesDetail(@PathVariable id: UUID): ResponseEntity<Expense> {
+        return service.findDetail(id)
+            ?.let { ok(it) }
+            ?: notFound()
+    }
 
     /**
      * 出費を新規登録する

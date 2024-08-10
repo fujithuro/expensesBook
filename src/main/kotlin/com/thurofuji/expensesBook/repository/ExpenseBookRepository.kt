@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 import java.time.LocalDate
 import java.util.UUID
+import kotlin.jvm.optionals.getOrNull
 
 /**
  * 家計簿に関する情報の永続化、および永続化された情報へのアクセスを行うRepositoryクラス
@@ -42,6 +43,25 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
             .param("types", typeList)
             .query(expenseMapper)
             .list()
+    }
+
+    /**
+     * [id]で指定された出費を取得する。
+     * 該当する出費が存在しなければ`null`を返す
+     */
+    fun findDetail(id: UUID): Expense? {
+        val sql = """
+            SELECT
+              id, 支払日, 費目cd, 金額, 支払先, 使途
+            FROM
+              出費履歴
+            WHERE
+              id = :id
+        """
+
+        return jdbcClient.sql(sql.trimIndent())
+            .param("id", id).query(expenseMapper)
+            .optional().getOrNull()
     }
 
     /**

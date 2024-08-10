@@ -24,6 +24,14 @@ class ExpensesBookService(private val repository: ExpenseBookRepository) {
     }
 
     /**
+     * 指定された[id]に合致する出費（[Expense]）を取得する。
+     * 該当するものがなければnullを返す。
+     */
+    fun findDetail(id: UUID): Expense? {
+        return repository.findDetail(id)
+    }
+
+    /**
      * 出費情報（[expense]）を登録し、登録された出費（[Expense]）を返す
      */
     fun register(expense: Expense): Expense {
