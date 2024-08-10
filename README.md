@@ -4,7 +4,9 @@
 
 ## Front-End
 
-// TODO フロントエンドについて決まったら書いていく
+React（Next.js）でフロントエンドを作成する予定
+
+詳細は、Issue #2 フロントエンドの作成 に記載
 
 ## Server-Side
 
