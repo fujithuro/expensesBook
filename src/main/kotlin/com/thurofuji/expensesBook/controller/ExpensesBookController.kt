@@ -43,6 +43,8 @@ class ExpensesBookController(private val service: ExpensesBookService) {
         return ok(list)
     }
 
+    // TODO id指定された出費1件の取得を実装
+
     /**
      * 出費を新規登録する
      *
