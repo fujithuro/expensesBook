@@ -53,7 +53,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     fun registerExpense(@RequestBody expense: Expense): ResponseEntity<Expense> {
         val registered: Expense = service.register(expense)
 
-        return ok(registered)
+        return created(registered)
     }
 
     /**
@@ -119,6 +119,11 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * `200 OK`を表す[ResponseEntity]を返す。レスポンスボディに含める情報は[body]に設定する。
      */
     private fun <T> ok(body: T? = null): ResponseEntity<T> = ResponseEntity.ok(body)
+
+    /**
+     * `201 Created`を表す[ResponseEntity]を返す。レスポンスボディに含める情報は[body]に設定する。
+     */
+    private fun <T> created(body: T? = null): ResponseEntity<T> = ResponseEntity(body, HttpStatus.CREATED)
 
     /**
      * `204 No Content`を表す[ResponseEntity]を返す。レスポンスボディに含める情報は[body]に設定する。
