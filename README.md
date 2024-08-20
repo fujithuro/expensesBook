@@ -16,7 +16,7 @@ React（Next.js）でフロントエンドを作成する予定
 
 家計簿に対して出費の追加/更新/削除を行ったり、一覧の取得を行ったりするREST APIを提供する
 
-#### 検索: 出費一覧
+#### 出費一覧の取得
 
 * 概要: 家計簿に登録済みされている特定の年月の出費一覧を取得する。費目での絞り込みも可能
 * URL: /api/expenseBook/list/{yyyyMM}
@@ -63,7 +63,7 @@ Content-Type: `application/json`
 ]
 ```
 
-#### 検索: 出費1件の詳細
+#### 出費の詳細を取得
 
 * URL: /api/expenseBook/detail/{id}
 * メソッド: `GET`
@@ -94,7 +94,7 @@ Content-Type: `application/json`
 
 * `404 Not Found`: 指定された出費が存在しませんでした
 
-#### 追加
+#### 出費の追加
 
 * URL: /api/expenseBook
 * メソッド: `POST`
@@ -143,7 +143,7 @@ Content-Type: `application/json`
 }
 ```
 
-#### 更新
+#### 出費の更新
 
 * URL: /api/expenseBook/{id}
 * メソッド: `PUT`
@@ -202,7 +202,7 @@ Content-Type: `application/json`
 * `404 Not Found`: 指定された出費が存在しませんでした
 
 
-#### 削除
+#### 出費の削除
 
 * URL: /api/expenseBook/{id}
 * メソッド: `DELETE`
