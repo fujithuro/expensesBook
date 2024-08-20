@@ -18,14 +18,14 @@ React（Next.js）でフロントエンドを作成する予定
 
 | 概要                    | メソッド   | URL                            |
 |-----------------------|--------|--------------------------------|
-| [出費一覧の取得](#出費一覧の取得)   | GET    | /api/expenseBook/list/{yyyyMM} |
+| [出費の一覧を取得](#出費の一覧を取得)  | GET    | /api/expenseBook/list/{yyyyMM} |
 | [出費の詳細を取得](#出費の詳細を取得) | GET    | /api/expenseBook/detail/{id}   |
 | [出費の追加](#出費の追加)       | POST   | /api/expenseBook               |
 | [出費の更新](#出費の更新)       | PUT    | /api/expenseBook/{id}                               |
 | [出費の削除](#出費の削除)       | DELETE | /api/expenseBook/{id}                               |
 
 
-#### 出費一覧の取得
+#### 出費の一覧を取得
 
 * 概要: 家計簿に登録済みされている特定の年月の出費一覧を取得する。費目での絞り込みも可能
 * URL: /api/expenseBook/list/{yyyyMM}
