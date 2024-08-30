@@ -114,8 +114,6 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * [MethodArgumentTypeMismatchException]: パラメータの型が不正な場合にスローされる
      *
      * TODO まだ入力値検証をほとんど実装していないので、実装後に必要な例外ハンドリングの精査が必要
-     * TODO ひとまず例外のハンドリングが行えるようにしているだけで、レスポンスのメッセージ内容は暫定的なものなので、追って修正する
-     * TODO レスポンス内容は暫定的にMapにしているが、これは専用クラスに置き換えたい（CUD用のresponseクラスなど）
      */
     @ExceptionHandler(
         DateTimeParseException::class
@@ -123,12 +121,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
         , MethodArgumentTypeMismatchException::class
     )
     fun handleException(ex: Exception): ResponseEntity<Map<String, String>> {
-        return badRequest(
-            mapOf(
-                "result" to "NG"
-                , "error" to "Type mismatch error: ${ex.message}"
-            )
-        )
+        return badRequest()
     }
 
     /**
