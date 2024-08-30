@@ -1,0 +1,542 @@
+{
+	"info": {
+		"_postman_id": "a0a47d46-b2bf-40be-93b4-253216787f52",
+		"name": "家計簿アプリテスト",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34664717"
+	},
+	"item": [
+		{
+			"name": "認証",
+			"item": []
+		},
+		{
+			"name": "入力値検証",
+			"item": [
+				{
+					"name": "出費一覧",
+					"item": [
+						{
+							"name": "年月指定_数値ではない",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/list/aaaa",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"list",
+										"aaaa"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "年月指定_yyyyMMの形式ではない",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/list/8610",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"list",
+										"8610"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "年月指定_存在しない年月",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/list/202471",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"list",
+										"202471"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "年月指定_未来の年月は許容する",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is NOT 400\", function () {",
+											"    pm.response.to.not.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/list/209912",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"list",
+										"209912"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "費目指定_数値ではない",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/list/202401?types=a",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"list",
+										"202401"
+									],
+									"query": [
+										{
+											"key": "types",
+											"value": "a",
+											"description": "数値ではない"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "費目指定_Intの範囲外",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/list/202401?types=2147483648",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"list",
+										"202401"
+									],
+									"query": [
+										{
+											"key": "types",
+											"value": "2147483648",
+											"description": "Intの範囲外"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "費目指定_マイナスの値",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/list/202401?types=-1",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"list",
+										"202401"
+									],
+									"query": [
+										{
+											"key": "types",
+											"value": "-1",
+											"description": "マイナス"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "費目指定_存在しないコード",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/list/202401?types=20",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"list",
+										"202401"
+									],
+									"query": [
+										{
+											"key": "types",
+											"value": "20",
+											"description": "存在しない費目コード"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "費目指定_複数_数値ではないものを含む",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/list/202401?types=1,a,8",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"list",
+										"202401"
+									],
+									"query": [
+										{
+											"key": "types",
+											"value": "1,a,8",
+											"description": "数値ではないものを含む"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "費目指定_複数_Intの範囲外を含む",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/list/202401?types=1,2147483648,8",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"list",
+										"202401"
+									],
+									"query": [
+										{
+											"key": "types",
+											"value": "1,2147483648,8",
+											"description": "Intの範囲外を含む"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "費目指定_複数_マイナスの値を含む",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/list/202401?types=1,-1,8",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"list",
+										"202401"
+									],
+									"query": [
+										{
+											"key": "types",
+											"value": "1,-1,8",
+											"description": "マイナスの値を含む"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "費目指定_複数_存在しないコードを含む",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/list/202401?types=1,20,8",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"list",
+										"202401"
+									],
+									"query": [
+										{
+											"key": "types",
+											"value": "1,20,8",
+											"description": "存在しない費目コードを含む"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "出費詳細",
+					"item": []
+				},
+				{
+					"name": "出費登録",
+					"item": []
+				},
+				{
+					"name": "出費更新",
+					"item": []
+				},
+				{
+					"name": "出費削除",
+					"item": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "localhost:8080",
+			"type": "string"
+		}
+	]
+}
