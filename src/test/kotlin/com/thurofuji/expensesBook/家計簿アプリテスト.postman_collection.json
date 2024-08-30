@@ -493,7 +493,78 @@
 				},
 				{
 					"name": "出費詳細",
-					"item": []
+					"item": [
+						{
+							"name": "id指定_フォーマットが不正",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/detail/hoge",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"detail",
+										"hoge"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "id指定_存在しないID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/detail/{{invalidID}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"detail",
+										"{{invalidID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				},
 				{
 					"name": "出費登録",
@@ -536,6 +607,11 @@
 		{
 			"key": "baseURL",
 			"value": "localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "invalidID",
+			"value": "5e5d4b02-a911-4b42-9a1b-985a00081779",
 			"type": "string"
 		}
 	]
