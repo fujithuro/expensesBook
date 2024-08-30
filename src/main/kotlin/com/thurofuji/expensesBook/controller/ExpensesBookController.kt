@@ -1,6 +1,7 @@
 package com.thurofuji.expensesBook.controller
 
 import com.thurofuji.expensesBook.model.Expense
+import com.thurofuji.expensesBook.model.ExpenseType
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -37,8 +38,13 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
                         @RequestParam(required = false) types: List<Int>?): ResponseEntity<List<Expense>> {
-        val targetYearMonth: YearMonth = yyyyMM.parseYearMonth().getOrNull()
-            ?: return badRequest()
+        val targetYearMonth: YearMonth = yyyyMM.parseYearMonth().getOrElse { return badRequest() }
+
+        val typeList: List<ExpenseType> = if (types.isNullOrEmpty()) {
+            emptyList()
+        } else {
+            types.convertToTypeList().getOrElse { return badRequest() }
+        }
 
         val list = service.findList(targetYearMonth, types ?: emptyList())
 
@@ -110,6 +116,13 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      */
     private fun String.parseYearMonth(): Result<YearMonth> = this.runCatching {
         YearMonth.parse(this, DateTimeFormatter.ofPattern("yyyyMM"))
+    }
+
+    /**
+     * 出費の費目を表す[Int]の[List]を、列挙型である[ExpenseType]の[List]に変換した結果を[Result]として返す
+     */
+    fun List<Int>.convertToTypeList(): Result<List<ExpenseType>> = this.runCatching {
+        map { ExpenseType.valueOf(it) }
     }
 
     /**

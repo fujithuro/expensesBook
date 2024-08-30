@@ -14,5 +14,17 @@ enum class ExpenseType(val code: Int, private val displayName: String = "") {
     医療(8),
     その他(9);
 
+    companion object {
+        /**
+         * [value]が[ExpenseType.code]と合致する[ExpenseType]の項目を返す
+         *
+         * @throws IllegalArgumentException [value]と合致する項目が存在しない場合にスローされる
+         */
+        fun valueOf(value: Int): ExpenseType {
+            return entries.firstOrNull { it.code == value }
+                ?: throw IllegalArgumentException("Invalid value for expense code.: $value")
+        }
+    }
+
     override fun toString(): String = displayName.ifBlank { name }
 }
