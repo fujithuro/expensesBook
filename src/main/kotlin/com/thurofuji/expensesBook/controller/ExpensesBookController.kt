@@ -32,6 +32,9 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      *
      * パスパラメータ [yyyyMM]: 年月指定（yyyyMM形式）
      * クエリパラメータ [types]: 費目の絞り込み。複数指定可。省略可。
+     *
+     * @throws DateTimeParseException [yyyyMM]が年月を指定する値でなかった場合にスローされる
+     * @throws MethodArgumentTypeMismatchException パラメータが指定の型と一致しない、たとえば[types]に[Int]ではない値が渡された場合などにスローされる
      */
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
