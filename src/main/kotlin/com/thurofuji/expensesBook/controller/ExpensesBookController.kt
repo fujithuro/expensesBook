@@ -37,9 +37,8 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
                         @RequestParam(required = false) types: List<Int>?): ResponseEntity<List<Expense>> {
-        val yearMonth: YearMonth = runCatching {
-            YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM"))
-        }.getOrNull() ?: return badRequest()
+        val yearMonth: YearMonth = yyyyMM.parseYearMonth().getOrNull()
+            ?: return badRequest()
 
         val list = service.findList(yearMonth, types ?: emptyList())
 
@@ -104,6 +103,13 @@ class ExpensesBookController(private val service: ExpensesBookService) {
         } else {
             notFound()
         }
+    }
+
+    /**
+     * 文字列を`yyyyMM`形式の年月としてパースした結果を、[YearMonth]の[Result]として返す
+     */
+    private fun String.parseYearMonth(): Result<YearMonth> = this.runCatching {
+        YearMonth.parse(this, DateTimeFormatter.ofPattern("yyyyMM"))
     }
 
     /**
