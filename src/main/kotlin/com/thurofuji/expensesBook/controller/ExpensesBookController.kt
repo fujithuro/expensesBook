@@ -46,7 +46,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
             types.convertToTypeList().getOrElse { return badRequest() }
         }
 
-        val list = service.findList(targetYearMonth, types ?: emptyList())
+        val list = service.findList(targetYearMonth, typeList)
 
         return ok(list)
     }

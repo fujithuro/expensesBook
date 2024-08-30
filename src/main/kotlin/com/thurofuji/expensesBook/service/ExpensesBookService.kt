@@ -1,6 +1,7 @@
 package com.thurofuji.expensesBook.service
 
 import com.thurofuji.expensesBook.model.Expense
+import com.thurofuji.expensesBook.model.ExpenseType
 import com.thurofuji.expensesBook.repository.ExpenseBookRepository
 import org.springframework.stereotype.Service
 import java.time.YearMonth
@@ -13,13 +14,13 @@ import java.util.UUID
 class ExpensesBookService(private val repository: ExpenseBookRepository) {
 
     /**
-     * 指定された年月（[YearMonth]）および費目の出費一覧を[Expense]の[List]で取得する
+     * 指定された年月（[YearMonth]）および費目([ExpenseType])に該当する出費一覧を[Expense]の[List]で取得する
      */
-    fun findList(targetYearMonth: YearMonth, typeList: List<Int>): List<Expense> {
+    fun findList(targetYearMonth: YearMonth, typeList: List<ExpenseType>): List<Expense> {
         return repository.findList(
             targetYearMonth.atDay(1)
             , targetYearMonth.atEndOfMonth()
-            , typeList
+            , typeList.map { it.code }
         )
     }
 
