@@ -38,6 +38,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
                         @RequestParam(required = false) types: List<Int>?): ResponseEntity<List<Expense>> {
+        // 入力値検証
         val targetYearMonth: YearMonth = yyyyMM.parseYearMonth().getOrElse { return badRequest() }
 
         val typeList: List<ExpenseType> = if (types.isNullOrEmpty()) {
@@ -46,6 +47,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
             types.convertToTypeList().getOrElse { return badRequest() }
         }
 
+        // 一覧の取得
         val list = service.findList(targetYearMonth, typeList)
 
         return ok(list)
