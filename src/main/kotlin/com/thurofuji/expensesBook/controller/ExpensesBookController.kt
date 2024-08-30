@@ -37,10 +37,10 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
                         @RequestParam(required = false) types: List<Int>?): ResponseEntity<List<Expense>> {
-        val yearMonth: YearMonth = yyyyMM.parseYearMonth().getOrNull()
+        val targetYearMonth: YearMonth = yyyyMM.parseYearMonth().getOrNull()
             ?: return badRequest()
 
-        val list = service.findList(yearMonth, types ?: emptyList())
+        val list = service.findList(targetYearMonth, types ?: emptyList())
 
         return ok(list)
     }

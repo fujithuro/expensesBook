@@ -15,10 +15,10 @@ class ExpensesBookService(private val repository: ExpenseBookRepository) {
     /**
      * 指定された年月（[YearMonth]）および費目の出費一覧を[Expense]の[List]で取得する
      */
-    fun findList(yearMonth: YearMonth, typeList: List<Int>): List<Expense> {
+    fun findList(targetYearMonth: YearMonth, typeList: List<Int>): List<Expense> {
         return repository.findList(
-            yearMonth.atDay(1)
-            , yearMonth.atEndOfMonth()
+            targetYearMonth.atDay(1)
+            , targetYearMonth.atEndOfMonth()
             , typeList
         )
     }
