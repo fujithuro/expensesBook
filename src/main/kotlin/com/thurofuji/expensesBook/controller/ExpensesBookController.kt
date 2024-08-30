@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 import java.util.UUID
 
 /**
@@ -33,13 +32,14 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * パスパラメータ [yyyyMM]: 年月指定（yyyyMM形式）
      * クエリパラメータ [types]: 費目の絞り込み。複数指定可。省略可。
      *
-     * @throws DateTimeParseException [yyyyMM]が年月を指定する値でなかった場合にスローされる
      * @throws MethodArgumentTypeMismatchException パラメータが指定の型と一致しない、たとえば[types]に[Int]ではない値が渡された場合などにスローされる
      */
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
                         @RequestParam(required = false) types: List<Int>?): ResponseEntity<List<Expense>> {
-        val yearMonth: YearMonth = YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM"))
+        val yearMonth: YearMonth = runCatching {
+            YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM"))
+        }.getOrNull() ?: return badRequest()
 
         val list = service.findList(yearMonth, types ?: emptyList())
 
@@ -109,15 +109,13 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     /**
      * リクエストされた情報が不正で例外がスローされた場合のハンドリングを行う
      *
-     * [DateTimeParseException]: パラメータの日付指定に誤りがある場合にスローされる
      * [IllegalArgumentException]: パラメータに不正があった場合全般にスローされる
      * [MethodArgumentTypeMismatchException]: パラメータの型が不正な場合にスローされる
      *
      * TODO まだ入力値検証をほとんど実装していないので、実装後に必要な例外ハンドリングの精査が必要
      */
     @ExceptionHandler(
-        DateTimeParseException::class
-        , IllegalArgumentException::class
+        IllegalArgumentException::class
         , MethodArgumentTypeMismatchException::class
     )
     fun handleException(ex: Exception): ResponseEntity<Map<String, String>> {
