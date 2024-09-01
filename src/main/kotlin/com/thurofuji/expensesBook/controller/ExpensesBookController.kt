@@ -3,6 +3,7 @@ package com.thurofuji.expensesBook.controller
 import com.thurofuji.expensesBook.model.Expense
 import com.thurofuji.expensesBook.model.ExpenseType
 import com.thurofuji.expensesBook.service.ExpensesBookService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -73,7 +74,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * TODO 登録に失敗した場合の処理は必要ないか？
      */
     @PostMapping
-    fun registerExpense(@RequestBody expense: Expense): ResponseEntity<Expense> {
+    fun registerExpense(@Valid @RequestBody expense: Expense): ResponseEntity<Expense> {
         val registered: Expense = service.register(expense)
 
         return created(registered)
@@ -88,7 +89,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * TODO パラメータに対する入力値検証を追加する
      */
     @PutMapping("/{id}")
-    fun updateExpense(@PathVariable id: UUID, @RequestBody expense: Expense): ResponseEntity<Void> {
+    fun updateExpense(@PathVariable id: UUID, @Valid @RequestBody expense: Expense): ResponseEntity<Void> {
         val updatedRows = service.update(expense.copy(id = id))
         return if (updatedRows > 0) {
             noContent()
