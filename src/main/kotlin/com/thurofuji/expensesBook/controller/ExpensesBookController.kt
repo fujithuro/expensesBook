@@ -2,6 +2,7 @@ package com.thurofuji.expensesBook.controller
 
 import com.thurofuji.expensesBook.model.RequestedExpense
 import com.thurofuji.expensesBook.model.ExpenseType
+import com.thurofuji.expensesBook.model.ListSearchCondition
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -39,18 +40,10 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
                         @RequestParam(required = false) types: List<Int>?): ResponseEntity<List<RequestedExpense>> {
-        // 入力値検証
-        val targetYearMonth: YearMonth = yyyyMM.parseYearMonth().getOrElse { return badRequest() }
+        val searchCondition: ListSearchCondition = tryToCreateCondition(yyyyMM, types ?: emptyList())
+            .getOrElse { return badRequest() }
 
-        val typeList: List<ExpenseType> = if (types.isNullOrEmpty()) {
-            emptyList()
-        } else {
-            runCatching { types.map { it.toExpenseType() } }
-                .getOrElse { return badRequest() }
-        }
-
-        // 一覧の取得
-        val list = service.findList(targetYearMonth, typeList)
+        val list = service.findList(searchCondition)
 
         return ok(list)
     }
@@ -125,6 +118,19 @@ class ExpensesBookController(private val service: ExpensesBookService) {
         } else {
             notFound()
         }
+    }
+
+    /**
+     * リクエストされた情報（[yyyyMM]と[types]）から、出費の一覧を検索するための条件（[ListSearchCondition]）を作成した結果を返す
+     */
+    private fun tryToCreateCondition(yyyyMM: String, types: List<Int>): Result<ListSearchCondition> {
+        val targetYearMonth: YearMonth = yyyyMM.parseYearMonth()
+            .getOrElse { return Result.failure(IllegalArgumentException()) }
+
+        val typeList: List<ExpenseType> = runCatching { types.map { it.toExpenseType() } }
+            .getOrElse { return Result.failure(IllegalArgumentException()) }
+
+        return Result.success(ListSearchCondition(targetYearMonth, typeList))
     }
 
     /**
