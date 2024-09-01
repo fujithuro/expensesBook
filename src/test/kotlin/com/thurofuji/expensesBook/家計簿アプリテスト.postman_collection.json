@@ -258,7 +258,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseURL}}/api/expenseBook/list/202401?types=20",
+									"raw": "{{baseURL}}/api/expenseBook/list/202401?types=999",
 									"host": [
 										"{{baseURL}}"
 									],
@@ -271,7 +271,7 @@
 									"query": [
 										{
 											"key": "types",
-											"value": "20",
+											"value": "999",
 											"description": "存在しない費目コード"
 										}
 									]
@@ -384,7 +384,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseURL}}/api/expenseBook/list/202401?types=1,20,8",
+									"raw": "{{baseURL}}/api/expenseBook/list/202401?types=1,999,8",
 									"host": [
 										"{{baseURL}}"
 									],
@@ -397,7 +397,7 @@
 									"query": [
 										{
 											"key": "types",
-											"value": "1,20,8",
+											"value": "1,999,8",
 											"description": "存在しない費目コードを含む"
 										}
 									]
