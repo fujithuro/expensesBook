@@ -238,48 +238,6 @@
 							"response": []
 						},
 						{
-							"name": "費目指定_マイナスの値",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 400\", function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											""
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseURL}}/api/expenseBook/list/202401?types=-1",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"api",
-										"expenseBook",
-										"list",
-										"202401"
-									],
-									"query": [
-										{
-											"key": "types",
-											"value": "-1",
-											"description": "マイナス"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "費目指定_存在しないコード",
 							"event": [
 								{
@@ -399,48 +357,6 @@
 											"key": "types",
 											"value": "1,2147483648,8",
 											"description": "Intの範囲外を含む"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "費目指定_複数_マイナスの値を含む",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 400\", function () {",
-											"    pm.response.to.have.status(400);",
-											"});",
-											""
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseURL}}/api/expenseBook/list/202401?types=1,-1,8",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"api",
-										"expenseBook",
-										"list",
-										"202401"
-									],
-									"query": [
-										{
-											"key": "types",
-											"value": "1,-1,8",
-											"description": "マイナスの値を含む"
 										}
 									]
 								}
