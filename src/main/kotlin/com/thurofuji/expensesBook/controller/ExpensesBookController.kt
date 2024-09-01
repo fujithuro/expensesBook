@@ -7,6 +7,7 @@ import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
@@ -147,6 +148,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      *
      * [IllegalArgumentException]: パラメータに不正があった場合全般にスローされる
      * [MethodArgumentTypeMismatchException]: パラメータの型が不正な場合にスローされる
+     * [MethodArgumentNotValidException]: メソッドの引数に対する入力値検証で問題が見つかった場合にスローされる
      * [HttpMessageNotReadableException]: リクエスト内容をオブジェクトに展開できなかった場合にスローされる。たとえばnull非許容のプロパティにnullが送信された、型が合致しないなど
      *
      * TODO まだ入力値検証をほとんど実装していないので、実装後に必要な例外ハンドリングの精査が必要
@@ -154,6 +156,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     @ExceptionHandler(
         IllegalArgumentException::class
         , MethodArgumentTypeMismatchException::class
+        , MethodArgumentNotValidException::class
         , HttpMessageNotReadableException::class
     )
     fun handleException(ex: Exception): ResponseEntity<Map<String, String>> {
