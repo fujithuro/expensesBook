@@ -126,10 +126,10 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      */
     private fun tryToCreateCondition(yyyyMM: String, types: List<Int>): Result<ListSearchCondition> {
         val targetYearMonth: YearMonth = yyyyMM.parseYearMonth()
-            .getOrElse { return Result.failure(IllegalArgumentException()) }
+            .getOrElse { return Result.failure(it) }
 
         val typeList: List<ExpenseType> = runCatching { types.map { it.toExpenseType() } }
-            .getOrElse { return Result.failure(IllegalArgumentException()) }
+            .getOrElse { return Result.failure(it) }
 
         return Result.success(ListSearchCondition(targetYearMonth, typeList))
     }
