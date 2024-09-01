@@ -969,11 +969,669 @@
 				},
 				{
 					"name": "出費更新",
-					"item": []
+					"item": [
+						{
+							"name": "id指定_フォーマットが不正",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"date\": \"2024-06-30\",\n    \"price\": 2300,\n    \"store\": \"スーパー\",\n    \"usage\": \"食品\",\n    \"type\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/hoge",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"hoge"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "id指定_存在しないID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"date\": \"2024-06-30\",\n    \"price\": 2300,\n    \"store\": \"スーパー\",\n    \"usage\": \"食品\",\n    \"type\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/{{validID}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"{{validID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "日付指定_値がない",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"price\": 2900,\n    \"store\": \"スーパー\",\n    \"usage\": \"食品\",\n    \"type\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/{{validID}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"{{validID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "日付指定_日付として扱えない",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"date\": \"foobar\",\n    \"price\": 2900,\n    \"store\": \"スーパー\",\n    \"usage\": \"食品\",\n    \"type\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/{{validID}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"{{validID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "日付指定_存在しない日付",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"date\": \"2024-12-99\",\n    \"price\": 2900,\n    \"store\": \"スーパー\",\n    \"usage\": \"食品\",\n    \"type\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/{{validID}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"{{validID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "金額指定_値がない",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"date\": \"2024-06-30\",\n    \"store\": \"スーパー\",\n    \"usage\": \"食品\",\n    \"type\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/{{validID}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"{{validID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "金額指定_数値ではない",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"date\": \"2024-06-30\",\n    \"price\": \"kingaku\",\n    \"store\": \"スーパー\",\n    \"usage\": \"食品\",\n    \"type\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/{{validID}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"{{validID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "金額指定_Intの範囲外",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"date\": \"2024-06-30\",\n    \"price\": 2147483648,\n    \"store\": \"スーパー\",\n    \"usage\": \"食品\",\n    \"type\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/{{validID}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"{{validID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "費目指定_値がない",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"date\": \"2024-06-30\",\n    \"price\": 2300,\n    \"store\": \"スーパー\",\n    \"usage\": \"食品\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/{{validID}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"{{validID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "費目指定_数値ではない",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"date\": \"2024-06-30\",\n    \"price\": 2300,\n    \"store\": \"スーパー\",\n    \"usage\": \"食品\",\n    \"type\": \"himoku\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/{{validID}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"{{validID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "費目指定_Intの範囲外",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"date\": \"2024-06-30\",\n    \"price\": 2300,\n    \"store\": \"スーパー\",\n    \"usage\": \"食品\",\n    \"type\": 2147483648\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/{{validID}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"{{validID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "費目指定_存在しないコード",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"date\": \"2024-06-30\",\n    \"price\": 2300,\n    \"store\": \"スーパー\",\n    \"usage\": \"食品\",\n    \"type\": 999\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/{{validID}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"{{validID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				},
 				{
 					"name": "出費削除",
-					"item": []
+					"item": [
+						{
+							"name": "id指定_フォーマットが不正",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/hoge",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"hoge"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "id指定_存在しないID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/{{validID}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"{{validID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}
@@ -1009,6 +1667,11 @@
 		{
 			"key": "invalidID",
 			"value": "5e5d4b02-a911-4b42-9a1b-985a00081779",
+			"type": "string"
+		},
+		{
+			"key": "validID",
+			"value": "2c06f3cb-1526-4922-bfcc-6071b20e0519",
 			"type": "string"
 		}
 	]
