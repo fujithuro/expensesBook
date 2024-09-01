@@ -46,7 +46,8 @@ class ExpensesBookController(private val service: ExpensesBookService) {
         val typeList: List<ExpenseType> = if (types.isNullOrEmpty()) {
             emptyList()
         } else {
-            types.convertToTypeList().getOrElse { return badRequest() }
+            runCatching { types.map { it.toExpenseType() } }
+                .getOrElse { return badRequest() }
         }
 
         // 一覧の取得
@@ -123,11 +124,11 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     }
 
     /**
-     * 出費の費目を表す[Int]の[List]を、列挙型である[ExpenseType]の[List]に変換した結果を[Result]として返す
+     * 出費の費目を表す[Int]を、列挙型である[ExpenseType]に変換する
+     *
+     * @throws IllegalArgumentException 列挙型に変換できなかった場合にスローされる
      */
-    fun List<Int>.convertToTypeList(): Result<List<ExpenseType>> = this.runCatching {
-        map { ExpenseType.valueOf(it) }
-    }
+    private fun Int.toExpenseType(): ExpenseType = ExpenseType.valueOf(this)
 
     /**
      * リクエストされた情報が不正で例外がスローされた場合のハンドリングを行う
