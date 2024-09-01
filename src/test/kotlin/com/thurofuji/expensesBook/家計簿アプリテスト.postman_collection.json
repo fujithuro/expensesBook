@@ -1055,14 +1055,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseURL}}/api/expenseBook/{{validID}}",
+									"raw": "{{baseURL}}/api/expenseBook/{{invalidID}}",
 									"host": [
 										"{{baseURL}}"
 									],
 									"path": [
 										"api",
 										"expenseBook",
-										"{{validID}}"
+										"{{invalidID}}"
 									]
 								}
 							},
@@ -1618,14 +1618,14 @@
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "{{baseURL}}/api/expenseBook/{{validID}}",
+									"raw": "{{baseURL}}/api/expenseBook/{{invalidID}}",
 									"host": [
 										"{{baseURL}}"
 									],
 									"path": [
 										"api",
 										"expenseBook",
-										"{{validID}}"
+										"{{invalidID}}"
 									]
 								}
 							},
