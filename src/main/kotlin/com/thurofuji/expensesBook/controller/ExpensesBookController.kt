@@ -1,6 +1,6 @@
 package com.thurofuji.expensesBook.controller
 
-import com.thurofuji.expensesBook.model.Expense
+import com.thurofuji.expensesBook.model.RequestedExpense
 import com.thurofuji.expensesBook.model.ExpenseType
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import jakarta.validation.Valid
@@ -31,14 +31,14 @@ import java.util.UUID
 class ExpensesBookController(private val service: ExpensesBookService) {
 
     /**
-     * 指定された条件に合致する出費（[Expense]）の[List]をレスポンスで返す
+     * 指定された条件に合致する出費（[RequestedExpense]）の[List]をレスポンスで返す
      *
      * パスパラメータ [yyyyMM]: 年月指定（yyyyMM形式）
      * クエリパラメータ [types]: 費目の絞り込み。複数指定可。省略可。
      */
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
-                        @RequestParam(required = false) types: List<Int>?): ResponseEntity<List<Expense>> {
+                        @RequestParam(required = false) types: List<Int>?): ResponseEntity<List<RequestedExpense>> {
         // 入力値検証
         val targetYearMonth: YearMonth = yyyyMM.parseYearMonth().getOrElse { return badRequest() }
 
@@ -56,13 +56,13 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     }
 
     /**
-     * 指定された[id]に合致する出費（[Expense]）を取得する。
+     * 指定された[id]に合致する出費（[RequestedExpense]）を取得する。
      *
      * 該当するものが見つかれば`200 OK`としてレスポンスボディで詳細を返す。
      * 該当するものがなければ`404 Not Found`を返す。
      */
     @GetMapping("/detail/{id}")
-    fun getExpensesDetail(@PathVariable id: UUID): ResponseEntity<Expense> {
+    fun getExpensesDetail(@PathVariable id: UUID): ResponseEntity<RequestedExpense> {
         return service.findDetail(id)
             ?.let { ok(it) }
             ?: notFound()
@@ -75,14 +75,14 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * TODO 登録に失敗した場合の処理は必要ないか？
      */
     @PostMapping
-    fun registerExpense(@Valid @RequestBody expense: Expense): ResponseEntity<Expense> {
+    fun registerExpense(@Valid @RequestBody expense: RequestedExpense): ResponseEntity<RequestedExpense> {
         // 入力値検証
         // TODO この`type`をサービスに渡すのは、Issue #8 出費情報を扱うモデルの整理 対応時に行う
         val type = kotlin.runCatching { expense.type!!.toExpenseType() }
             .getOrElse { return badRequest() }
 
         // 出費の登録
-        val registered: Expense = service.register(expense)
+        val registered: RequestedExpense = service.register(expense)
 
         return created(registered)
     }
@@ -96,7 +96,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * TODO パラメータに対する入力値検証を追加する
      */
     @PutMapping("/{id}")
-    fun updateExpense(@PathVariable id: UUID, @Valid @RequestBody expense: Expense): ResponseEntity<Void> {
+    fun updateExpense(@PathVariable id: UUID, @Valid @RequestBody expense: RequestedExpense): ResponseEntity<Void> {
         // 入力値検証
         // TODO この`type`をサービスに渡すのは、Issue #8 出費情報を扱うモデルの整理 対応時に行う
         val type = kotlin.runCatching { expense.type!!.toExpenseType() }

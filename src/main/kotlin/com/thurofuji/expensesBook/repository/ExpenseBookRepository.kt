@@ -1,6 +1,6 @@
 package com.thurofuji.expensesBook.repository
 
-import com.thurofuji.expensesBook.model.Expense
+import com.thurofuji.expensesBook.model.RequestedExpense
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.simple.JdbcClient
 import org.springframework.stereotype.Repository
@@ -15,11 +15,11 @@ import kotlin.jvm.optionals.getOrNull
 @Repository
 class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     /**
-     * [start]から[end]までの期間の出費一覧を[Expense]の[List]として取得する。
+     * [start]から[end]までの期間の出費一覧を[RequestedExpense]の[List]として取得する。
      * [start]および[end]と同日の出費も取得される。
      * [typeList]が空でない場合、費目での絞り込みも行う。
      */
-    fun findList(start: LocalDate, end: LocalDate, typeList: List<Int>): List<Expense> {
+    fun findList(start: LocalDate, end: LocalDate, typeList: List<Int>): List<RequestedExpense> {
         // TODO できれば条件に応じたSQLの構築をもっとスッキリさせたい（if文を使わないなど）。詳細は Issue #1 参照
         val sql = """
             SELECT
@@ -46,7 +46,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
      * [id]で指定された出費を取得する。
      * 該当する出費が存在しなければ`null`を返す
      */
-    fun findDetail(id: UUID): Expense? {
+    fun findDetail(id: UUID): RequestedExpense? {
         val sql = """
             SELECT
               id, 支払日, 費目cd, 金額, 支払先, 使途
@@ -62,9 +62,9 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     }
 
     /**
-     * 出費情報（[expense]）を永続化し、登録された出費([Expense])を返す
+     * 出費情報（[expense]）を永続化し、登録された出費([RequestedExpense])を返す
      */
-    fun register(expense: Expense): Expense {
+    fun register(expense: RequestedExpense): RequestedExpense {
         val registeredID: UUID = jdbcClient.sql("""
             INSERT INTO 出費履歴 (支払日, 金額, 支払先, 使途, 費目cd)
             VALUES (?, ?, ?, ?, ?)
@@ -79,9 +79,9 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     }
 
     /**
-     * 既存の出費情報（[Expense]）を更新し、更新された行数を返す
+     * 既存の出費情報（[RequestedExpense]）を更新し、更新された行数を返す
      */
-    fun update(expense: Expense): Int {
+    fun update(expense: RequestedExpense): Int {
         return jdbcClient.sql("""
             UPDATE
               出費履歴
@@ -120,12 +120,12 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     }
 
     /**
-     * テーブル「出費履歴」の[ResultSet]を[Expense]にマッピングするための[RowMapper]
+     * テーブル「出費履歴」の[ResultSet]を[RequestedExpense]にマッピングするための[RowMapper]
      * TODO Repositoryのprivateなプロパティとして持つのが正しいのか（何かそれ用にクラスやファイルを用意すべきでないか）は要検討
      * TODO カラム名がベタ書きなのも要改善点。テーブルの情報を管理するクラスを作るか？
      */
     private val expenseMapper = RowMapper { rs: ResultSet, _: Int ->
-        Expense(
+        RequestedExpense(
             id = UUID.fromString(rs.getString("id")),
             date = rs.getDate("支払日").toLocalDate(),
             price = rs.getInt("金額"),

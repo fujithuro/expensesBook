@@ -5,9 +5,9 @@ import java.time.LocalDate
 import java.util.UUID
 
 /**
- * 出費の情報を表すデータクラス
+ * リクエストされた出費を表すデータクラス
  */
-data class Expense(
+data class RequestedExpense(
     val id: UUID? = null,
     @field:NotNull val date: LocalDate?,
     @field:NotNull val price: Int?,

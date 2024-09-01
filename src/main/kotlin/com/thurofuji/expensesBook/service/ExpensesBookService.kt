@@ -1,6 +1,6 @@
 package com.thurofuji.expensesBook.service
 
-import com.thurofuji.expensesBook.model.Expense
+import com.thurofuji.expensesBook.model.RequestedExpense
 import com.thurofuji.expensesBook.model.ExpenseType
 import com.thurofuji.expensesBook.repository.ExpenseBookRepository
 import org.springframework.stereotype.Service
@@ -14,9 +14,9 @@ import java.util.UUID
 class ExpensesBookService(private val repository: ExpenseBookRepository) {
 
     /**
-     * 指定された年月（[YearMonth]）および費目([ExpenseType])に該当する出費一覧を[Expense]の[List]で取得する
+     * 指定された年月（[YearMonth]）および費目([ExpenseType])に該当する出費一覧を[RequestedExpense]の[List]で取得する
      */
-    fun findList(targetYearMonth: YearMonth, typeList: List<ExpenseType>): List<Expense> {
+    fun findList(targetYearMonth: YearMonth, typeList: List<ExpenseType>): List<RequestedExpense> {
         return repository.findList(
             targetYearMonth.atDay(1)
             , targetYearMonth.atEndOfMonth()
@@ -25,24 +25,24 @@ class ExpensesBookService(private val repository: ExpenseBookRepository) {
     }
 
     /**
-     * 指定された[id]に合致する出費（[Expense]）を取得する。
+     * 指定された[id]に合致する出費（[RequestedExpense]）を取得する。
      * 該当するものがなければnullを返す。
      */
-    fun findDetail(id: UUID): Expense? {
+    fun findDetail(id: UUID): RequestedExpense? {
         return repository.findDetail(id)
     }
 
     /**
-     * 出費情報（[expense]）を登録し、登録された出費（[Expense]）を返す
+     * 出費情報（[expense]）を登録し、登録された出費（[RequestedExpense]）を返す
      */
-    fun register(expense: Expense): Expense {
+    fun register(expense: RequestedExpense): RequestedExpense {
         return repository.register(expense)
     }
 
     /**
-     * 既存の出費（[Expense]）の内容を更新し、更新された行数を返す
+     * 既存の出費（[RequestedExpense]）の内容を更新し、更新された行数を返す
      */
-    fun update(expense: Expense): Int {
+    fun update(expense: RequestedExpense): Int {
         return repository.update(expense)
     }
 
