@@ -1,5 +1,6 @@
 package com.thurofuji.expensesBook.model
 
+import jakarta.validation.constraints.NotNull
 import java.time.LocalDate
 import java.util.UUID
 
@@ -8,9 +9,9 @@ import java.util.UUID
  */
 data class Expense(
     val id: UUID? = null,
-    val date: LocalDate,
-    val price: Int,
+    @field:NotNull val date: LocalDate?,
+    @field:NotNull val price: Int?,
     val store: String = "",
     val usage: String = "",
-    val type: Int
+    @field:NotNull val type: Int?
 )

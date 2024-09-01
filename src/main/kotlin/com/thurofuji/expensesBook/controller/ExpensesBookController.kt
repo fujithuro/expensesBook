@@ -1,9 +1,13 @@
 package com.thurofuji.expensesBook.controller
 
 import com.thurofuji.expensesBook.model.Expense
+import com.thurofuji.expensesBook.model.ExpenseType
 import com.thurofuji.expensesBook.service.ExpensesBookService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 import java.util.UUID
 
 /**
@@ -36,9 +39,18 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
                         @RequestParam(required = false) types: List<Int>?): ResponseEntity<List<Expense>> {
-        val yearMonth: YearMonth = YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM"))
+        // 入力値検証
+        val targetYearMonth: YearMonth = yyyyMM.parseYearMonth().getOrElse { return badRequest() }
 
-        val list = service.findList(yearMonth, types ?: emptyList())
+        val typeList: List<ExpenseType> = if (types.isNullOrEmpty()) {
+            emptyList()
+        } else {
+            runCatching { types.map { it.toExpenseType() } }
+                .getOrElse { return badRequest() }
+        }
+
+        // 一覧の取得
+        val list = service.findList(targetYearMonth, typeList)
 
         return ok(list)
     }
@@ -63,7 +75,13 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * TODO 登録に失敗した場合の処理は必要ないか？
      */
     @PostMapping
-    fun registerExpense(@RequestBody expense: Expense): ResponseEntity<Expense> {
+    fun registerExpense(@Valid @RequestBody expense: Expense): ResponseEntity<Expense> {
+        // 入力値検証
+        // TODO この`type`をサービスに渡すのは、Issue #8 出費情報を扱うモデルの整理 対応時に行う
+        val type = kotlin.runCatching { expense.type!!.toExpenseType() }
+            .getOrElse { return badRequest() }
+
+        // 出費の登録
         val registered: Expense = service.register(expense)
 
         return created(registered)
@@ -78,7 +96,13 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * TODO パラメータに対する入力値検証を追加する
      */
     @PutMapping("/{id}")
-    fun updateExpense(@PathVariable id: UUID, @RequestBody expense: Expense): ResponseEntity<Void> {
+    fun updateExpense(@PathVariable id: UUID, @Valid @RequestBody expense: Expense): ResponseEntity<Void> {
+        // 入力値検証
+        // TODO この`type`をサービスに渡すのは、Issue #8 出費情報を扱うモデルの整理 対応時に行う
+        val type = kotlin.runCatching { expense.type!!.toExpenseType() }
+            .getOrElse { return badRequest() }
+
+        // 出費の更新
         val updatedRows = service.update(expense.copy(id = id))
         return if (updatedRows > 0) {
             noContent()
@@ -104,28 +128,37 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     }
 
     /**
+     * 文字列を`yyyyMM`形式の年月としてパースした結果を、[YearMonth]の[Result]として返す
+     */
+    private fun String.parseYearMonth(): Result<YearMonth> = this.runCatching {
+        YearMonth.parse(this, DateTimeFormatter.ofPattern("yyyyMM"))
+    }
+
+    /**
+     * 出費の費目を表す[Int]を、列挙型である[ExpenseType]に変換する
+     *
+     * @throws IllegalArgumentException 列挙型に変換できなかった場合にスローされる
+     */
+    private fun Int.toExpenseType(): ExpenseType = ExpenseType.valueOf(this)
+
+    /**
      * リクエストされた情報が不正で例外がスローされた場合のハンドリングを行う
      *
-     * [DateTimeParseException]: パラメータの日付指定に誤りがある場合にスローされる
      * [IllegalArgumentException]: パラメータに不正があった場合全般にスローされる
      * [MethodArgumentTypeMismatchException]: パラメータの型が不正な場合にスローされる
+     * [MethodArgumentNotValidException]: メソッドの引数に対する入力値検証で問題が見つかった場合にスローされる
+     * [HttpMessageNotReadableException]: リクエスト内容をオブジェクトに展開できなかった場合にスローされる。たとえばnull非許容のプロパティにnullが送信された、型が合致しないなど
      *
      * TODO まだ入力値検証をほとんど実装していないので、実装後に必要な例外ハンドリングの精査が必要
-     * TODO ひとまず例外のハンドリングが行えるようにしているだけで、レスポンスのメッセージ内容は暫定的なものなので、追って修正する
-     * TODO レスポンス内容は暫定的にMapにしているが、これは専用クラスに置き換えたい（CUD用のresponseクラスなど）
      */
     @ExceptionHandler(
-        DateTimeParseException::class
-        , IllegalArgumentException::class
+        IllegalArgumentException::class
         , MethodArgumentTypeMismatchException::class
+        , MethodArgumentNotValidException::class
+        , HttpMessageNotReadableException::class
     )
     fun handleException(ex: Exception): ResponseEntity<Map<String, String>> {
-        return badRequest(
-            mapOf(
-                "result" to "NG"
-                , "error" to "Type mismatch error: ${ex.message}"
-            )
-        )
+        return badRequest()
     }
 
     /**
