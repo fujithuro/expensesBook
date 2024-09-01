@@ -9,9 +9,9 @@ import java.util.UUID
  */
 data class Expense(
     val id: UUID? = null,
-    val date: LocalDate,
+    @field:NotNull val date: LocalDate?,
     @field:NotNull val price: Int?,
     val store: String = "",
     val usage: String = "",
-    val type: Int
+    @field:NotNull val type: Int?
 )

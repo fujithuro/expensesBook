@@ -80,7 +80,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     fun registerExpense(@Valid @RequestBody expense: Expense): ResponseEntity<Expense> {
         // 入力値検証
         // TODO この`type`をサービスに渡すのは、Issue #8 出費情報を扱うモデルの整理 対応時に行う
-        val type = kotlin.runCatching { expense.type.toExpenseType() }
+        val type = kotlin.runCatching { expense.type!!.toExpenseType() }
             .getOrElse { return badRequest() }
 
         // 出費の登録
@@ -101,7 +101,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     fun updateExpense(@PathVariable id: UUID, @Valid @RequestBody expense: Expense): ResponseEntity<Void> {
         // 入力値検証
         // TODO この`type`をサービスに渡すのは、Issue #8 出費情報を扱うモデルの整理 対応時に行う
-        val type = kotlin.runCatching { expense.type.toExpenseType() }
+        val type = kotlin.runCatching { expense.type!!.toExpenseType() }
             .getOrElse { return badRequest() }
 
         // 出費の更新
