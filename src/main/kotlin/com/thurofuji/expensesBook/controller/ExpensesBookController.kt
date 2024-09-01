@@ -39,7 +39,8 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      */
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
-                        @RequestParam(required = false) types: List<Int> = emptyList()): ResponseEntity<List<RequestedExpense>> {
+                        @RequestParam(required = false) types: List<Int> = emptyList()
+    ): ResponseEntity<List<RequestedExpense>> {
         return tryToCreateCondition(yyyyMM, types)
             .map { service.findList(it) }
             .fold(
