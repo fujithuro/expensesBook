@@ -7,7 +7,7 @@ import java.util.UUID
 /**
  * リクエストされた出費を表すデータクラス
  */
-data class RequestedExpense(
+data class ExpenseRequest(
     val id: UUID? = null,
     @field:NotNull val date: LocalDate?,
     @field:NotNull val price: Int?,

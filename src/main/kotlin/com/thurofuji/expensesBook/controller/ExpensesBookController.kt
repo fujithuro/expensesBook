@@ -4,7 +4,7 @@ import com.thurofuji.expensesBook.bxo.toDto
 import com.thurofuji.expensesBook.bxo.toNewDto
 import com.thurofuji.expensesBook.bxo.toResponse
 import com.thurofuji.expensesBook.model.ExpenseResponse
-import com.thurofuji.expensesBook.model.RequestedExpense
+import com.thurofuji.expensesBook.model.ExpenseRequest
 import com.thurofuji.expensesBook.model.ExpenseType
 import com.thurofuji.expensesBook.model.ListSearchCondition
 import com.thurofuji.expensesBook.service.ExpensesBookService
@@ -73,7 +73,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * 出費を新規登録する
      */
     @PostMapping
-    fun registerExpense(@Valid @RequestBody expense: RequestedExpense): ResponseEntity<ExpenseResponse> {
+    fun registerExpense(@Valid @RequestBody expense: ExpenseRequest): ResponseEntity<ExpenseResponse> {
         return runCatching { expense.toNewDto() }
             .map { service.register(it) }
             .fold(
@@ -89,7 +89,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * 指定された[id]の出費が存在しないなど、更新できなかった場合には`404 Not Found`を返す。新規登録は行わない。
      */
     @PutMapping("/{id}")
-    fun updateExpense(@PathVariable id: UUID, @Valid @RequestBody expense: RequestedExpense): ResponseEntity<Void> {
+    fun updateExpense(@PathVariable id: UUID, @Valid @RequestBody expense: ExpenseRequest): ResponseEntity<Void> {
         return runCatching { expense.toDto(id) }
             .map { service.update(it) }
             .fold(
