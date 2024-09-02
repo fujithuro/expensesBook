@@ -3,10 +3,10 @@ package com.thurofuji.expensesBook.controller
 import com.thurofuji.expensesBook.bxo.toDto
 import com.thurofuji.expensesBook.bxo.toNewDto
 import com.thurofuji.expensesBook.bxo.toResponse
-import com.thurofuji.expensesBook.model.ExpenseResponse
-import com.thurofuji.expensesBook.model.ExpenseRequest
-import com.thurofuji.expensesBook.model.ExpenseType
-import com.thurofuji.expensesBook.model.ListSearchCondition
+import com.thurofuji.expensesBook.bean.ExpenseResponse
+import com.thurofuji.expensesBook.bean.ExpenseRequest
+import com.thurofuji.expensesBook.dto.ExpenseType
+import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus

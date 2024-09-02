@@ -1,9 +1,9 @@
 package com.thurofuji.expensesBook.service
 
 import com.thurofuji.expensesBook.dxo.toDto
-import com.thurofuji.expensesBook.model.ExpenseDto
-import com.thurofuji.expensesBook.model.ListSearchCondition
-import com.thurofuji.expensesBook.model.NewExpenseDto
+import com.thurofuji.expensesBook.dto.ExpenseDto
+import com.thurofuji.expensesBook.dto.ListSearchCondition
+import com.thurofuji.expensesBook.dto.NewExpenseDto
 import com.thurofuji.expensesBook.repository.ExpenseBookRepository
 import org.springframework.stereotype.Service
 import java.util.UUID

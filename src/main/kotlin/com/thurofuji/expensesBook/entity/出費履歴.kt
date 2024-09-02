@@ -1,4 +1,4 @@
-package com.thurofuji.expensesBook.model
+package com.thurofuji.expensesBook.entity
 
 import java.time.LocalDate
 import java.util.UUID

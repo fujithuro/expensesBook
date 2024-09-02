@@ -1,4 +1,4 @@
-package com.thurofuji.expensesBook.model
+package com.thurofuji.expensesBook.bean
 
 import jakarta.validation.constraints.NotNull
 import java.time.LocalDate

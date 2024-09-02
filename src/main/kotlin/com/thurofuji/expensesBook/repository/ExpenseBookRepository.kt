@@ -1,9 +1,9 @@
 package com.thurofuji.expensesBook.repository
 
 import com.thurofuji.expensesBook.dxo.toDto
-import com.thurofuji.expensesBook.model.ExpenseDto
-import com.thurofuji.expensesBook.model.NewExpenseDto
-import com.thurofuji.expensesBook.model.出費履歴
+import com.thurofuji.expensesBook.dto.ExpenseDto
+import com.thurofuji.expensesBook.dto.NewExpenseDto
+import com.thurofuji.expensesBook.entity.出費履歴
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.simple.JdbcClient
 import org.springframework.stereotype.Repository

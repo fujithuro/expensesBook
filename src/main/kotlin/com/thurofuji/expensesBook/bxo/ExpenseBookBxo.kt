@@ -1,10 +1,10 @@
 package com.thurofuji.expensesBook.bxo
 
-import com.thurofuji.expensesBook.model.ExpenseDto
-import com.thurofuji.expensesBook.model.ExpenseResponse
-import com.thurofuji.expensesBook.model.ExpenseType
-import com.thurofuji.expensesBook.model.NewExpenseDto
-import com.thurofuji.expensesBook.model.ExpenseRequest
+import com.thurofuji.expensesBook.dto.ExpenseDto
+import com.thurofuji.expensesBook.bean.ExpenseResponse
+import com.thurofuji.expensesBook.dto.ExpenseType
+import com.thurofuji.expensesBook.dto.NewExpenseDto
+import com.thurofuji.expensesBook.bean.ExpenseRequest
 import java.util.UUID
 
 /**

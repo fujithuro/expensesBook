@@ -1,4 +1,4 @@
-package com.thurofuji.expensesBook.model
+package com.thurofuji.expensesBook.dto
 
 import java.time.YearMonth
 

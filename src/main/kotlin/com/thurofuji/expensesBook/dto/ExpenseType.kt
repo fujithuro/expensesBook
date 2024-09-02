@@ -1,4 +1,4 @@
-package com.thurofuji.expensesBook.model
+package com.thurofuji.expensesBook.dto
 
 /**
  * 家計簿で扱う「費目」の列挙型
