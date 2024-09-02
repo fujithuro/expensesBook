@@ -1,5 +1,8 @@
 package com.thurofuji.expensesBook.repository
 
+import com.thurofuji.expensesBook.dxo.toDto
+import com.thurofuji.expensesBook.model.ExpenseDto
+import com.thurofuji.expensesBook.model.NewExpenseDto
 import com.thurofuji.expensesBook.model.RequestedExpense
 import com.thurofuji.expensesBook.model.出費履歴
 import org.springframework.jdbc.core.RowMapper
@@ -65,24 +68,24 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     /**
      * 出費情報（[expense]）を永続化し、登録された出費([RequestedExpense])を返す
      */
-    fun register(expense: RequestedExpense): RequestedExpense {
+    fun register(expense: NewExpenseDto): ExpenseDto {
         val registeredID: UUID = jdbcClient.sql("""
             INSERT INTO 出費履歴 (支払日, 金額, 支払先, 使途, 費目cd)
             VALUES (?, ?, ?, ?, ?)
             RETURNING id
         """.trimIndent())
             .params(
-                expense.date, expense.price, expense.store, expense.usage, expense.type
+                expense.支払日, expense.金額, expense.支払先, expense.使途, expense.費目.code
             ).query(UUID::class.java)
             .single()
 
-        return expense.copy(id = registeredID)
+        return expense.toDto(registeredID)
     }
 
     /**
-     * 既存の出費情報（[RequestedExpense]）を更新し、更新された行数を返す
+     * 既存の出費情報（[expense]）を更新し、更新された行数を返す
      */
-    fun update(expense: RequestedExpense): Int {
+    fun update(expense: ExpenseDto): Int {
         return jdbcClient.sql("""
             UPDATE
               出費履歴
@@ -97,11 +100,11 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
               id = ?
             """.trimIndent())
             .params(
-                expense.date
-                , expense.type
-                , expense.price
-                , expense.store
-                , expense.usage
+                expense.支払日
+                , expense.費目.code
+                , expense.金額
+                , expense.支払先
+                , expense.使途
                 , expense.id)
             .update()
     }

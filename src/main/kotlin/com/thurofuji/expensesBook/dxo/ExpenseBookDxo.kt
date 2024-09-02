@@ -2,7 +2,9 @@ package com.thurofuji.expensesBook.dxo
 
 import com.thurofuji.expensesBook.model.ExpenseDto
 import com.thurofuji.expensesBook.model.ExpenseType
+import com.thurofuji.expensesBook.model.NewExpenseDto
 import com.thurofuji.expensesBook.model.出費履歴
+import java.util.UUID
 
 /**
  * Dtoなどの主にService層で扱うモデルと、DBのテーブルなど主にRepository層で扱うモデルの変換を行う関数を集めたファイル
@@ -15,6 +17,19 @@ fun 出費履歴.toDto() = ExpenseDto(
     id
     , 支払日
     , ExpenseType.valueOf(費目cd)
+    , 金額
+    , 支払先
+    , 使途
+)
+
+/**
+ * [NewExpenseDto]を[ExpenseDto]へ変換する
+ * [ExpenseDto.id]には[id]が使用される
+ */
+fun NewExpenseDto.toDto(id: UUID) = ExpenseDto(
+    id
+    , 支払日
+    , 費目
     , 金額
     , 支払先
     , 使途
