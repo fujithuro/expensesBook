@@ -6,7 +6,7 @@ import java.util.UUID
 /**
  * 主にServiceの層で出費1件を扱うためのモデル
  */
-data class ExpenseDto(val id: UUID,
+data class ExpenseDto(val id: UUID?,
                       val 支払日: LocalDate,
                       val 費目: ExpenseType,
                       val 金額: Int,

@@ -1,5 +1,6 @@
 package com.thurofuji.expensesBook.controller
 
+import com.thurofuji.expensesBook.bxo.toDto
 import com.thurofuji.expensesBook.bxo.toResponse
 import com.thurofuji.expensesBook.model.ExpenseResponse
 import com.thurofuji.expensesBook.model.RequestedExpense
@@ -69,20 +70,15 @@ class ExpensesBookController(private val service: ExpensesBookService) {
 
     /**
      * 出費を新規登録する
-     *
-     * TODO 登録に失敗した場合の処理は必要ないか？
      */
     @PostMapping
-    fun registerExpense(@Valid @RequestBody expense: RequestedExpense): ResponseEntity<RequestedExpense> {
-        // 入力値検証
-        // TODO この`type`をサービスに渡すのは、Issue #8 出費情報を扱うモデルの整理 対応時に行う
-        val type = kotlin.runCatching { expense.type!!.toExpenseType() }
-            .getOrElse { return badRequest() }
-
-        // 出費の登録
-        val registered: RequestedExpense = service.register(expense)
-
-        return created(registered)
+    fun registerExpense(@Valid @RequestBody expense: RequestedExpense): ResponseEntity<ExpenseResponse> {
+        return runCatching { expense.toDto() }
+            .map { service.register(it) }
+            .fold(
+                onSuccess = { created(it.toResponse()) },
+                onFailure = { badRequest() }
+            )
     }
 
     /**
@@ -93,18 +89,17 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      */
     @PutMapping("/{id}")
     fun updateExpense(@PathVariable id: UUID, @Valid @RequestBody expense: RequestedExpense): ResponseEntity<Void> {
-        // 入力値検証
-        // TODO この`type`をサービスに渡すのは、Issue #8 出費情報を扱うモデルの整理 対応時に行う
-        val type = kotlin.runCatching { expense.type!!.toExpenseType() }
-            .getOrElse { return badRequest() }
-
-        // 出費の更新
-        val updatedRows = service.update(expense.copy(id = id))
-        return if (updatedRows > 0) {
-            noContent()
-        } else {
-            notFound()
-        }
+        return runCatching { expense.toDto(id) }
+            .map { service.update(it) }
+            .fold(
+                onSuccess = { updatedRows: Int ->
+                    when {
+                        updatedRows > 0 -> noContent()
+                        else -> notFound()
+                    }
+                },
+                onFailure = { badRequest() }
+            )
     }
 
     /**
