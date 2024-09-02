@@ -149,6 +149,16 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     }
 
     /**
+     * 予期せぬ例外がスローされた場合のハンドリングを行う。
+     * 例外のStackTraceを残し、対外的には`500 Internal Server Error`とする
+     */
+    @ExceptionHandler(Exception::class)
+    fun handleException(ex: Exception): ResponseEntity<Void> {
+        ex.printStackTrace()
+        return internalServerError()
+    }
+
+    /**
      * `200 OK`を表す[ResponseEntity]を返す。レスポンスボディに含める情報は[body]に設定する。
      */
     private fun <T> ok(body: T? = null): ResponseEntity<T> = ResponseEntity.ok(body)
@@ -172,5 +182,10 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * `404 Not Found`を表す[ResponseEntity]を返す。レスポンスボディに含める情報は[body]に設定する。
      */
     private fun <T> notFound(body: T? = null): ResponseEntity<T> = ResponseEntity(body, HttpStatus.NOT_FOUND)
+
+    /**
+     * `500 Internal Server Error`を表す[ResponseEntity]を返す。レスポンスボディに含める情報は[body]に設定する。
+     */
+    private fun <T> internalServerError(body: T? = null): ResponseEntity<T> = ResponseEntity(body, HttpStatus.INTERNAL_SERVER_ERROR)
 
 }
