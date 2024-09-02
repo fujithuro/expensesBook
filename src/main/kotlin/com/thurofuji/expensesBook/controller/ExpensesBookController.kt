@@ -40,10 +40,13 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     private val logger: Logger = LoggerFactory.getLogger(ExpensesBookController::class.java)
 
     /**
-     * 指定された条件に合致する出費（[ExpenseResponse]）の[List]をレスポンスで返す
+     * 指定された条件に合致する出費（[ExpenseResponse]）の[List]をレスポンスで返す。
      *
      * パスパラメータ [yyyyMM]: 年月指定（yyyyMM形式）
      * クエリパラメータ [types]: 費目の絞り込み。複数指定可。省略可。
+     *
+     * 検索結果が見つかれば`200 OK`としてレスポンスボディで詳細を返す。
+     * リクエスト内容に問題はないが、該当する出費が1件もないという場合は、レスポンスで空のリストを返す。
      */
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
