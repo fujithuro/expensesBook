@@ -1,5 +1,7 @@
 package com.thurofuji.expensesBook.controller
 
+import com.thurofuji.expensesBook.bxo.toResponse
+import com.thurofuji.expensesBook.model.ExpenseResponse
 import com.thurofuji.expensesBook.model.RequestedExpense
 import com.thurofuji.expensesBook.model.ExpenseType
 import com.thurofuji.expensesBook.model.ListSearchCondition
@@ -32,7 +34,7 @@ import java.util.UUID
 class ExpensesBookController(private val service: ExpensesBookService) {
 
     /**
-     * 指定された条件に合致する出費（[RequestedExpense]）の[List]をレスポンスで返す
+     * 指定された条件に合致する出費（[ExpenseResponse]）の[List]をレスポンスで返す
      *
      * パスパラメータ [yyyyMM]: 年月指定（yyyyMM形式）
      * クエリパラメータ [types]: 費目の絞り込み。複数指定可。省略可。
@@ -40,25 +42,28 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
                         @RequestParam(required = false) types: List<Int> = emptyList()
-    ): ResponseEntity<List<RequestedExpense>> {
+    ): ResponseEntity<List<ExpenseResponse>> {
         return tryToCreateCondition(yyyyMM, types)
             .map { service.findList(it) }
             .fold(
-                onSuccess = { ok(it) },
+                onSuccess = { list ->
+                    val expenseList = list.map { it.toResponse() }
+                    ok(expenseList)
+                },
                 onFailure = { badRequest() }
             )
     }
 
     /**
-     * 指定された[id]に合致する出費（[RequestedExpense]）を取得する。
+     * 指定された[id]に合致する出費（[ExpenseResponse]）を取得する。
      *
      * 該当するものが見つかれば`200 OK`としてレスポンスボディで詳細を返す。
      * 該当するものがなければ`404 Not Found`を返す。
      */
     @GetMapping("/detail/{id}")
-    fun getExpensesDetail(@PathVariable id: UUID): ResponseEntity<RequestedExpense> {
+    fun getExpensesDetail(@PathVariable id: UUID): ResponseEntity<ExpenseResponse> {
         return service.findDetail(id)
-            ?.let { ok(it) }
+            ?.let { ok(it.toResponse()) }
             ?: notFound()
     }
 
