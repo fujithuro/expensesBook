@@ -70,7 +70,6 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     /**
      * 出費を新規登録する
      *
-     * TODO パラメータに対する入力値検証を追加する
      * TODO 登録に失敗した場合の処理は必要ないか？
      */
     @PostMapping
@@ -91,8 +90,6 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      *
      * 更新が成功した場合には`204 No Content`を返す。
      * 指定された[id]の出費が存在しないなど、更新できなかった場合には`404 Not Found`を返す。新規登録は行わない。
-     *
-     * TODO パラメータに対する入力値検証を追加する
      */
     @PutMapping("/{id}")
     fun updateExpense(@PathVariable id: UUID, @Valid @RequestBody expense: RequestedExpense): ResponseEntity<Void> {
