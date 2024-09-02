@@ -3,7 +3,6 @@ package com.thurofuji.expensesBook.repository
 import com.thurofuji.expensesBook.dxo.toDto
 import com.thurofuji.expensesBook.model.ExpenseDto
 import com.thurofuji.expensesBook.model.NewExpenseDto
-import com.thurofuji.expensesBook.model.RequestedExpense
 import com.thurofuji.expensesBook.model.出費履歴
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.simple.JdbcClient
@@ -19,7 +18,7 @@ import kotlin.jvm.optionals.getOrNull
 @Repository
 class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     /**
-     * [start]から[end]までの期間の出費一覧を[RequestedExpense]の[List]として取得する。
+     * [start]から[end]までの期間の出費一覧を[出費履歴]の[List]として取得する。
      * [start]および[end]と同日の出費も取得される。
      * [typeList]が空でない場合、費目での絞り込みも行う。
      */
@@ -66,7 +65,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     }
 
     /**
-     * 出費情報（[expense]）を永続化し、登録された出費([RequestedExpense])を返す
+     * 出費情報（[expense]）を永続化し、登録された出費([ExpenseDto])を返す
      */
     fun register(expense: NewExpenseDto): ExpenseDto {
         val registeredID: UUID = jdbcClient.sql("""
