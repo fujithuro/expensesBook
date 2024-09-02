@@ -9,6 +9,8 @@ import com.thurofuji.expensesBook.dto.ExpenseType
 import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import jakarta.validation.Valid
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -34,6 +36,8 @@ import java.util.UUID
 @RestController
 @RequestMapping("/api/expenseBook")
 class ExpensesBookController(private val service: ExpensesBookService) {
+
+    private val logger: Logger = LoggerFactory.getLogger(ExpensesBookController::class.java)
 
     /**
      * 指定された条件に合致する出費（[ExpenseResponse]）の[List]をレスポンスで返す
@@ -149,11 +153,11 @@ class ExpensesBookController(private val service: ExpensesBookService) {
 
     /**
      * 予期せぬ例外がスローされた場合のハンドリングを行う。
-     * 例外のStackTraceを残し、対外的には`500 Internal Server Error`とする
+     * 例外の詳細を記録し、レスポンスとして`500 Internal Server Error`を返す
      */
     @ExceptionHandler(Exception::class)
     fun handleException(ex: Exception): ResponseEntity<Void> {
-        ex.printStackTrace()
+        logger.error("Unexpected exception occurred: {}", ex.message, ex)
         return internalServerError()
     }
 
