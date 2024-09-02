@@ -1,6 +1,7 @@
 package com.thurofuji.expensesBook.controller
 
 import com.thurofuji.expensesBook.bxo.toDto
+import com.thurofuji.expensesBook.bxo.toNewDto
 import com.thurofuji.expensesBook.bxo.toResponse
 import com.thurofuji.expensesBook.model.ExpenseResponse
 import com.thurofuji.expensesBook.model.RequestedExpense
@@ -73,7 +74,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      */
     @PostMapping
     fun registerExpense(@Valid @RequestBody expense: RequestedExpense): ResponseEntity<ExpenseResponse> {
-        return runCatching { expense.toDto() }
+        return runCatching { expense.toNewDto() }
             .map { service.register(it) }
             .fold(
                 onSuccess = { created(it.toResponse()) },

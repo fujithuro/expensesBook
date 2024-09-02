@@ -3,6 +3,7 @@ package com.thurofuji.expensesBook.service
 import com.thurofuji.expensesBook.dxo.toDto
 import com.thurofuji.expensesBook.model.ExpenseDto
 import com.thurofuji.expensesBook.model.ListSearchCondition
+import com.thurofuji.expensesBook.model.NewExpenseDto
 import com.thurofuji.expensesBook.repository.ExpenseBookRepository
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -35,7 +36,7 @@ class ExpensesBookService(private val repository: ExpenseBookRepository) {
     /**
      * 出費情報（[expense]）を登録し、登録された出費（[ExpenseDto]）を返す
      */
-    fun register(expense: ExpenseDto): ExpenseDto {
+    fun register(expense: NewExpenseDto): ExpenseDto {
         return repository.register(expense)
     }
 
