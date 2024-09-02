@@ -131,11 +131,10 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     }
 
     /**
-     * リクエストされた情報が不正で例外がスローされた場合のハンドリングを行う。
-     * この例外ハンドラでは「引数の型やフォーマットが一致せず、値を設定できなかった」などエンドポイントである関数に処理が移る前の段階で例外が発生した場合のハンドリングを想定している。
-     * 関数の中で発生した例外については、各関数で適宜処理されること。
+     * 入力値検証で例外がスローされた場合のハンドリングを行う。
+     * この例外ハンドラでは主に、「入力値の型やフォーマットが一致せず、引数に値を設定できなかった」など引数の問題で例外がスローされた場合のハンドリングを担当している。
      *
-     * [MethodArgumentTypeMismatchException]: パラメータの型が不正な場合にスローされる
+     * [MethodArgumentTypeMismatchException]: 引数に対して型が不一致な場合にスローされる
      * [MethodArgumentNotValidException]: メソッドの引数に対する入力値検証で問題が見つかった場合にスローされる
      * [HttpMessageNotReadableException]: リクエスト内容をオブジェクトに展開できなかった場合にスローされる。たとえばnull非許容のプロパティにnullが送信された、型が合致しないなど
      */
