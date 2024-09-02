@@ -121,28 +121,14 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * リクエストされた情報（[yyyyMM]と[types]）から、出費の一覧を検索するための条件（[ListSearchCondition]）を作成した結果を返す
      */
     private fun tryToCreateCondition(yyyyMM: String, types: List<Int>): Result<ListSearchCondition> {
-        val targetYearMonth: YearMonth = yyyyMM.parseYearMonth()
+        val targetYearMonth: YearMonth = runCatching { YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM")) }
             .getOrElse { return Result.failure(it) }
 
-        val typeList: List<ExpenseType> = runCatching { types.map { it.toExpenseType() } }
+        val typeList: List<ExpenseType> = runCatching { types.map { ExpenseType.valueOf(it) } }
             .getOrElse { return Result.failure(it) }
 
         return Result.success(ListSearchCondition(targetYearMonth, typeList))
     }
-
-    /**
-     * 文字列を`yyyyMM`形式の年月としてパースした結果を、[YearMonth]の[Result]として返す
-     */
-    private fun String.parseYearMonth(): Result<YearMonth> = this.runCatching {
-        YearMonth.parse(this, DateTimeFormatter.ofPattern("yyyyMM"))
-    }
-
-    /**
-     * 出費の費目を表す[Int]を、列挙型である[ExpenseType]に変換する
-     *
-     * @throws IllegalArgumentException 列挙型に変換できなかった場合にスローされる
-     */
-    private fun Int.toExpenseType(): ExpenseType = ExpenseType.valueOf(this)
 
     /**
      * リクエストされた情報が不正で例外がスローされた場合のハンドリングを行う
