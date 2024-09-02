@@ -97,10 +97,13 @@ class ExpensesBookController(private val service: ExpensesBookService) {
         return runCatching { request.toDto(id) }
             .map { service.update(it) }
             .fold(
-                onSuccess = { updatedRows: Int -> when {
-                    updatedRows > 0 -> noContent()
-                    else -> notFound()
-                }},
+                onSuccess = { updatedRows: Int ->
+                    if (updatedRows > 0) {
+                        noContent()
+                    } else {
+                        notFound()
+                    }
+                },
                 onFailure = { badRequest() }
             )
     }
