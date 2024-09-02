@@ -1,7 +1,12 @@
 package com.thurofuji.expensesBook.controller
 
-import com.thurofuji.expensesBook.model.Expense
-import com.thurofuji.expensesBook.model.ExpenseType
+import com.thurofuji.expensesBook.bean.ExpenseRequest
+import com.thurofuji.expensesBook.bean.ExpenseResponse
+import com.thurofuji.expensesBook.bxo.toDto
+import com.thurofuji.expensesBook.bxo.toNewDto
+import com.thurofuji.expensesBook.bxo.toResponse
+import com.thurofuji.expensesBook.dto.ExpenseType
+import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -31,84 +36,69 @@ import java.util.UUID
 class ExpensesBookController(private val service: ExpensesBookService) {
 
     /**
-     * 指定された条件に合致する出費（[Expense]）の[List]をレスポンスで返す
+     * 指定された条件に合致する出費（[ExpenseResponse]）の[List]をレスポンスで返す
      *
      * パスパラメータ [yyyyMM]: 年月指定（yyyyMM形式）
      * クエリパラメータ [types]: 費目の絞り込み。複数指定可。省略可。
      */
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
-                        @RequestParam(required = false) types: List<Int>?): ResponseEntity<List<Expense>> {
-        // 入力値検証
-        val targetYearMonth: YearMonth = yyyyMM.parseYearMonth().getOrElse { return badRequest() }
-
-        val typeList: List<ExpenseType> = if (types.isNullOrEmpty()) {
-            emptyList()
-        } else {
-            runCatching { types.map { it.toExpenseType() } }
-                .getOrElse { return badRequest() }
-        }
-
-        // 一覧の取得
-        val list = service.findList(targetYearMonth, typeList)
-
-        return ok(list)
+                        @RequestParam(required = false) types: List<Int> = emptyList()
+    ): ResponseEntity<List<ExpenseResponse>> {
+        return tryToCreateCondition(yyyyMM, types)
+            .map { service.findList(it) }
+            .fold(
+                onSuccess = { list ->
+                    val expenseList = list.map { it.toResponse() }
+                    ok(expenseList)
+                },
+                onFailure = { badRequest() }
+            )
     }
 
     /**
-     * 指定された[id]に合致する出費（[Expense]）を取得する。
+     * 指定された[id]に合致する出費（[ExpenseResponse]）を取得する。
      *
      * 該当するものが見つかれば`200 OK`としてレスポンスボディで詳細を返す。
      * 該当するものがなければ`404 Not Found`を返す。
      */
     @GetMapping("/detail/{id}")
-    fun getExpensesDetail(@PathVariable id: UUID): ResponseEntity<Expense> {
+    fun getExpensesDetail(@PathVariable id: UUID): ResponseEntity<ExpenseResponse> {
         return service.findDetail(id)
-            ?.let { ok(it) }
+            ?.let { ok(it.toResponse()) }
             ?: notFound()
     }
 
     /**
      * 出費を新規登録する
-     *
-     * TODO パラメータに対する入力値検証を追加する
-     * TODO 登録に失敗した場合の処理は必要ないか？
      */
     @PostMapping
-    fun registerExpense(@Valid @RequestBody expense: Expense): ResponseEntity<Expense> {
-        // 入力値検証
-        // TODO この`type`をサービスに渡すのは、Issue #8 出費情報を扱うモデルの整理 対応時に行う
-        val type = kotlin.runCatching { expense.type!!.toExpenseType() }
-            .getOrElse { return badRequest() }
-
-        // 出費の登録
-        val registered: Expense = service.register(expense)
-
-        return created(registered)
+    fun registerExpense(@Valid @RequestBody request: ExpenseRequest): ResponseEntity<ExpenseResponse> {
+        return runCatching { request.toNewDto() }
+            .map { service.register(it) }
+            .fold(
+                onSuccess = { created(it.toResponse()) },
+                onFailure = { badRequest() }
+            )
     }
 
     /**
-     * 指定された[id]の出費情報を[expense]の内容に更新する
+     * 指定された[id]の出費情報を[request]の内容に更新する
      *
      * 更新が成功した場合には`204 No Content`を返す。
      * 指定された[id]の出費が存在しないなど、更新できなかった場合には`404 Not Found`を返す。新規登録は行わない。
-     *
-     * TODO パラメータに対する入力値検証を追加する
      */
     @PutMapping("/{id}")
-    fun updateExpense(@PathVariable id: UUID, @Valid @RequestBody expense: Expense): ResponseEntity<Void> {
-        // 入力値検証
-        // TODO この`type`をサービスに渡すのは、Issue #8 出費情報を扱うモデルの整理 対応時に行う
-        val type = kotlin.runCatching { expense.type!!.toExpenseType() }
-            .getOrElse { return badRequest() }
-
-        // 出費の更新
-        val updatedRows = service.update(expense.copy(id = id))
-        return if (updatedRows > 0) {
-            noContent()
-        } else {
-            notFound()
-        }
+    fun updateExpense(@PathVariable id: UUID, @Valid @RequestBody request: ExpenseRequest): ResponseEntity<Void> {
+        return runCatching { request.toDto(id) }
+            .map { service.update(it) }
+            .fold(
+                onSuccess = { updatedRows: Int -> when {
+                    updatedRows > 0 -> noContent()
+                    else -> notFound()
+                }},
+                onFailure = { badRequest() }
+            )
     }
 
     /**
@@ -128,37 +118,44 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     }
 
     /**
-     * 文字列を`yyyyMM`形式の年月としてパースした結果を、[YearMonth]の[Result]として返す
+     * リクエストされた情報（[yyyyMM]と[types]）から、出費の一覧を検索するための条件（[ListSearchCondition]）を作成した結果を返す
      */
-    private fun String.parseYearMonth(): Result<YearMonth> = this.runCatching {
-        YearMonth.parse(this, DateTimeFormatter.ofPattern("yyyyMM"))
+    private fun tryToCreateCondition(yyyyMM: String, types: List<Int>): Result<ListSearchCondition> {
+        val targetYearMonth: YearMonth = runCatching { YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM")) }
+            .getOrElse { return Result.failure(it) }
+
+        val typeList: List<ExpenseType> = runCatching { types.map { ExpenseType.valueOf(it) } }
+            .getOrElse { return Result.failure(it) }
+
+        return Result.success(ListSearchCondition(targetYearMonth, typeList))
     }
 
     /**
-     * 出費の費目を表す[Int]を、列挙型である[ExpenseType]に変換する
+     * リクエストされた情報が不正で例外がスローされた場合のハンドリングを行う。
+     * この例外ハンドラでは「引数の型やフォーマットが一致せず、値を設定できなかった」などエンドポイントである関数に処理が移る前の段階で例外が発生した場合のハンドリングを想定している。
+     * 関数の中で発生した例外については、各関数で適宜処理されること。
      *
-     * @throws IllegalArgumentException 列挙型に変換できなかった場合にスローされる
-     */
-    private fun Int.toExpenseType(): ExpenseType = ExpenseType.valueOf(this)
-
-    /**
-     * リクエストされた情報が不正で例外がスローされた場合のハンドリングを行う
-     *
-     * [IllegalArgumentException]: パラメータに不正があった場合全般にスローされる
      * [MethodArgumentTypeMismatchException]: パラメータの型が不正な場合にスローされる
      * [MethodArgumentNotValidException]: メソッドの引数に対する入力値検証で問題が見つかった場合にスローされる
      * [HttpMessageNotReadableException]: リクエスト内容をオブジェクトに展開できなかった場合にスローされる。たとえばnull非許容のプロパティにnullが送信された、型が合致しないなど
-     *
-     * TODO まだ入力値検証をほとんど実装していないので、実装後に必要な例外ハンドリングの精査が必要
      */
     @ExceptionHandler(
-        IllegalArgumentException::class
-        , MethodArgumentTypeMismatchException::class
+        MethodArgumentTypeMismatchException::class
         , MethodArgumentNotValidException::class
         , HttpMessageNotReadableException::class
     )
-    fun handleException(ex: Exception): ResponseEntity<Map<String, String>> {
+    fun handleValidationException(ex: Exception): ResponseEntity<Void> {
         return badRequest()
+    }
+
+    /**
+     * 予期せぬ例外がスローされた場合のハンドリングを行う。
+     * 例外のStackTraceを残し、対外的には`500 Internal Server Error`とする
+     */
+    @ExceptionHandler(Exception::class)
+    fun handleException(ex: Exception): ResponseEntity<Void> {
+        ex.printStackTrace()
+        return internalServerError()
     }
 
     /**
@@ -185,5 +182,10 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * `404 Not Found`を表す[ResponseEntity]を返す。レスポンスボディに含める情報は[body]に設定する。
      */
     private fun <T> notFound(body: T? = null): ResponseEntity<T> = ResponseEntity(body, HttpStatus.NOT_FOUND)
+
+    /**
+     * `500 Internal Server Error`を表す[ResponseEntity]を返す。レスポンスボディに含める情報は[body]に設定する。
+     */
+    private fun <T> internalServerError(body: T? = null): ResponseEntity<T> = ResponseEntity(body, HttpStatus.INTERNAL_SERVER_ERROR)
 
 }

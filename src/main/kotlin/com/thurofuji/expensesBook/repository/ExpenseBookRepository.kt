@@ -1,6 +1,9 @@
 package com.thurofuji.expensesBook.repository
 
-import com.thurofuji.expensesBook.model.Expense
+import com.thurofuji.expensesBook.dto.ExpenseDto
+import com.thurofuji.expensesBook.dto.NewExpenseDto
+import com.thurofuji.expensesBook.dxo.toDto
+import com.thurofuji.expensesBook.entity.出費履歴
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.simple.JdbcClient
 import org.springframework.stereotype.Repository
@@ -15,11 +18,11 @@ import kotlin.jvm.optionals.getOrNull
 @Repository
 class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     /**
-     * [start]から[end]までの期間の出費一覧を[Expense]の[List]として取得する。
+     * [start]から[end]までの期間の出費一覧を[出費履歴]の[List]として取得する。
      * [start]および[end]と同日の出費も取得される。
      * [typeList]が空でない場合、費目での絞り込みも行う。
      */
-    fun findList(start: LocalDate, end: LocalDate, typeList: List<Int>): List<Expense> {
+    fun findList(start: LocalDate, end: LocalDate, typeList: List<Int>): List<出費履歴> {
         // TODO できれば条件に応じたSQLの構築をもっとスッキリさせたい（if文を使わないなど）。詳細は Issue #1 参照
         val sql = """
             SELECT
@@ -46,7 +49,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
      * [id]で指定された出費を取得する。
      * 該当する出費が存在しなければ`null`を返す
      */
-    fun findDetail(id: UUID): Expense? {
+    fun findDetail(id: UUID): 出費履歴? {
         val sql = """
             SELECT
               id, 支払日, 費目cd, 金額, 支払先, 使途
@@ -62,26 +65,26 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     }
 
     /**
-     * 出費情報（[expense]）を永続化し、登録された出費([Expense])を返す
+     * 出費情報（[expense]）を永続化し、登録された出費([ExpenseDto])を返す
      */
-    fun register(expense: Expense): Expense {
+    fun register(expense: NewExpenseDto): ExpenseDto {
         val registeredID: UUID = jdbcClient.sql("""
             INSERT INTO 出費履歴 (支払日, 金額, 支払先, 使途, 費目cd)
             VALUES (?, ?, ?, ?, ?)
             RETURNING id
         """.trimIndent())
             .params(
-                expense.date, expense.price, expense.store, expense.usage, expense.type
+                expense.支払日, expense.金額, expense.支払先, expense.使途, expense.費目.code
             ).query(UUID::class.java)
             .single()
 
-        return expense.copy(id = registeredID)
+        return expense.toDto(registeredID)
     }
 
     /**
-     * 既存の出費情報（[Expense]）を更新し、更新された行数を返す
+     * 既存の出費情報（[expense]）を更新し、更新された行数を返す
      */
-    fun update(expense: Expense): Int {
+    fun update(expense: ExpenseDto): Int {
         return jdbcClient.sql("""
             UPDATE
               出費履歴
@@ -96,11 +99,11 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
               id = ?
             """.trimIndent())
             .params(
-                expense.date
-                , expense.type
-                , expense.price
-                , expense.store
-                , expense.usage
+                expense.支払日
+                , expense.費目.code
+                , expense.金額
+                , expense.支払先
+                , expense.使途
                 , expense.id)
             .update()
     }
@@ -120,18 +123,16 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     }
 
     /**
-     * テーブル「出費履歴」の[ResultSet]を[Expense]にマッピングするための[RowMapper]
-     * TODO Repositoryのprivateなプロパティとして持つのが正しいのか（何かそれ用にクラスやファイルを用意すべきでないか）は要検討
-     * TODO カラム名がベタ書きなのも要改善点。テーブルの情報を管理するクラスを作るか？
+     * テーブル「出費履歴」の[ResultSet]を[出費履歴]にマッピングするための[RowMapper]
      */
     private val expenseMapper = RowMapper { rs: ResultSet, _: Int ->
-        Expense(
-            id = UUID.fromString(rs.getString("id")),
-            date = rs.getDate("支払日").toLocalDate(),
-            price = rs.getInt("金額"),
-            store = rs.getString("支払先"),
-            usage = rs.getString("使途"),
-            type = rs.getInt("費目cd")
+        出費履歴(
+            id = UUID.fromString(rs.getString(出費履歴.id)),
+            支払日 = rs.getDate(出費履歴.支払日).toLocalDate(),
+            金額 = rs.getInt(出費履歴.金額),
+            支払先 = rs.getString(出費履歴.支払先),
+            使途 = rs.getString(出費履歴.使途),
+            費目cd = rs.getInt(出費履歴.費目cd)
         )
     }
 
