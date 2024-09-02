@@ -144,7 +144,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
         , MethodArgumentNotValidException::class
         , HttpMessageNotReadableException::class
     )
-    fun handleException(ex: Exception): ResponseEntity<Map<String, String>> {
+    fun handleValidationException(ex: Exception): ResponseEntity<Void> {
         return badRequest()
     }
 
