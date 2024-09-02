@@ -73,8 +73,8 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * 出費を新規登録する
      */
     @PostMapping
-    fun registerExpense(@Valid @RequestBody expense: ExpenseRequest): ResponseEntity<ExpenseResponse> {
-        return runCatching { expense.toNewDto() }
+    fun registerExpense(@Valid @RequestBody request: ExpenseRequest): ResponseEntity<ExpenseResponse> {
+        return runCatching { request.toNewDto() }
             .map { service.register(it) }
             .fold(
                 onSuccess = { created(it.toResponse()) },
@@ -83,14 +83,14 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     }
 
     /**
-     * 指定された[id]の出費情報を[expense]の内容に更新する
+     * 指定された[id]の出費情報を[request]の内容に更新する
      *
      * 更新が成功した場合には`204 No Content`を返す。
      * 指定された[id]の出費が存在しないなど、更新できなかった場合には`404 Not Found`を返す。新規登録は行わない。
      */
     @PutMapping("/{id}")
-    fun updateExpense(@PathVariable id: UUID, @Valid @RequestBody expense: ExpenseRequest): ResponseEntity<Void> {
-        return runCatching { expense.toDto(id) }
+    fun updateExpense(@PathVariable id: UUID, @Valid @RequestBody request: ExpenseRequest): ResponseEntity<Void> {
+        return runCatching { request.toDto(id) }
             .map { service.update(it) }
             .fold(
                 onSuccess = { updatedRows: Int -> when {
