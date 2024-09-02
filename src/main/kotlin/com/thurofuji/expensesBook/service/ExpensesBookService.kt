@@ -1,5 +1,7 @@
 package com.thurofuji.expensesBook.service
 
+import com.thurofuji.expensesBook.dxo.toDto
+import com.thurofuji.expensesBook.model.ExpenseDto
 import com.thurofuji.expensesBook.model.RequestedExpense
 import com.thurofuji.expensesBook.model.ExpenseType
 import com.thurofuji.expensesBook.model.ListSearchCondition
@@ -15,22 +17,22 @@ import java.util.UUID
 class ExpensesBookService(private val repository: ExpenseBookRepository) {
 
     /**
-     * 指定された年月（[YearMonth]）および費目([ExpenseType])に該当する出費一覧を[RequestedExpense]の[List]で取得する
+     * 指定された年月（[YearMonth]）および費目([ExpenseType])に該当する出費一覧を[ExpenseDto]の[List]で取得する
      */
-    fun findList(condition: ListSearchCondition): List<RequestedExpense> {
+    fun findList(condition: ListSearchCondition): List<ExpenseDto> {
         return repository.findList(
             condition.targetYearMonth.atDay(1)
             , condition.targetYearMonth.atEndOfMonth()
             , condition.typeList.map { it.code }
-        )
+        ).map { it.toDto() }
     }
 
     /**
-     * 指定された[id]に合致する出費（[RequestedExpense]）を取得する。
+     * 指定された[id]に合致する出費（[ExpenseDto]）を取得する。
      * 該当するものがなければnullを返す。
      */
-    fun findDetail(id: UUID): RequestedExpense? {
-        return repository.findDetail(id)
+    fun findDetail(id: UUID): ExpenseDto? {
+        return repository.findDetail(id)?.toDto()
     }
 
     /**
