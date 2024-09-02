@@ -2,12 +2,10 @@ package com.thurofuji.expensesBook.service
 
 import com.thurofuji.expensesBook.dxo.toDto
 import com.thurofuji.expensesBook.model.ExpenseDto
-import com.thurofuji.expensesBook.model.RequestedExpense
-import com.thurofuji.expensesBook.model.ExpenseType
 import com.thurofuji.expensesBook.model.ListSearchCondition
+import com.thurofuji.expensesBook.model.RequestedExpense
 import com.thurofuji.expensesBook.repository.ExpenseBookRepository
 import org.springframework.stereotype.Service
-import java.time.YearMonth
 import java.util.UUID
 
 /**
@@ -17,7 +15,7 @@ import java.util.UUID
 class ExpensesBookService(private val repository: ExpenseBookRepository) {
 
     /**
-     * 指定された年月（[YearMonth]）および費目([ExpenseType])に該当する出費一覧を[ExpenseDto]の[List]で取得する
+     * 指定された条件（[condition]）に該当する出費一覧を[ExpenseDto]の[List]で取得する
      */
     fun findList(condition: ListSearchCondition): List<ExpenseDto> {
         return repository.findList(
