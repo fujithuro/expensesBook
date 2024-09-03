@@ -43,10 +43,10 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * 指定された条件に合致する出費（[ExpenseResponse]）の[List]をレスポンスで返す。
      *
      * パスパラメータ [yyyyMM]: 年月指定（yyyyMM形式）
-     * クエリパラメータ [types]: 費目の絞り込み。複数指定可。省略可。
+     * クエリパラメータ [types]: 費目の絞り込み。複数指定可。省略された場合は費目での絞り込みを行わない
      *
-     * 検索結果が見つかれば`200 OK`としてレスポンスボディで詳細を返す。
-     * リクエスト内容に問題はないが、該当する出費が1件もないという場合は、レスポンスで空のリストを返す。
+     * リストが取得できれば`200 OK`を返し、リクエストに問題があれば`400 Bad Request`を返す。
+     * リクエストに問題はないが該当する出費が1件もない場合、`200 OK`で空のリストを返す。
      */
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
@@ -64,10 +64,9 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     }
 
     /**
-     * 指定された[id]に合致する出費（[ExpenseResponse]）を取得する。
+     * 指定された[id]に合致する出費（[ExpenseResponse]）を取得し、その詳細をレスポンスで返す。
      *
-     * 該当するものが見つかれば`200 OK`としてレスポンスボディで詳細を返す。
-     * 該当するものがなければ`404 Not Found`を返す。
+     * 出費が存在すれば`200 OK`を返し、存在しなければ`404 Not Found`を返す。
      */
     @GetMapping("/detail/{id}")
     fun getExpensesDetail(@PathVariable id: UUID): ResponseEntity<ExpenseResponse> {
@@ -77,7 +76,9 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     }
 
     /**
-     * 出費を新規登録する
+     * リクエストされた出費（[request]）を新規登録する。
+     *
+     * 登録に成功した場合は`201 Created`を返し、リクエストに問題があれば`400 Bad Request`を返す。
      */
     @PostMapping
     fun registerExpense(@Valid @RequestBody request: ExpenseRequest): ResponseEntity<ExpenseResponse> {
@@ -90,10 +91,10 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     }
 
     /**
-     * 指定された[id]の出費情報を[request]の内容に更新する
+     * 指定された[id]の出費情報を[request]の内容に更新する。
      *
-     * 更新が成功した場合には`204 No Content`を返す。
-     * 指定された[id]の出費が存在しないなど、更新できなかった場合には`404 Not Found`を返す。新規登録は行わない。
+     * 更新が成功した場合には`204 No Content`を返し、リクエストに問題があれば`400 Bad Request`を返す。
+     * 指定された[id]の出費が存在しなかった場合は`404 Not Found`を返し、新規登録は行わない。
      */
     @PutMapping("/{id}")
     fun updateExpense(@PathVariable id: UUID, @Valid @RequestBody request: ExpenseRequest): ResponseEntity<Void> {
@@ -112,10 +113,10 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     }
 
     /**
-     * 指定された[id]の出費情報を削除する
+     * 指定された[id]の出費情報を削除する。
      *
      * 更新が成功した場合には`204 No Content`を返す。
-     * 指定された[id]の出費が存在しないなど、削除できなかった場合には`404 Not Found`を返す。
+     * 指定された[id]の出費が存在しなかった場合は`404 Not Found`を返す。
      */
     @DeleteMapping("/{id}")
     fun deleteExpense(@PathVariable id: UUID): ResponseEntity<Void> {
