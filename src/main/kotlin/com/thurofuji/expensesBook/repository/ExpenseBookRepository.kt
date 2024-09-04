@@ -26,7 +26,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
         // TODO できれば条件に応じたSQLの構築をもっとスッキリさせたい（if文を使わないなど）。詳細は Issue #1 参照
         val sql = """
             SELECT
-              id, 支払日, 費目cd, 金額, 支払先, 使途
+              id, 支払日, 費目cd, 金額, 支払先, 使途, 最終更新者id
             FROM
               出費履歴
             WHERE
@@ -52,7 +52,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     fun findDetail(id: UUID): 出費履歴? {
         val sql = """
             SELECT
-              id, 支払日, 費目cd, 金額, 支払先, 使途
+              id, 支払日, 費目cd, 金額, 支払先, 使途, 最終更新者id
             FROM
               出費履歴
             WHERE
