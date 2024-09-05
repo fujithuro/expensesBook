@@ -5,7 +5,7 @@ import com.thurofuji.expensesBook.bean.ExpenseResponse
 import com.thurofuji.expensesBook.bxo.toDto
 import com.thurofuji.expensesBook.bxo.toNewDto
 import com.thurofuji.expensesBook.bxo.toResponse
-import com.thurofuji.expensesBook.dto.ExpenseType
+import com.thurofuji.expensesBook.dto.ExpenseTypeDto
 import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import jakarta.validation.Valid
@@ -149,7 +149,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
         val targetYearMonth: YearMonth = runCatching { YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM")) }
             .getOrElse { return Result.failure(it) }
 
-        val typeList: List<ExpenseType> = runCatching { types.map { ExpenseType.valueOf(it) } }
+        val typeList: List<ExpenseTypeDto> = runCatching { types.map { service.getExpenseType(it) } }
             .getOrElse { return Result.failure(it) }
 
         return Result.success(ListSearchCondition(targetYearMonth, typeList))

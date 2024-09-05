@@ -23,7 +23,7 @@ class ExpensesBookService(private val repository: ExpenseBookRepository) {
         return repository.findList(
             condition.targetYearMonth.atDay(1)
             , condition.targetYearMonth.atEndOfMonth()
-            , condition.typeList.map { it.code }
+            , condition.typeList.map { it.費目cd }
         ).map { it.toDto() }
     }
 
