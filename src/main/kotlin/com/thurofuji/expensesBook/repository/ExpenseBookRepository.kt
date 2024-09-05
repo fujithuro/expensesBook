@@ -130,13 +130,13 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
      */
     private val expenseMapper = RowMapper { rs: ResultSet, _: Int ->
         出費履歴(
-            id = UUID.fromString(rs.getString(出費履歴.id)),
-            支払日 = rs.getDate(出費履歴.支払日).toLocalDate(),
-            金額 = rs.getInt(出費履歴.金額),
-            支払先 = rs.getString(出費履歴.支払先),
-            使途 = rs.getString(出費履歴.使途),
-            費目cd = rs.getInt(出費履歴.費目cd),
-            最終更新者id = rs.getInt(出費履歴.最終更新者id)
+            id = UUID.fromString(rs.getString(出費履歴.id))
+            , 支払日 = rs.getDate(出費履歴.支払日).toLocalDate()
+            , 金額 = rs.getInt(出費履歴.金額)
+            , 支払先 = rs.getString(出費履歴.支払先)
+            , 使途 = rs.getString(出費履歴.使途)
+            , 費目cd = rs.getInt(出費履歴.費目cd)
+            , 最終更新者id = rs.getInt(出費履歴.最終更新者id)
         )
     }
 
