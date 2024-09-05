@@ -5,8 +5,6 @@ import com.thurofuji.expensesBook.bean.ExpenseResponse
 import com.thurofuji.expensesBook.bxo.toDto
 import com.thurofuji.expensesBook.bxo.toNewDto
 import com.thurofuji.expensesBook.bxo.toResponse
-import com.thurofuji.expensesBook.dto.ExpenseTypeDto
-import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.service.ExpenseTypeService
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import jakarta.validation.Valid
@@ -29,8 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
-import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 /**
@@ -56,8 +52,7 @@ class ExpensesBookController(private val service: ExpensesBookService
     fun getExpensesList(@PathVariable yyyyMM: String,
                         @RequestParam(required = false) types: List<Int> = emptyList()
     ): ResponseEntity<List<ExpenseResponse>> {
-        return tryToCreateCondition(yyyyMM, types)
-            .map { service.findList(it) }
+        return service.findList(yyyyMM, types)
             .fold(
                 onSuccess = { list ->
                     val expenseList = list.map { it.toResponse() }
@@ -142,19 +137,6 @@ class ExpensesBookController(private val service: ExpensesBookService
         } else {
             notFound()
         }
-    }
-
-    /**
-     * リクエストされた情報（[yyyyMM]と[types]）から、出費の一覧を検索するための条件（[ListSearchCondition]）を作成した結果を返す
-     */
-    private fun tryToCreateCondition(yyyyMM: String, types: List<Int>): Result<ListSearchCondition> {
-        val targetYearMonth: YearMonth = runCatching { YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM")) }
-            .getOrElse { return Result.failure(it) }
-
-        val typeList: List<ExpenseTypeDto> = runCatching { types.map { typeService.getExpenseType(it) } }
-            .getOrElse { return Result.failure(it) }
-
-        return Result.success(ListSearchCondition(targetYearMonth, typeList))
     }
 
     /**
