@@ -87,19 +87,16 @@ class ExpensesBookService(private val expenseTypeService: ExpenseTypeService
      * リクエストされた情報（[yyyyMM]と[types]）から、出費の一覧を検索するための条件（[ListSearchCondition]）を作成した結果を返す
      */
     private fun tryToCreateCondition(yyyyMM: String, types: List<Int>): Result<ListSearchCondition> {
-        val targetYearMonth: YearMonth = runCatching { YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM")) }
-            .getOrElse { return Result.failure(it) }
+        return runCatching {
+            val yearMonth = YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM"))
+            val start = yearMonth.atDay(1)
+            val end = yearMonth.atEndOfMonth()
 
-        val typeList: List<Int> = runCatching { types.map { expenseTypeService.getExpenseType(it) }.map { it.費目cd } }
-            .getOrElse { return Result.failure(it) }
+            val typeList = types.map { expenseTypeService.getExpenseType(it) }.map { it.費目cd }
 
-        return Result.success(
-            ListSearchCondition(
-                targetYearMonth.atDay(1)
-                , targetYearMonth.atEndOfMonth()
-                , typeList
-            )
-        )
+            ListSearchCondition(start, end, typeList)
+        }
+
     }
 
 }
