@@ -14,13 +14,13 @@ import java.util.UUID
  * [出費履歴]を[ExpenseDto]へ変換する
  */
 fun 出費履歴.toDto() = ExpenseDto(
-    id
-    , 支払日
-    , ExpenseType.valueOf(費目cd)
-    , 金額
-    , 支払先
-    , 使途
-    , 最終更新者id
+    id = id
+    , 支払日 = 支払日
+    , 費目 = ExpenseType.valueOf(費目cd)
+    , 金額 = 金額
+    , 支払先 = 支払先
+    , 使途 = 使途
+    , 最終更新者id = 最終更新者id
 )
 
 /**
@@ -28,11 +28,11 @@ fun 出費履歴.toDto() = ExpenseDto(
  * [ExpenseDto.id]には[id]が使用される
  */
 fun NewExpenseDto.toDto(id: UUID) = ExpenseDto(
-    id
-    , 支払日
-    , 費目
-    , 金額
-    , 支払先
-    , 使途
-    , 登録者id
+    id = id
+    , 支払日 = 支払日
+    , 費目 = 費目
+    , 金額 = 金額
+    , 支払先 = 支払先
+    , 使途 = 使途
+    , 最終更新者id = 登録者id
 )
