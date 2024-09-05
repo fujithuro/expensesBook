@@ -1,5 +1,8 @@
 package com.thurofuji.expensesBook.service
 
+import com.thurofuji.expensesBook.bean.ExpenseRequest
+import com.thurofuji.expensesBook.bxo.toDto
+import com.thurofuji.expensesBook.bxo.toNewDto
 import com.thurofuji.expensesBook.dto.ExpenseDto
 import com.thurofuji.expensesBook.dto.ExpenseTypeDto
 import com.thurofuji.expensesBook.dto.ListSearchCondition
@@ -44,16 +47,34 @@ class ExpensesBookService(private val expenseTypeService: ExpenseTypeService
     }
 
     /**
+     * [request]で指定された出費の情報を[userId]の出費として登録した結果を返す。
+     * 登録に成功した場合には登録された出費（[ExpenseDto]）を返し、失敗した場合には原因の[Throwable]を返す。
+     */
+    fun register(request: ExpenseRequest, userId: String): Result<ExpenseDto> {
+        return runCatching { request.toNewDto(userId, expenseTypeService.getExpenseType(request.type!!)) }
+            .map { register(it) }
+    }
+
+    /**
      * 出費情報（[expense]）を登録し、登録された出費（[ExpenseDto]）を返す
      */
-    fun register(expense: NewExpenseDto): ExpenseDto {
+    private fun register(expense: NewExpenseDto): ExpenseDto {
         return repository.register(expense)
+    }
+
+    /**
+     * [id]で指定された出費を、[request]の内容へ[userId]の出費として更新した結果を返す。
+     * 更新に成功した場合には更新された行数を返し、失敗した場合には原因の[Throwable]を返す。
+     */
+    fun update(id: UUID, request: ExpenseRequest, userId: String): Result<Int> {
+        return runCatching { request.toDto(id, userId, expenseTypeService.getExpenseType(request.type!!)) }
+            .map { update(it) }
     }
 
     /**
      * 既存の出費（[expense]）の内容を更新し、更新された行数を返す
      */
-    fun update(expense: ExpenseDto): Int {
+    private fun update(expense: ExpenseDto): Int {
         return repository.update(expense)
     }
 

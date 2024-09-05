@@ -2,10 +2,7 @@ package com.thurofuji.expensesBook.controller
 
 import com.thurofuji.expensesBook.bean.ExpenseRequest
 import com.thurofuji.expensesBook.bean.ExpenseResponse
-import com.thurofuji.expensesBook.bxo.toDto
-import com.thurofuji.expensesBook.bxo.toNewDto
 import com.thurofuji.expensesBook.bxo.toResponse
-import com.thurofuji.expensesBook.service.ExpenseTypeService
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import jakarta.validation.Valid
 import org.slf4j.Logger
@@ -34,8 +31,7 @@ import java.util.UUID
  */
 @RestController
 @RequestMapping("/api/expenseBook")
-class ExpensesBookController(private val service: ExpensesBookService
-                             , private val typeService: ExpenseTypeService) {
+class ExpensesBookController(private val service: ExpensesBookService) {
 
     private val logger: Logger = LoggerFactory.getLogger(ExpensesBookController::class.java)
 
@@ -85,8 +81,7 @@ class ExpensesBookController(private val service: ExpensesBookService
     @PostMapping
     fun registerExpense(@Valid @RequestBody request: ExpenseRequest,
                         @AuthenticationPrincipal jwt: Jwt): ResponseEntity<ExpenseResponse> {
-        return runCatching { request.toNewDto(jwt.subject, typeService.getExpenseType(request.type!!)) }
-            .map { service.register(it) }
+        return service.register(request, jwt.subject)
             .fold(
                 onSuccess = { created(it.toResponse()) },
                 onFailure = {
@@ -106,8 +101,7 @@ class ExpensesBookController(private val service: ExpensesBookService
     fun updateExpense(@PathVariable id: UUID,
                       @Valid @RequestBody request: ExpenseRequest,
                       @AuthenticationPrincipal jwt: Jwt): ResponseEntity<Void> {
-        return runCatching { request.toDto(id, jwt.subject, typeService.getExpenseType(request.type!!)) }
-            .map { service.update(it) }
+        return service.update(id, request, jwt.subject)
             .fold(
                 onSuccess = { updatedRows: Int ->
                     if (updatedRows > 0) {
