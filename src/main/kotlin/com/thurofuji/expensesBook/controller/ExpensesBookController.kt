@@ -5,8 +5,9 @@ import com.thurofuji.expensesBook.bean.ExpenseResponse
 import com.thurofuji.expensesBook.bxo.toDto
 import com.thurofuji.expensesBook.bxo.toNewDto
 import com.thurofuji.expensesBook.bxo.toResponse
-import com.thurofuji.expensesBook.dto.ExpenseType
+import com.thurofuji.expensesBook.dto.ExpenseTypeDto
 import com.thurofuji.expensesBook.dto.ListSearchCondition
+import com.thurofuji.expensesBook.service.ExpenseTypeService
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import jakarta.validation.Valid
 import org.slf4j.Logger
@@ -37,7 +38,8 @@ import java.util.UUID
  */
 @RestController
 @RequestMapping("/api/expenseBook")
-class ExpensesBookController(private val service: ExpensesBookService) {
+class ExpensesBookController(private val service: ExpensesBookService
+                             , private val typeService: ExpenseTypeService) {
 
     private val logger: Logger = LoggerFactory.getLogger(ExpensesBookController::class.java)
 
@@ -88,7 +90,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     @PostMapping
     fun registerExpense(@Valid @RequestBody request: ExpenseRequest,
                         @AuthenticationPrincipal jwt: Jwt): ResponseEntity<ExpenseResponse> {
-        return runCatching { request.toNewDto(jwt.subject) }
+        return runCatching { request.toNewDto(jwt.subject, typeService.getExpenseType(request.type!!)) }
             .map { service.register(it) }
             .fold(
                 onSuccess = { created(it.toResponse()) },
@@ -109,7 +111,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     fun updateExpense(@PathVariable id: UUID,
                       @Valid @RequestBody request: ExpenseRequest,
                       @AuthenticationPrincipal jwt: Jwt): ResponseEntity<Void> {
-        return runCatching { request.toDto(id, jwt.subject) }
+        return runCatching { request.toDto(id, jwt.subject, typeService.getExpenseType(request.type!!)) }
             .map { service.update(it) }
             .fold(
                 onSuccess = { updatedRows: Int ->
@@ -149,7 +151,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
         val targetYearMonth: YearMonth = runCatching { YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM")) }
             .getOrElse { return Result.failure(it) }
 
-        val typeList: List<ExpenseType> = runCatching { types.map { ExpenseType.valueOf(it) } }
+        val typeList: List<ExpenseTypeDto> = runCatching { types.map { typeService.getExpenseType(it) } }
             .getOrElse { return Result.failure(it) }
 
         return Result.success(ListSearchCondition(targetYearMonth, typeList))

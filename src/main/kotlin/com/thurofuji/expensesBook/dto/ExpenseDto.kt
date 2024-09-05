@@ -8,7 +8,7 @@ import java.util.UUID
  */
 data class ExpenseDto(val id: UUID
                       , val 支払日: LocalDate
-                      , val 費目: ExpenseType
+                      , val 費目: ExpenseTypeDto
                       , val 金額: Int
                       , val 支払先: String
                       , val 使途: String

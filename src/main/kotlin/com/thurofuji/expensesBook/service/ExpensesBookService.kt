@@ -1,10 +1,12 @@
 package com.thurofuji.expensesBook.service
 
 import com.thurofuji.expensesBook.dto.ExpenseDto
+import com.thurofuji.expensesBook.dto.ExpenseTypeDto
 import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.dto.NewExpenseDto
 import com.thurofuji.expensesBook.dxo.toDto
 import com.thurofuji.expensesBook.repository.ExpenseBookRepository
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -12,7 +14,8 @@ import java.util.UUID
  * 家計簿のビジネスロジックを取り扱うServiceクラス
  */
 @Service
-class ExpensesBookService(private val repository: ExpenseBookRepository) {
+class ExpensesBookService(private val expenseTypeService: ExpenseTypeService
+                          , private val repository: ExpenseBookRepository) {
 
     /**
      * 指定された条件（[condition]）に該当する出費一覧を[ExpenseDto]の[List]で取得する
@@ -21,8 +24,8 @@ class ExpensesBookService(private val repository: ExpenseBookRepository) {
         return repository.findList(
             condition.targetYearMonth.atDay(1)
             , condition.targetYearMonth.atEndOfMonth()
-            , condition.typeList.map { it.code }
-        ).map { it.toDto() }
+            , condition.typeList.map { it.費目cd }
+        ).map { it.toDto(expenseTypeService.getExpenseType(it.費目cd)) }
     }
 
     /**
@@ -30,7 +33,7 @@ class ExpensesBookService(private val repository: ExpenseBookRepository) {
      * 該当するものがなければnullを返す。
      */
     fun findDetail(id: UUID): ExpenseDto? {
-        return repository.findDetail(id)?.toDto()
+        return repository.findDetail(id)?.let { it.toDto(expenseTypeService.getExpenseType(it.費目cd)) }
     }
 
     /**
@@ -53,5 +56,6 @@ class ExpensesBookService(private val repository: ExpenseBookRepository) {
     fun delete(id: UUID): Int {
         return repository.delete(id)
     }
+
 
 }
