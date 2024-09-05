@@ -61,7 +61,10 @@ class ExpensesBookController(private val service: ExpensesBookService) {
                     val expenseList = list.map { it.toResponse() }
                     ok(expenseList)
                 },
-                onFailure = { badRequest() }
+                onFailure = {
+                    logValidationError(it)
+                    badRequest()
+                }
             )
     }
 
@@ -89,7 +92,10 @@ class ExpensesBookController(private val service: ExpensesBookService) {
             .map { service.register(it) }
             .fold(
                 onSuccess = { created(it.toResponse()) },
-                onFailure = { badRequest() }
+                onFailure = {
+                    logValidationError(it)
+                    badRequest()
+                }
             )
     }
 
@@ -113,7 +119,10 @@ class ExpensesBookController(private val service: ExpensesBookService) {
                         notFound()
                     }
                 },
-                onFailure = { badRequest() }
+                onFailure = {
+                    logValidationError(it)
+                    badRequest()
+                }
             )
     }
 
@@ -160,6 +169,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
         , HttpMessageNotReadableException::class
     )
     fun handleValidationException(ex: Exception): ResponseEntity<Void> {
+        logValidationError(ex)
         return badRequest()
     }
 
@@ -171,6 +181,13 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     fun handleException(ex: Exception): ResponseEntity<Void> {
         logger.error("Unexpected exception occurred: {}", ex.message, ex)
         return internalServerError()
+    }
+
+    /**
+     * 入力値検証中に発生した[Throwable]のmessageを`INFO`レベルで記録する
+     */
+    private fun logValidationError(t: Throwable) {
+        logger.info("Input validation failed.: {}", t.message)
     }
 
     /**
