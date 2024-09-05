@@ -31,11 +31,8 @@ class ExpensesBookService(private val expenseTypeService: ExpenseTypeService
      * 指定された条件（[condition]）に該当する出費一覧を[ExpenseDto]の[List]で取得する
      */
     fun findList(condition: ListSearchCondition): List<ExpenseDto> {
-        return repository.findList(
-            condition.targetYearMonth.atDay(1)
-            , condition.targetYearMonth.atEndOfMonth()
-            , condition.typeList.map { it.費目cd }
-        ).map { it.toDto(expenseTypeService.getExpenseType(it.費目cd)) }
+        return repository.findList(condition.start, condition.end, condition.typeList)
+            .map { it.toDto(expenseTypeService.getExpenseType(it.費目cd)) }
     }
 
     /**
@@ -74,10 +71,16 @@ class ExpensesBookService(private val expenseTypeService: ExpenseTypeService
         val targetYearMonth: YearMonth = runCatching { YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM")) }
             .getOrElse { return Result.failure(it) }
 
-        val typeList: List<ExpenseTypeDto> = runCatching { types.map { expenseTypeService.getExpenseType(it) } }
+        val typeList: List<Int> = runCatching { types.map { expenseTypeService.getExpenseType(it) }.map { it.費目cd } }
             .getOrElse { return Result.failure(it) }
 
-        return Result.success(ListSearchCondition(targetYearMonth, typeList))
+        return Result.success(
+            ListSearchCondition(
+                targetYearMonth.atDay(1)
+                , targetYearMonth.atEndOfMonth()
+                , typeList
+            )
+        )
     }
 
 }
