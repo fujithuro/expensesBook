@@ -4,6 +4,7 @@ import com.thurofuji.expensesBook.dto.ExpenseDto
 import com.thurofuji.expensesBook.dto.NewExpenseDto
 import com.thurofuji.expensesBook.dxo.toDto
 import com.thurofuji.expensesBook.entity.出費履歴
+import com.thurofuji.expensesBook.entity.費目マスター
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.simple.JdbcClient
 import org.springframework.stereotype.Repository
@@ -129,6 +130,21 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     }
 
     /**
+     * [費目マスター]の一覧を取得する
+     */
+    fun findExpenseTypeList(): List<費目マスター> {
+        return jdbcClient.sql("""
+            SELECT
+              費目cd, 費目名, 有効区分
+            FROM
+              費目マスター
+            ORDER BY 費目cd
+        """.trimIndent())
+            .query(expenseTypeMapper)
+            .list()
+    }
+
+    /**
      * テーブル「出費履歴」の[ResultSet]を[出費履歴]にマッピングするための[RowMapper]
      */
     private val expenseMapper = RowMapper { rs: ResultSet, _: Int ->
@@ -140,6 +156,17 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
             , 使途 = rs.getString(出費履歴.使途)
             , 費目cd = rs.getInt(出費履歴.費目cd)
             , 最終更新者id = rs.getInt(出費履歴.最終更新者id)
+        )
+    }
+
+    /**
+     * テーブル「費目マスター」の[ResultSet]を[費目マスター]にマッピングするための[RowMapper]
+     */
+    private val expenseTypeMapper: RowMapper<費目マスター> = RowMapper { rs: ResultSet, _: Int ->
+        費目マスター(
+            費目cd = rs.getInt(費目マスター.費目cd)
+            , 費目名 = rs.getString(費目マスター.費目名)
+            , 有効区分 = rs.getBoolean(費目マスター.有効区分)
         )
     }
 

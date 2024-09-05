@@ -1,10 +1,12 @@
 package com.thurofuji.expensesBook.service
 
 import com.thurofuji.expensesBook.dto.ExpenseDto
+import com.thurofuji.expensesBook.dto.ExpenseTypeDto
 import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.dto.NewExpenseDto
 import com.thurofuji.expensesBook.dxo.toDto
 import com.thurofuji.expensesBook.repository.ExpenseBookRepository
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -52,6 +54,19 @@ class ExpensesBookService(private val repository: ExpenseBookRepository) {
      */
     fun delete(id: UUID): Int {
         return repository.delete(id)
+    }
+
+    /**
+     * [code]が有効な費目コードであれば`true`を返す
+     */
+    fun isValidType(code: Int): Boolean = code in getValidExpenseTypes().map { it.費目cd }
+
+    /**
+     * 有効な費目の一覧を[ExpenseTypeDto]の[List]として取得する
+     */
+    @Cacheable("expenseTypes")
+    fun getValidExpenseTypes(): List<ExpenseTypeDto> {
+        return repository.findExpenseTypeList().filter { it.有効区分 }.map { it.toDto() }
     }
 
 }

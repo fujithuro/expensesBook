@@ -2,8 +2,10 @@ package com.thurofuji.expensesBook.dxo
 
 import com.thurofuji.expensesBook.dto.ExpenseDto
 import com.thurofuji.expensesBook.dto.ExpenseType
+import com.thurofuji.expensesBook.dto.ExpenseTypeDto
 import com.thurofuji.expensesBook.dto.NewExpenseDto
 import com.thurofuji.expensesBook.entity.出費履歴
+import com.thurofuji.expensesBook.entity.費目マスター
 import java.util.UUID
 
 /**
@@ -21,6 +23,15 @@ fun 出費履歴.toDto() = ExpenseDto(
     , 支払先 = 支払先
     , 使途 = 使途
     , 最終更新者id = 最終更新者id
+)
+
+/**
+ * [費目マスター]を[ExpenseTypeDto]へ変換する
+ */
+fun 費目マスター.toDto() = ExpenseTypeDto(
+    費目cd = 費目cd
+    , 名称 = 費目名
+    , is有効 = 有効区分
 )
 
 /**
