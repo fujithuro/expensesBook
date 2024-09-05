@@ -57,6 +57,14 @@ class ExpensesBookService(private val repository: ExpenseBookRepository) {
     }
 
     /**
+     * [code]に該当する有効な費目（[ExpenseTypeDto]）を取得する
+     *
+     * @throws IllegalArgumentException [code]に該当する有効な費目が見つからない場合にスローされる
+     */
+    fun getExpenseType(code: Int): ExpenseTypeDto = getValidExpenseTypes().firstOrNull { it.費目cd == code }
+        ?: throw IllegalArgumentException("Invalid code for expense type.: $code")
+
+    /**
      * [code]が有効な費目コードであれば`true`を返す
      */
     fun isValidType(code: Int): Boolean = code in getValidExpenseTypes().map { it.費目cd }
