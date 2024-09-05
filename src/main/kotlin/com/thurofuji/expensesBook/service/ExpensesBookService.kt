@@ -65,11 +65,6 @@ class ExpensesBookService(private val repository: ExpenseBookRepository) {
         ?: throw IllegalArgumentException("Invalid code for expense type.: $code")
 
     /**
-     * [code]が有効な費目コードであれば`true`を返す
-     */
-    fun isValidType(code: Int): Boolean = code in getValidExpenseTypes().map { it.費目cd }
-
-    /**
      * 有効な費目の一覧を[ExpenseTypeDto]の[List]として取得する
      */
     @Cacheable("expenseTypes")
