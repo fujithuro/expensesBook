@@ -1,7 +1,6 @@
 package com.thurofuji.expensesBook.dxo
 
 import com.thurofuji.expensesBook.dto.ExpenseDto
-import com.thurofuji.expensesBook.dto.ExpenseType
 import com.thurofuji.expensesBook.dto.ExpenseTypeDto
 import com.thurofuji.expensesBook.dto.NewExpenseDto
 import com.thurofuji.expensesBook.entity.出費履歴
@@ -13,12 +12,13 @@ import java.util.UUID
  */
 
 /**
- * [出費履歴]を[ExpenseDto]へ変換する
+ * [出費履歴]を[ExpenseDto]へ変換する。
+ * [ExpenseDto.費目]には[type]が設定される。
  */
-fun 出費履歴.toDto() = ExpenseDto(
+fun 出費履歴.toDto(type: ExpenseTypeDto) = ExpenseDto(
     id = id
     , 支払日 = 支払日
-    , 費目 = ExpenseType.valueOf(費目cd)
+    , 費目 = type
     , 金額 = 金額
     , 支払先 = 支払先
     , 使途 = 使途

@@ -79,7 +79,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
             .param("price", expense.金額)
             .param("store", expense.支払先)
             .param("usage", expense.使途)
-            .param("type", expense.費目.code)
+            .param("type", expense.費目.費目cd)
             .param("userId", expense.登録者id)
             .query(UUID::class.java)
             .single()
@@ -106,7 +106,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
               id = :id
             """.trimIndent())
             .param("date", expense.支払日)
-            .param("type", expense.費目.code)
+            .param("type", expense.費目.費目cd)
             .param("price", expense.金額)
             .param("store", expense.支払先)
             .param("usage", expense.使途)

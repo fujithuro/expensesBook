@@ -24,7 +24,7 @@ class ExpensesBookService(private val repository: ExpenseBookRepository) {
             condition.targetYearMonth.atDay(1)
             , condition.targetYearMonth.atEndOfMonth()
             , condition.typeList.map { it.費目cd }
-        ).map { it.toDto() }
+        ).map { it.toDto(getExpenseType(it.費目cd)) }
     }
 
     /**
@@ -32,7 +32,7 @@ class ExpensesBookService(private val repository: ExpenseBookRepository) {
      * 該当するものがなければnullを返す。
      */
     fun findDetail(id: UUID): ExpenseDto? {
-        return repository.findDetail(id)?.toDto()
+        return repository.findDetail(id)?.let { it.toDto(getExpenseType(it.費目cd)) }
     }
 
     /**

@@ -88,7 +88,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     @PostMapping
     fun registerExpense(@Valid @RequestBody request: ExpenseRequest,
                         @AuthenticationPrincipal jwt: Jwt): ResponseEntity<ExpenseResponse> {
-        return runCatching { request.toNewDto(jwt.subject) }
+        return runCatching { request.toNewDto(jwt.subject, service.getExpenseType(request.type!!)) }
             .map { service.register(it) }
             .fold(
                 onSuccess = { created(it.toResponse()) },
@@ -109,7 +109,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     fun updateExpense(@PathVariable id: UUID,
                       @Valid @RequestBody request: ExpenseRequest,
                       @AuthenticationPrincipal jwt: Jwt): ResponseEntity<Void> {
-        return runCatching { request.toDto(id, jwt.subject) }
+        return runCatching { request.toDto(id, jwt.subject, service.getExpenseType(request.type!!)) }
             .map { service.update(it) }
             .fold(
                 onSuccess = { updatedRows: Int ->
