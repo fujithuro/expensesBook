@@ -60,7 +60,8 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
         """
 
         return jdbcClient.sql(sql.trimIndent())
-            .param("id", id).query(expenseMapper)
+            .param("id", id)
+            .query(expenseMapper)
             .optional().getOrNull()
     }
 
