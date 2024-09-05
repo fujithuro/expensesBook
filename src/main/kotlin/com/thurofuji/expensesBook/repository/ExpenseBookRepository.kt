@@ -147,7 +147,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     /**
      * テーブル「出費履歴」の[ResultSet]を[出費履歴]にマッピングするための[RowMapper]
      */
-    private val expenseMapper = RowMapper { rs: ResultSet, _: Int ->
+    private val expenseMapper: RowMapper<出費履歴> = RowMapper { rs: ResultSet, _: Int ->
         出費履歴(
             id = UUID.fromString(rs.getString(出費履歴.id))
             , 支払日 = rs.getDate(出費履歴.支払日).toLocalDate()
