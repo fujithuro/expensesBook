@@ -11,6 +11,7 @@ CREATE TABLE 出費履歴 (
     金額 INTEGER NOT NULL,
     支払先 TEXT NOT NULL,
     使途 TEXT NOT NULL,
+    最終更新者id INTEGER NOT null,
     最終更新日時 TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY (費目cd) REFERENCES 費目マスター(費目cd)
 );

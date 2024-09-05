@@ -26,7 +26,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
         // TODO できれば条件に応じたSQLの構築をもっとスッキリさせたい（if文を使わないなど）。詳細は Issue #1 参照
         val sql = """
             SELECT
-              id, 支払日, 費目cd, 金額, 支払先, 使途
+              id, 支払日, 費目cd, 金額, 支払先, 使途, 最終更新者id
             FROM
               出費履歴
             WHERE
@@ -52,7 +52,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     fun findDetail(id: UUID): 出費履歴? {
         val sql = """
             SELECT
-              id, 支払日, 費目cd, 金額, 支払先, 使途
+              id, 支払日, 費目cd, 金額, 支払先, 使途, 最終更新者id
             FROM
               出費履歴
             WHERE
@@ -69,12 +69,12 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
      */
     fun register(expense: NewExpenseDto): ExpenseDto {
         val registeredID: UUID = jdbcClient.sql("""
-            INSERT INTO 出費履歴 (支払日, 金額, 支払先, 使途, 費目cd)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO 出費履歴 (支払日, 金額, 支払先, 使途, 費目cd, 最終更新者id)
+            VALUES (?, ?, ?, ?, ?, ?)
             RETURNING id
         """.trimIndent())
             .params(
-                expense.支払日, expense.金額, expense.支払先, expense.使途, expense.費目.code
+                expense.支払日, expense.金額, expense.支払先, expense.使途, expense.費目.code, expense.登録者id
             ).query(UUID::class.java)
             .single()
 
@@ -94,6 +94,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
               , 金額 = ?
               , 支払先 = ?
               , 使途 = ?
+              , 最終更新者id = ?
               , 最終更新日時 = CURRENT_TIMESTAMP
             WHERE
               id = ?
@@ -104,6 +105,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
                 , expense.金額
                 , expense.支払先
                 , expense.使途
+                , expense.最終更新者id
                 , expense.id)
             .update()
     }
@@ -132,7 +134,8 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
             金額 = rs.getInt(出費履歴.金額),
             支払先 = rs.getString(出費履歴.支払先),
             使途 = rs.getString(出費履歴.使途),
-            費目cd = rs.getInt(出費履歴.費目cd)
+            費目cd = rs.getInt(出費履歴.費目cd),
+            最終更新者id = rs.getInt(出費履歴.最終更新者id)
         )
     }
 

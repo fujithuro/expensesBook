@@ -20,6 +20,7 @@ fun 出費履歴.toDto() = ExpenseDto(
     , 金額
     , 支払先
     , 使途
+    , 最終更新者id
 )
 
 /**
@@ -33,4 +34,5 @@ fun NewExpenseDto.toDto(id: UUID) = ExpenseDto(
     , 金額
     , 支払先
     , 使途
+    , 登録者id
 )

@@ -11,4 +11,5 @@ data class ExpenseDto(val id: UUID,
                       val 費目: ExpenseType,
                       val 金額: Int,
                       val 支払先: String,
-                      val 使途: String)
+                      val 使途: String,
+                      val 最終更新者id: Int)

@@ -12,22 +12,25 @@ import java.util.UUID
  */
 
 /**
- * [ExpenseRequest]を[NewExpenseDto]へ変換する
+ * [ExpenseRequest]を[NewExpenseDto]へ変換する。
+ * [NewExpenseDto.登録者id]には[userId]を設定する
  */
-fun ExpenseRequest.toNewDto() = NewExpenseDto(
+fun ExpenseRequest.toNewDto(userId: String) = NewExpenseDto(
     // 支払日,費目,金額はアノテーションでnullでないことを確認している
     支払日 = date!!
     , 費目 = ExpenseType.valueOf(type!!)
     , 金額 = price!!
     , 支払先 = store
     , 使途 = usage
+    , 登録者id = userId.toInt()
 )
 
 /**
- * [ExpenseRequest]を[ExpenseDto]へ変換する
- * [ExpenseDto.id]には[id]が設定される
+ * [ExpenseRequest]を[ExpenseDto]へ変換する。
+ * [ExpenseDto.id]には[id]が設定される。
+ * [ExpenseDto.最終更新者id]には[userId]が設定される。
  */
-fun ExpenseRequest.toDto(id: UUID) = ExpenseDto(
+fun ExpenseRequest.toDto(id: UUID, userId: String) = ExpenseDto(
     // 支払日,費目,金額はアノテーションでnullでないことを確認している
     id = id
     , 支払日 = date!!
@@ -35,6 +38,7 @@ fun ExpenseRequest.toDto(id: UUID) = ExpenseDto(
     , 金額 = price!!
     , 支払先 = store
     , 使途 = usage
+    , 最終更新者id = userId.toInt()
 )
 
 /**

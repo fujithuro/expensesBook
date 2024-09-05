@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -59,7 +61,10 @@ class ExpensesBookController(private val service: ExpensesBookService) {
                     val expenseList = list.map { it.toResponse() }
                     ok(expenseList)
                 },
-                onFailure = { badRequest() }
+                onFailure = {
+                    logValidationError(it)
+                    badRequest()
+                }
             )
     }
 
@@ -81,12 +86,16 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * 登録に成功した場合は`201 Created`を返し、リクエストに問題があれば`400 Bad Request`を返す。
      */
     @PostMapping
-    fun registerExpense(@Valid @RequestBody request: ExpenseRequest): ResponseEntity<ExpenseResponse> {
-        return runCatching { request.toNewDto() }
+    fun registerExpense(@Valid @RequestBody request: ExpenseRequest,
+                        @AuthenticationPrincipal jwt: Jwt): ResponseEntity<ExpenseResponse> {
+        return runCatching { request.toNewDto(jwt.subject) }
             .map { service.register(it) }
             .fold(
                 onSuccess = { created(it.toResponse()) },
-                onFailure = { badRequest() }
+                onFailure = {
+                    logValidationError(it)
+                    badRequest()
+                }
             )
     }
 
@@ -97,8 +106,10 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * 指定された[id]の出費が存在しなかった場合は`404 Not Found`を返し、新規登録は行わない。
      */
     @PutMapping("/{id}")
-    fun updateExpense(@PathVariable id: UUID, @Valid @RequestBody request: ExpenseRequest): ResponseEntity<Void> {
-        return runCatching { request.toDto(id) }
+    fun updateExpense(@PathVariable id: UUID,
+                      @Valid @RequestBody request: ExpenseRequest,
+                      @AuthenticationPrincipal jwt: Jwt): ResponseEntity<Void> {
+        return runCatching { request.toDto(id, jwt.subject) }
             .map { service.update(it) }
             .fold(
                 onSuccess = { updatedRows: Int ->
@@ -108,7 +119,10 @@ class ExpensesBookController(private val service: ExpensesBookService) {
                         notFound()
                     }
                 },
-                onFailure = { badRequest() }
+                onFailure = {
+                    logValidationError(it)
+                    badRequest()
+                }
             )
     }
 
@@ -155,6 +169,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
         , HttpMessageNotReadableException::class
     )
     fun handleValidationException(ex: Exception): ResponseEntity<Void> {
+        logValidationError(ex)
         return badRequest()
     }
 
@@ -166,6 +181,13 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     fun handleException(ex: Exception): ResponseEntity<Void> {
         logger.error("Unexpected exception occurred: {}", ex.message, ex)
         return internalServerError()
+    }
+
+    /**
+     * 入力値検証中に発生した[Throwable]のmessageを`INFO`レベルで記録する
+     */
+    private fun logValidationError(t: Throwable) {
+        logger.info("Input validation failed.: {}", t.message)
     }
 
     /**
