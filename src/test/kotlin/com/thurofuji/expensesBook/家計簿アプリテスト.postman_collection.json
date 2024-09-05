@@ -2661,6 +2661,279 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "正常系",
+			"item": [
+				{
+					"name": "検索",
+					"item": [
+						{
+							"name": "出費一覧が正常終了する",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"let jsonData = pm.response.json();",
+											"",
+											"pm.test(\"Response is array\", function () {",
+											"    pm.expect(jsonData).to.be.an('array');",
+											"});",
+											"",
+											"pm.test(\"Response is not empty\", function () {",
+											"    pm.expect(jsonData.length).to.be.above(0);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/list/202407",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"list",
+										"202407"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "出費詳細が正常終了する",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"let jsonData = pm.response.json();",
+											"",
+											"pm.test(\"Response Json data has id\", function () {",
+											"    pm.expect(jsonData).to.have.property('id');",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/detail/{{validID}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"detail",
+										"{{validID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "登録更新削除",
+					"item": [
+						{
+							"name": "出費を登録する",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"let jsonData = pm.response.json();",
+											"",
+											"pm.test(\"Response Json data has id\", function () {",
+											"    pm.expect(jsonData).to.have.property('id');",
+											"});",
+											"",
+											"pm.environment.set(\"expense_id\", jsonData.id);",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"date\": \"2024-07-01\",\n    \"price\": 2900,\n    \"store\": \"スーパー\",\n    \"usage\": \"食品\",\n    \"type\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "登録した出費を更新する",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {",
+											"    pm.response.to.have.status(204);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"date\": \"2024-07-01\",\n    \"price\": 3600,\n    \"store\": \"ルミエール\",\n    \"usage\": \"食品\",\n    \"type\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/{{expense_id}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"{{expense_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "更新した出費を削除する",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {",
+											"    pm.response.to.have.status(204);",
+											"});",
+											"",
+											"pm.environment.unset(\"expense_id\");"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/api/expenseBook/{{expense_id}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"api",
+										"expenseBook",
+										"{{expense_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "POSTで登録した出費を、次のPUTリクエストで更新し、最後のDELETEで削除する"
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{vault:ReadWriteToken4ExpenseBook}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
 		}
 	],
 	"event": [
