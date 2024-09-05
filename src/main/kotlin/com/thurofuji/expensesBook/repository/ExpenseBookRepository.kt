@@ -71,12 +71,16 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     fun register(expense: NewExpenseDto): ExpenseDto {
         val registeredID: UUID = jdbcClient.sql("""
             INSERT INTO 出費履歴 (支払日, 金額, 支払先, 使途, 費目cd, 最終更新者id)
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (:date, :price, :store, :usage, :type, :userId)
             RETURNING id
         """.trimIndent())
-            .params(
-                expense.支払日, expense.金額, expense.支払先, expense.使途, expense.費目.code, expense.登録者id
-            ).query(UUID::class.java)
+            .param("date", expense.支払日)
+            .param("price", expense.金額)
+            .param("store", expense.支払先)
+            .param("usage", expense.使途)
+            .param("type", expense.費目.code)
+            .param("userId", expense.登録者id)
+            .query(UUID::class.java)
             .single()
 
         return expense.toDto(registeredID)
@@ -90,24 +94,23 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
             UPDATE
               出費履歴
             SET
-              支払日 = ?
-              , 費目cd = ?
-              , 金額 = ?
-              , 支払先 = ?
-              , 使途 = ?
-              , 最終更新者id = ?
+              支払日 = :date
+              , 費目cd = :type
+              , 金額 = :price
+              , 支払先 = :store
+              , 使途 = :usage
+              , 最終更新者id = :userId
               , 最終更新日時 = CURRENT_TIMESTAMP
             WHERE
-              id = ?
+              id = :id
             """.trimIndent())
-            .params(
-                expense.支払日
-                , expense.費目.code
-                , expense.金額
-                , expense.支払先
-                , expense.使途
-                , expense.最終更新者id
-                , expense.id)
+            .param("date", expense.支払日)
+            .param("type", expense.費目.code)
+            .param("price", expense.金額)
+            .param("store", expense.支払先)
+            .param("usage", expense.使途)
+            .param("userId", expense.最終更新者id)
+            .param("id", expense.id)
             .update()
     }
 
@@ -119,9 +122,9 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
             DELETE FROM
               出費履歴
             WHERE
-              id = ?
+              id = :id
         """.trimIndent())
-            .param(id)
+            .param("id", id)
             .update()
     }
 
