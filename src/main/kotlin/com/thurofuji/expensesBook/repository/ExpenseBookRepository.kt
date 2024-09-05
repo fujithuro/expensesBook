@@ -1,6 +1,7 @@
 package com.thurofuji.expensesBook.repository
 
 import com.thurofuji.expensesBook.dto.ExpenseDto
+import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.dto.NewExpenseDto
 import com.thurofuji.expensesBook.dxo.toDto
 import com.thurofuji.expensesBook.entity.出費履歴
@@ -18,6 +19,12 @@ import kotlin.jvm.optionals.getOrNull
  */
 @Repository
 class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
+    /**
+     * [condition]に合致する出費一覧を[出費履歴]の[List]として取得する。
+     */
+    fun findList(condition: ListSearchCondition): List<出費履歴> =
+        findList(condition.start, condition.end, condition.typeList)
+
     /**
      * [start]から[end]までの期間の出費一覧を[出費履歴]の[List]として取得する。
      * [start]および[end]と同日の出費も取得される。

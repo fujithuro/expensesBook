@@ -32,7 +32,7 @@ class ExpensesBookService(private val expenseTypeService: ExpenseTypeService
      * 指定された条件（[condition]）に該当する出費一覧を[ExpenseDto]の[List]で取得する
      */
     private fun findList(condition: ListSearchCondition): List<ExpenseDto> {
-        return repository.findList(condition.start, condition.end, condition.typeList)
+        return repository.findList(condition)
             .map { it.toDto(expenseTypeService.getExpenseType(it.費目cd)) }
     }
 
