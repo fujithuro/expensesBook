@@ -14,7 +14,8 @@ import java.util.UUID
  * 家計簿のビジネスロジックを取り扱うServiceクラス
  */
 @Service
-class ExpensesBookService(private val repository: ExpenseBookRepository) {
+class ExpensesBookService(private val expenseTypeService: ExpenseTypeService
+                          , private val repository: ExpenseBookRepository) {
 
     /**
      * 指定された条件（[condition]）に該当する出費一覧を[ExpenseDto]の[List]で取得する
@@ -24,7 +25,7 @@ class ExpensesBookService(private val repository: ExpenseBookRepository) {
             condition.targetYearMonth.atDay(1)
             , condition.targetYearMonth.atEndOfMonth()
             , condition.typeList.map { it.費目cd }
-        ).map { it.toDto(getExpenseType(it.費目cd)) }
+        ).map { it.toDto(expenseTypeService.getExpenseType(it.費目cd)) }
     }
 
     /**
@@ -32,7 +33,7 @@ class ExpensesBookService(private val repository: ExpenseBookRepository) {
      * 該当するものがなければnullを返す。
      */
     fun findDetail(id: UUID): ExpenseDto? {
-        return repository.findDetail(id)?.let { it.toDto(getExpenseType(it.費目cd)) }
+        return repository.findDetail(id)?.let { it.toDto(expenseTypeService.getExpenseType(it.費目cd)) }
     }
 
     /**
@@ -56,20 +57,5 @@ class ExpensesBookService(private val repository: ExpenseBookRepository) {
         return repository.delete(id)
     }
 
-    /**
-     * [code]に該当する有効な費目（[ExpenseTypeDto]）を取得する
-     *
-     * @throws IllegalArgumentException [code]に該当する有効な費目が見つからない場合にスローされる
-     */
-    fun getExpenseType(code: Int): ExpenseTypeDto = getValidExpenseTypes().firstOrNull { it.費目cd == code }
-        ?: throw IllegalArgumentException("Invalid code for expense type.: $code")
-
-    /**
-     * 有効な費目の一覧を[ExpenseTypeDto]の[List]として取得する
-     */
-    @Cacheable("expenseTypes")
-    fun getValidExpenseTypes(): List<ExpenseTypeDto> {
-        return repository.findExpenseTypeList().filter { it.有効区分 }.map { it.toDto() }
-    }
 
 }
