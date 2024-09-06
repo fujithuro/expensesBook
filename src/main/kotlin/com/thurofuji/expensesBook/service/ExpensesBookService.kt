@@ -2,8 +2,6 @@ package com.thurofuji.expensesBook.service
 
 import com.thurofuji.expensesBook.bean.ExpenseRequest
 import com.thurofuji.expensesBook.dto.ExpenseDto
-import com.thurofuji.expensesBook.dto.ListSearchCondition
-import com.thurofuji.expensesBook.dto.NewExpenseDto
 import com.thurofuji.expensesBook.mapper.ExpenseMapper
 import com.thurofuji.expensesBook.repository.ExpenseBookRepository
 import org.springframework.stereotype.Service
@@ -20,14 +18,7 @@ class ExpensesBookService(private val repository: ExpenseBookRepository
      * [yyyyMM]や[types]で指定された条件に該当する出費一覧を、[ExpenseDto]の[List]として返す。
      */
     fun findList(yyyyMM: String, types: List<Int>): List<ExpenseDto> {
-        return findList(mapper.toSearchCondition(yyyyMM, types))
-    }
-
-    /**
-     * 指定された条件（[condition]）に該当する出費一覧を[ExpenseDto]の[List]で取得する
-     */
-    private fun findList(condition: ListSearchCondition): List<ExpenseDto> {
-        return repository.findList(condition)
+        return repository.findList(mapper.toSearchCondition(yyyyMM, types))
             .map { mapper.toDto(it) }
     }
 
@@ -44,28 +35,14 @@ class ExpensesBookService(private val repository: ExpenseBookRepository
      * 戻り値として登録された出費（[ExpenseDto]）を返す。
      */
     fun register(request: ExpenseRequest, userId: String): ExpenseDto {
-        return register(mapper.toNewDto(userId, request))
-    }
-
-    /**
-     * 出費情報（[expense]）を登録し、登録された出費（[ExpenseDto]）を返す
-     */
-    private fun register(expense: NewExpenseDto): ExpenseDto {
-        return repository.register(expense)
+        return repository.register(mapper.toNewDto(userId, request))
     }
 
     /**
      * [id]で指定された出費を、[request]の内容へ[userId]の出費として更新し、更新された行数を返す。
      */
     fun update(id: UUID, request: ExpenseRequest, userId: String): Int {
-        return update(mapper.toDto(userId, id, request))
-    }
-
-    /**
-     * 既存の出費（[expense]）の内容を更新し、更新された行数を返す
-     */
-    private fun update(expense: ExpenseDto): Int {
-        return repository.update(expense)
+        return repository.update(mapper.toDto(userId, id, request))
     }
 
     /**
