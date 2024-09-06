@@ -1,10 +1,15 @@
 package com.thurofuji.expensesBook.mapper
 
+import com.thurofuji.expensesBook.bean.ExpenseRequest
+import com.thurofuji.expensesBook.bean.ExpenseResponse
+import com.thurofuji.expensesBook.dto.ExpenseDto
 import com.thurofuji.expensesBook.dto.ListSearchCondition
+import com.thurofuji.expensesBook.dto.NewExpenseDto
 import com.thurofuji.expensesBook.service.ExpenseTypeService
 import org.springframework.stereotype.Component
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
 /**
  * [ExpenseMapper]の標準実装
@@ -21,5 +26,35 @@ class StandardExpenseMapper(private val expenseTypeService: ExpenseTypeService):
 
         return ListSearchCondition(start, end, typeList)
     }
+
+    override fun toNewDto(userId: String, request: ExpenseRequest): NewExpenseDto = NewExpenseDto(
+        // リクエストの持つ支払日/費目コード/金額は、nullでないことをアノテーションで確認している
+        支払日 = request.date!!
+        , 費目 = expenseTypeService.getExpenseType(request.type!!)
+        , 金額 = request.price!!
+        , 支払先 = request.store
+        , 使途 = request.usage
+        , 登録者id = userId.toInt()
+    )
+
+    override fun toDto(userId: String, id: UUID, request: ExpenseRequest): ExpenseDto = ExpenseDto(
+        // リクエストの持つ支払日/費目コード/金額は、nullでないことをアノテーションで確認している
+        id = id
+        , 支払日 = request.date!!
+        , 費目 = expenseTypeService.getExpenseType(request.type!!)
+        , 金額 = request.price!!
+        , 支払先 = request.store
+        , 使途 = request.usage
+        , 最終更新者id = userId.toInt()
+    )
+
+    override fun toResponse(dto: ExpenseDto): ExpenseResponse = ExpenseResponse(
+        id = dto.id
+        , date = dto.支払日
+        , price = dto.金額
+        , store = dto.支払先
+        , usage = dto.使途
+        , type = dto.費目.費目cd
+    )
 
 }

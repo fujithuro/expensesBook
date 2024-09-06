@@ -1,8 +1,6 @@
 package com.thurofuji.expensesBook.service
 
 import com.thurofuji.expensesBook.bean.ExpenseRequest
-import com.thurofuji.expensesBook.bxo.toDto
-import com.thurofuji.expensesBook.bxo.toNewDto
 import com.thurofuji.expensesBook.dto.ExpenseDto
 import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.dto.NewExpenseDto
@@ -50,7 +48,7 @@ class ExpensesBookService(private val expenseTypeService: ExpenseTypeService
      * 登録に成功した場合には登録された出費（[ExpenseDto]）を返し、失敗した場合には原因の[Throwable]を返す。
      */
     fun register(request: ExpenseRequest, userId: String): Result<ExpenseDto> {
-        return runCatching { request.toNewDto(userId, expenseTypeService.getExpenseType(request.type!!)) }
+        return runCatching { mapper.toNewDto(userId, request) }
             .map { register(it) }
     }
 
@@ -66,7 +64,7 @@ class ExpensesBookService(private val expenseTypeService: ExpenseTypeService
      * 更新に成功した場合には更新された行数を返し、失敗した場合には原因の[Throwable]を返す。
      */
     fun update(id: UUID, request: ExpenseRequest, userId: String): Result<Int> {
-        return runCatching { request.toDto(id, userId, expenseTypeService.getExpenseType(request.type!!)) }
+        return runCatching { mapper.toDto(userId, id, request) }
             .map { update(it) }
     }
 

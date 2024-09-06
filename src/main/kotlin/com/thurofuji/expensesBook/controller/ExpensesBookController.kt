@@ -2,7 +2,7 @@ package com.thurofuji.expensesBook.controller
 
 import com.thurofuji.expensesBook.bean.ExpenseRequest
 import com.thurofuji.expensesBook.bean.ExpenseResponse
-import com.thurofuji.expensesBook.bxo.toResponse
+import com.thurofuji.expensesBook.mapper.ExpenseMapper
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import jakarta.validation.Valid
 import org.slf4j.Logger
@@ -31,7 +31,8 @@ import java.util.UUID
  */
 @RestController
 @RequestMapping("/api/expenseBook")
-class ExpensesBookController(private val service: ExpensesBookService) {
+class ExpensesBookController(private val service: ExpensesBookService
+                             , private val mapper: ExpenseMapper) {
 
     private val logger: Logger = LoggerFactory.getLogger(ExpensesBookController::class.java)
 
@@ -51,7 +52,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
         return service.findList(yyyyMM, types)
             .fold(
                 onSuccess = { list ->
-                    val expenseList = list.map { it.toResponse() }
+                    val expenseList = list.map { mapper.toResponse(it) }
                     ok(expenseList)
                 },
                 onFailure = {
@@ -69,7 +70,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     @GetMapping("/detail/{id}")
     fun getExpensesDetail(@PathVariable id: UUID): ResponseEntity<ExpenseResponse> {
         return service.findDetail(id)
-            ?.let { ok(it.toResponse()) }
+            ?.let { ok(mapper.toResponse(it)) }
             ?: notFound()
     }
 
@@ -83,7 +84,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
                         @AuthenticationPrincipal jwt: Jwt): ResponseEntity<ExpenseResponse> {
         return service.register(request, jwt.subject)
             .fold(
-                onSuccess = { created(it.toResponse()) },
+                onSuccess = { created(mapper.toResponse(it)) },
                 onFailure = {
                     logValidationError(it)
                     badRequest()
