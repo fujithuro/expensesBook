@@ -88,20 +88,12 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     fun updateExpense(@PathVariable id: UUID,
                       @Valid @RequestBody request: ExpenseRequest,
                       @AuthenticationPrincipal jwt: Jwt): ResponseEntity<Void> {
-        return service.update(id, request, jwt.subject)
-            .fold(
-                onSuccess = { updatedRows: Int ->
-                    if (updatedRows > 0) {
-                        noContent()
-                    } else {
-                        notFound()
-                    }
-                },
-                onFailure = {
-                    logValidationError(it)
-                    badRequest()
-                }
-            )
+        val updatedRows = service.update(id, request, jwt.subject)
+        return if (updatedRows > 0) {
+            noContent()
+        } else {
+            notFound()
+        }
     }
 
     /**

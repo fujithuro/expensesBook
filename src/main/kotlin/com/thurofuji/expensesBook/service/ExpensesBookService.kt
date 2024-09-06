@@ -55,12 +55,10 @@ class ExpensesBookService(private val repository: ExpenseBookRepository
     }
 
     /**
-     * [id]で指定された出費を、[request]の内容へ[userId]の出費として更新した結果を返す。
-     * 更新に成功した場合には更新された行数を返し、失敗した場合には原因の[Throwable]を返す。
+     * [id]で指定された出費を、[request]の内容へ[userId]の出費として更新し、更新された行数を返す。
      */
-    fun update(id: UUID, request: ExpenseRequest, userId: String): Result<Int> {
-        return runCatching { mapper.toDto(userId, id, request) }
-            .map { update(it) }
+    fun update(id: UUID, request: ExpenseRequest, userId: String): Int {
+        return update(mapper.toDto(userId, id, request))
     }
 
     /**
