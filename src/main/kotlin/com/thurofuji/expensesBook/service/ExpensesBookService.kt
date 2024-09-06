@@ -13,8 +13,7 @@ import java.util.UUID
  * 家計簿のビジネスロジックを取り扱うServiceクラス
  */
 @Service
-class ExpensesBookService(private val expenseTypeService: ExpenseTypeService
-                          , private val repository: ExpenseBookRepository
+class ExpensesBookService(private val repository: ExpenseBookRepository
                           , private val mapper: ExpenseMapper
 ) {
     /**
