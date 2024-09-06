@@ -1,13 +1,10 @@
 package com.thurofuji.expensesBook.mapper
 
 import com.thurofuji.expensesBook.bean.ExpenseRequest
-import com.thurofuji.expensesBook.bean.ExpenseResponse
 import com.thurofuji.expensesBook.dto.ExpenseDto
-import com.thurofuji.expensesBook.dto.ExpenseTypeDto
 import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.dto.NewExpenseDto
 import com.thurofuji.expensesBook.entity.出費履歴
-import com.thurofuji.expensesBook.entity.費目マスター
 import com.thurofuji.expensesBook.service.ExpenseTypeService
 import org.springframework.stereotype.Component
 import java.time.YearMonth
@@ -51,15 +48,6 @@ class StandardExpenseMapper(private val expenseTypeService: ExpenseTypeService):
         , 最終更新者id = userId.toInt()
     )
 
-    override fun toResponse(dto: ExpenseDto): ExpenseResponse = ExpenseResponse(
-        id = dto.id
-        , date = dto.支払日
-        , price = dto.金額
-        , store = dto.支払先
-        , usage = dto.使途
-        , type = dto.費目.費目cd
-    )
-
     override fun toDto(entity: 出費履歴): ExpenseDto = ExpenseDto(
         id = entity.id
         , 支払日 = entity.支払日
@@ -68,12 +56,6 @@ class StandardExpenseMapper(private val expenseTypeService: ExpenseTypeService):
         , 支払先 = entity.支払先
         , 使途 = entity.使途
         , 最終更新者id = entity.最終更新者id
-    )
-
-    override fun toDto(entity: 費目マスター): ExpenseTypeDto = ExpenseTypeDto(
-        費目cd = entity.費目cd
-        , 名称 = entity.費目名
-        , is有効 = entity.有効区分
     )
 
 }

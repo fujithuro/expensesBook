@@ -1,13 +1,10 @@
 package com.thurofuji.expensesBook.mapper
 
 import com.thurofuji.expensesBook.bean.ExpenseRequest
-import com.thurofuji.expensesBook.bean.ExpenseResponse
 import com.thurofuji.expensesBook.dto.ExpenseDto
-import com.thurofuji.expensesBook.dto.ExpenseTypeDto
 import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.dto.NewExpenseDto
 import com.thurofuji.expensesBook.entity.出費履歴
-import com.thurofuji.expensesBook.entity.費目マスター
 import java.util.UUID
 
 /**
@@ -33,18 +30,8 @@ interface ExpenseMapper {
     fun toDto(userId: String, id: UUID, request: ExpenseRequest): ExpenseDto
 
     /**
-     * [dto]から[ExpenseResponse]を作成する
-     */
-    fun toResponse(dto: ExpenseDto): ExpenseResponse
-
-    /**
      * [entity]から[ExpenseDto]を作成する
      */
     fun toDto(entity: 出費履歴): ExpenseDto
-
-    /**
-     * [entity]から[ExpenseTypeDto]を作成する
-     */
-    fun toDto(entity: 費目マスター): ExpenseTypeDto
 
 }

@@ -2,7 +2,6 @@ package com.thurofuji.expensesBook.controller
 
 import com.thurofuji.expensesBook.bean.ExpenseRequest
 import com.thurofuji.expensesBook.bean.ExpenseResponse
-import com.thurofuji.expensesBook.mapper.ExpenseMapper
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import jakarta.validation.Valid
 import org.slf4j.Logger
@@ -31,8 +30,7 @@ import java.util.UUID
  */
 @RestController
 @RequestMapping("/api/expenseBook")
-class ExpensesBookController(private val service: ExpensesBookService
-                             , private val mapper: ExpenseMapper) {
+class ExpensesBookController(private val service: ExpensesBookService) {
 
     private val logger: Logger = LoggerFactory.getLogger(ExpensesBookController::class.java)
 
@@ -52,7 +50,7 @@ class ExpensesBookController(private val service: ExpensesBookService
         return service.findList(yyyyMM, types)
             .fold(
                 onSuccess = { list ->
-                    val expenseList = list.map { mapper.toResponse(it) }
+                    val expenseList = list.map { ExpenseResponse(it) }
                     ok(expenseList)
                 },
                 onFailure = {
@@ -70,7 +68,7 @@ class ExpensesBookController(private val service: ExpensesBookService
     @GetMapping("/detail/{id}")
     fun getExpensesDetail(@PathVariable id: UUID): ResponseEntity<ExpenseResponse> {
         return service.findDetail(id)
-            ?.let { ok(mapper.toResponse(it)) }
+            ?.let { ok(ExpenseResponse(it)) }
             ?: notFound()
     }
 
@@ -84,7 +82,7 @@ class ExpensesBookController(private val service: ExpensesBookService
                         @AuthenticationPrincipal jwt: Jwt): ResponseEntity<ExpenseResponse> {
         return service.register(request, jwt.subject)
             .fold(
-                onSuccess = { created(mapper.toResponse(it)) },
+                onSuccess = { created(ExpenseResponse(it)) },
                 onFailure = {
                     logValidationError(it)
                     badRequest()
