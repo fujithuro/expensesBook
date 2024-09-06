@@ -4,7 +4,6 @@ import com.thurofuji.expensesBook.bean.ExpenseRequest
 import com.thurofuji.expensesBook.dto.ExpenseDto
 import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.dto.NewExpenseDto
-import com.thurofuji.expensesBook.dxo.toDto
 import com.thurofuji.expensesBook.mapper.ExpenseMapper
 import com.thurofuji.expensesBook.repository.ExpenseBookRepository
 import org.springframework.stereotype.Service
@@ -32,7 +31,7 @@ class ExpensesBookService(private val expenseTypeService: ExpenseTypeService
      */
     private fun findList(condition: ListSearchCondition): List<ExpenseDto> {
         return repository.findList(condition)
-            .map { it.toDto(expenseTypeService.getExpenseType(it.費目cd)) }
+            .map { mapper.toDto(it) }
     }
 
     /**
@@ -40,7 +39,7 @@ class ExpensesBookService(private val expenseTypeService: ExpenseTypeService
      * 該当するものがなければnullを返す。
      */
     fun findDetail(id: UUID): ExpenseDto? {
-        return repository.findDetail(id)?.let { it.toDto(expenseTypeService.getExpenseType(it.費目cd)) }
+        return repository.findDetail(id)?.let { mapper.toDto(it) }
     }
 
     /**
