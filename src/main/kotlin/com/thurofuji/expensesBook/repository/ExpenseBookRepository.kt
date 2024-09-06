@@ -31,7 +31,6 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
      * [typeList]が空でない場合、費目での絞り込みも行う。
      */
     fun findList(start: LocalDate, end: LocalDate, typeList: List<Int>): List<出費履歴> {
-        // TODO できれば条件に応じたSQLの構築をもっとスッキリさせたい（if文を使わないなど）。詳細は Issue #1 参照
         val sql = """
             SELECT
               id, 支払日, 費目cd, 金額, 支払先, 使途, 最終更新者id
