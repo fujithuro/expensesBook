@@ -7,10 +7,9 @@ import com.thurofuji.expensesBook.dto.ExpenseDto
 import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.dto.NewExpenseDto
 import com.thurofuji.expensesBook.dxo.toDto
+import com.thurofuji.expensesBook.mapper.ExpenseMapper
 import com.thurofuji.expensesBook.repository.ExpenseBookRepository
 import org.springframework.stereotype.Service
-import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 /**
@@ -18,13 +17,15 @@ import java.util.UUID
  */
 @Service
 class ExpensesBookService(private val expenseTypeService: ExpenseTypeService
-                          , private val repository: ExpenseBookRepository) {
+                          , private val repository: ExpenseBookRepository
+                          , private val mapper: ExpenseMapper
+) {
     /**
      * [yyyyMM]や[types]で指定された条件に該当する出費一覧を取得した結果を返す。
      * 一覧取得に成功した場合には[ExpenseDto]の[List]を返し、失敗した場合には原因の[Throwable]を返す。
      */
     fun findList(yyyyMM: String, types: List<Int>): Result<List<ExpenseDto>> {
-        return tryToCreateCondition(yyyyMM, types)
+        return runCatching { mapper.toSearchCondition(yyyyMM, types) }
             .map { findList(it) }
     }
 
@@ -81,22 +82,6 @@ class ExpensesBookService(private val expenseTypeService: ExpenseTypeService
      */
     fun delete(id: UUID): Int {
         return repository.delete(id)
-    }
-
-    /**
-     * リクエストされた情報（[yyyyMM]と[types]）から、出費の一覧を検索するための条件（[ListSearchCondition]）を作成した結果を返す
-     */
-    private fun tryToCreateCondition(yyyyMM: String, types: List<Int>): Result<ListSearchCondition> {
-        return runCatching {
-            val yearMonth = YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM"))
-            val start = yearMonth.atDay(1)
-            val end = yearMonth.atEndOfMonth()
-
-            val typeList = types.map { expenseTypeService.getExpenseType(it) }.map { it.費目cd }
-
-            ListSearchCondition(start, end, typeList)
-        }
-
     }
 
 }
