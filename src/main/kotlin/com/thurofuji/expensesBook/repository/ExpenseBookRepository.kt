@@ -33,7 +33,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     fun findList(start: LocalDate, end: LocalDate, typeList: List<Int>): List<出費履歴> {
         val sql = """
             SELECT
-              id, 支払日, 費目cd, 金額, 支払先, 使途, 最終更新者id
+              id, 支払日, 費目cd, 金額, 支払先, 使途, 最終更新者id, 最終更新日時
             FROM
               出費履歴
             WHERE
@@ -59,7 +59,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     fun findDetail(id: UUID): 出費履歴? {
         val sql = """
             SELECT
-              id, 支払日, 費目cd, 金額, 支払先, 使途, 最終更新者id
+              id, 支払日, 費目cd, 金額, 支払先, 使途, 最終更新者id, 最終更新日時
             FROM
               出費履歴
             WHERE
@@ -162,6 +162,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
             , 使途 = rs.getString(出費履歴.使途)
             , 費目cd = rs.getInt(出費履歴.費目cd)
             , 最終更新者id = rs.getInt(出費履歴.最終更新者id)
+            , 最終更新日時 = rs.getTimestamp(出費履歴.最終更新日時).toLocalDateTime()
         )
     }
 
