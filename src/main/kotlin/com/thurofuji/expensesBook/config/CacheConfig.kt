@@ -21,7 +21,7 @@ class CacheConfig {
 
     fun caffeineCacheBuilder(): Caffeine<Any, Any> {
         return Caffeine.newBuilder()
-            .expireAfterWrite(1, TimeUnit.HOURS)  // 1時間後に有効期限切れ
-            .maximumSize(100)  // 最大100エントリまでキャッシュ
+            .expireAfterWrite(1, TimeUnit.HOURS)
+            .maximumSize(100)
     }
 }
