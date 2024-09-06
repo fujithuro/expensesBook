@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import java.time.format.DateTimeParseException
 import java.util.UUID
 
 /**
@@ -48,16 +49,8 @@ class ExpensesBookController(private val service: ExpensesBookService) {
                         @RequestParam(required = false) types: List<Int> = emptyList()
     ): ResponseEntity<List<ExpenseResponse>> {
         return service.findList(yyyyMM, types)
-            .fold(
-                onSuccess = { list ->
-                    val expenseList = list.map { ExpenseResponse(it) }
-                    ok(expenseList)
-                },
-                onFailure = {
-                    logValidationError(it)
-                    badRequest()
-                }
-            )
+            .map { ExpenseResponse(it) }
+            .let { ok(it) }
     }
 
     /**
@@ -139,11 +132,15 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * [MethodArgumentTypeMismatchException]: 引数に対して型が不一致な場合にスローされる
      * [MethodArgumentNotValidException]: メソッドの引数に対する入力値検証で問題が見つかった場合にスローされる
      * [HttpMessageNotReadableException]: リクエスト内容をオブジェクトに展開できなかった場合にスローされる。たとえばnull非許容のプロパティにnullが送信された、型が合致しないなど
+     * [IllegalArgumentException]: パラメータに問題があった場合にスローされる汎用的な例外。 TODO できれば独自例外など内容の分かるものに見直したい
+     * [DateTimeParseException]: 年月日のパースに失敗した場合にスローされる
      */
     @ExceptionHandler(
         MethodArgumentTypeMismatchException::class
         , MethodArgumentNotValidException::class
         , HttpMessageNotReadableException::class
+        , IllegalArgumentException::class
+        , DateTimeParseException::class
     )
     fun handleValidationException(ex: Exception): ResponseEntity<Void> {
         logValidationError(ex)

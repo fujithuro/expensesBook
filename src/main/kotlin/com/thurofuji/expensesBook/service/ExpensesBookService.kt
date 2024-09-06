@@ -20,9 +20,8 @@ class ExpensesBookService(private val repository: ExpenseBookRepository
      * [yyyyMM]や[types]で指定された条件に該当する出費一覧を取得した結果を返す。
      * 一覧取得に成功した場合には[ExpenseDto]の[List]を返し、失敗した場合には原因の[Throwable]を返す。
      */
-    fun findList(yyyyMM: String, types: List<Int>): Result<List<ExpenseDto>> {
-        return runCatching { mapper.toSearchCondition(yyyyMM, types) }
-            .map { findList(it) }
+    fun findList(yyyyMM: String, types: List<Int>): List<ExpenseDto> {
+        return findList(mapper.toSearchCondition(yyyyMM, types))
     }
 
     /**
