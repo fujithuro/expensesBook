@@ -40,12 +40,11 @@ class ExpensesBookService(private val repository: ExpenseBookRepository
     }
 
     /**
-     * [request]で指定された出費の情報を[userId]の出費として登録した結果を返す。
-     * 登録に成功した場合には登録された出費（[ExpenseDto]）を返し、失敗した場合には原因の[Throwable]を返す。
+     * [request]で指定された出費の情報を[userId]の出費として登録する。
+     * 戻り値として登録された出費（[ExpenseDto]）を返す。
      */
-    fun register(request: ExpenseRequest, userId: String): Result<ExpenseDto> {
-        return runCatching { mapper.toNewDto(userId, request) }
-            .map { register(it) }
+    fun register(request: ExpenseRequest, userId: String): ExpenseDto {
+        return register(mapper.toNewDto(userId, request))
     }
 
     /**

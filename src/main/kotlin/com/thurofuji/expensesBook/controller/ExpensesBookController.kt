@@ -73,14 +73,9 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     @PostMapping
     fun registerExpense(@Valid @RequestBody request: ExpenseRequest,
                         @AuthenticationPrincipal jwt: Jwt): ResponseEntity<ExpenseResponse> {
-        return service.register(request, jwt.subject)
-            .fold(
-                onSuccess = { created(ExpenseResponse(it)) },
-                onFailure = {
-                    logValidationError(it)
-                    badRequest()
-                }
-            )
+        val registered = service.register(request, jwt.subject)
+
+        return created(ExpenseResponse(registered))
     }
 
     /**
