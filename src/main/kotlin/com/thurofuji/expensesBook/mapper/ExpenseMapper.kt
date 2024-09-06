@@ -47,10 +47,4 @@ interface ExpenseMapper {
      */
     fun toDto(entity: 費目マスター): ExpenseTypeDto
 
-    /**
-     * [newDto]を[ExpenseDto]に変換する。
-     * [id]は[ExpenseDto.id]に設定される。
-     */
-    fun toDto(id: UUID, newDto: NewExpenseDto): ExpenseDto
-
 }

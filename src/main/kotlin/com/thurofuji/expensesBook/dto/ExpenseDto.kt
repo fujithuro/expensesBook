@@ -12,4 +12,8 @@ data class ExpenseDto(val id: UUID
                       , val 金額: Int
                       , val 支払先: String
                       , val 使途: String
-                      , val 最終更新者id: Int)
+                      , val 最終更新者id: Int) {
+    constructor(id: UUID, newDto: NewExpenseDto): this(
+        id, newDto.支払日, newDto.費目, newDto.金額, newDto.支払先, newDto.使途, newDto.登録者id
+    )
+}

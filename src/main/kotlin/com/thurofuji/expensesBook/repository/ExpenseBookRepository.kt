@@ -5,7 +5,6 @@ import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.dto.NewExpenseDto
 import com.thurofuji.expensesBook.entity.出費履歴
 import com.thurofuji.expensesBook.entity.費目マスター
-import com.thurofuji.expensesBook.mapper.ExpenseMapper
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.simple.JdbcClient
 import org.springframework.stereotype.Repository
@@ -18,8 +17,7 @@ import kotlin.jvm.optionals.getOrNull
  * 家計簿に関する情報の永続化、および永続化された情報へのアクセスを行うRepositoryクラス
  */
 @Repository
-class ExpenseBookRepository(private val jdbcClient: JdbcClient
-                            , private val mapper: ExpenseMapper) {
+class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
     /**
      * [condition]に合致する出費一覧を[出費履歴]の[List]として取得する。
      */
@@ -91,7 +89,7 @@ class ExpenseBookRepository(private val jdbcClient: JdbcClient
             .query(UUID::class.java)
             .single()
 
-        return mapper.toDto(registeredID, expense)
+        return ExpenseDto(registeredID, expense)
     }
 
     /**

@@ -76,14 +76,4 @@ class StandardExpenseMapper(private val expenseTypeService: ExpenseTypeService):
         , is有効 = entity.有効区分
     )
 
-    override fun toDto(id: UUID, newDto: NewExpenseDto): ExpenseDto = ExpenseDto(
-        id = id
-        , 支払日 = newDto.支払日
-        , 費目 = newDto.費目
-        , 金額 = newDto.金額
-        , 支払先 = newDto.支払先
-        , 使途 = newDto.使途
-        , 最終更新者id = newDto.登録者id
-    )
-
 }
