@@ -1,7 +1,6 @@
 package com.thurofuji.expensesBook.validation
 
 import com.thurofuji.expensesBook.annotation.ValidExpenseType
-import com.thurofuji.expensesBook.exception.InvalidExpenseTypeException
 import com.thurofuji.expensesBook.service.ExpenseTypeService
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
@@ -16,11 +15,6 @@ class ExpenseTypeValidator(private val expenseTypeService: ExpenseTypeService):
             return true  // nullチェックは`@NotNull`で行われるので、ここでは対象外
         }
 
-        return try {
-            expenseTypeService.getExpenseType(value)
-            true
-        } catch (e: InvalidExpenseTypeException) {
-            false
-        }
+        return runCatching { expenseTypeService.getExpenseType(value) }.isSuccess
     }
 }
