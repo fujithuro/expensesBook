@@ -75,7 +75,7 @@ class ExpenseBookExceptionHandler {
     @Suppress("UNUSED")
     @ExceptionHandler(InvalidTargetYearMonthException::class)
     fun handleInvalidTargetYearMonthException(ex: InvalidTargetYearMonthException): ResponseEntity<Void> {
-        logger.info("Failed to parse YearMonth: {}", ex.message)
+        logger.info("Failed to parse YearMonth.: {}", ex.message)
         return ResponseEntity.badRequest().build()
     }
 
