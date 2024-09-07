@@ -22,7 +22,7 @@ class ExpenseBookExceptionHandler {
     @Suppress("UNUSED")
     @ExceptionHandler(MethodArgumentTypeMismatchException::class)
     fun handleMethodArgumentTypeMismatchException(ex: MethodArgumentTypeMismatchException): ResponseEntity<Void> {
-        logger.info("Input validation failed.: {}", ex.message)
+        logger.info("Invalid type for method parameter.: {}", ex.message)
         return ResponseEntity.badRequest().build()
     }
 
@@ -32,7 +32,7 @@ class ExpenseBookExceptionHandler {
     @Suppress("UNUSED")
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(ex: MethodArgumentNotValidException): ResponseEntity<Void> {
-        logger.info("Input validation failed.: {}", ex.message)
+        logger.info("Method argument failed validation.: {}", ex.message)
         return ResponseEntity.badRequest().build()
     }
 
@@ -42,7 +42,7 @@ class ExpenseBookExceptionHandler {
     @Suppress("UNUSED")
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun handleHttpMessageNotReadableException(ex: HttpMessageNotReadableException): ResponseEntity<Void> {
-        logger.info("Input validation failed.: {}", ex.message)
+        logger.info("Unable to read HTTP message.: {}", ex.message)
         return ResponseEntity.badRequest().build()
     }
 
@@ -52,7 +52,7 @@ class ExpenseBookExceptionHandler {
     @Suppress("UNUSED")
     @ExceptionHandler(InvalidExpenseTypeException::class)
     fun handleInvalidExpenseTypeException(ex: InvalidExpenseTypeException): ResponseEntity<Void> {
-        logger.info("Input validation failed.: {}", ex.message)
+        logger.info("Invalid expense type.: {}", ex.message)
         return ResponseEntity.badRequest().build()
     }
 
@@ -62,7 +62,7 @@ class ExpenseBookExceptionHandler {
     @Suppress("UNUSED")
     @ExceptionHandler(DateTimeParseException::class)
     fun handleDateTimeParseException(ex: DateTimeParseException): ResponseEntity<Void> {
-        logger.info("Input validation failed.: {}", ex.message)
+        logger.info("Failed to parse date or time: {}", ex.message)
         return ResponseEntity.badRequest().build()
     }
 
