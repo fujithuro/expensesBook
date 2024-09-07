@@ -39,7 +39,7 @@ class ExpenseBookExceptionHandler {
 
     /**
      * Springでの入力値検証でスローされる[HandlerMethodValidationException]のハンドリングを行う。
-     * Controllerが持つメソッドのパラメータに対する、メソッドレベルでのバリデーションに失敗した場合にスローされる。
+     * Controllerが持つメソッドのパラメータや戻り値に対する、メソッドレベルでのバリデーションに失敗した場合にスローされる。
      */
     @Suppress("UNUSED")
     @ExceptionHandler(HandlerMethodValidationException::class)
