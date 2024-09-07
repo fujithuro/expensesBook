@@ -56,7 +56,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     /**
      * 指定された[id]に合致する出費（[ExpenseResponse]）を取得し、その詳細をレスポンスで返す。
      *
-     * 出費が存在すれば`200 OK`を返し、存在しなければ`404 Not Found`を返す。
+     * 出費が存在すれば`200 OK`でその詳細を返し、存在しなければ`404 Not Found`を返す。
      */
     @GetMapping("/detail/{id}")
     fun getExpensesDetail(@PathVariable id: UUID): ResponseEntity<ExpenseResponse> {
