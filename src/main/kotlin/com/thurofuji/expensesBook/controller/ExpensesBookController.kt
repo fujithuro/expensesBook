@@ -1,5 +1,6 @@
 package com.thurofuji.expensesBook.controller
 
+import com.thurofuji.expensesBook.annotation.ValidExpenseType
 import com.thurofuji.expensesBook.bean.ExpenseRequest
 import com.thurofuji.expensesBook.bean.ExpenseResponse
 import com.thurofuji.expensesBook.service.ExpensesBookService
@@ -38,7 +39,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     @Suppress("UNUSED")
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
-                        @RequestParam(required = false) types: List<Int> = emptyList()
+                        @RequestParam(required = false) @ValidExpenseType types: List<Int> = emptyList()
     ): ResponseEntity<List<ExpenseResponse>> {
         return service.findList(yyyyMM, types)
             .map { ExpenseResponse(it) }

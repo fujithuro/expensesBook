@@ -6,7 +6,7 @@ import com.thurofuji.expensesBook.validation.ExpenseTypeValidator
 import jakarta.validation.Constraint
 import kotlin.reflect.KClass
 
-@Target(AnnotationTarget.FIELD)
+@Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
 @Constraint(validatedBy = [ExpenseTypeValidator::class, ExpenseTypeListValidator::class])
 annotation class ValidExpenseType(
