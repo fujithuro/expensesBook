@@ -33,7 +33,7 @@ class ExpenseBookExceptionHandler {
     @Suppress("UNUSED")
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(ex: MethodArgumentNotValidException): ResponseEntity<Void> {
-        logger.info("Method argument failed validation.: {}", ex.message)
+        logger.info("Validation failed in request body.: {}", ex.message)
         return ResponseEntity.badRequest().build()
     }
 
