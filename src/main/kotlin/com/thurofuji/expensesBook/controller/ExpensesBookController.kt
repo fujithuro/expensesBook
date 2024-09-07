@@ -2,6 +2,7 @@ package com.thurofuji.expensesBook.controller
 
 import com.thurofuji.expensesBook.bean.ExpenseRequest
 import com.thurofuji.expensesBook.bean.ExpenseResponse
+import com.thurofuji.expensesBook.exception.InvalidExpenseTypeException
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import jakarta.validation.Valid
 import org.slf4j.Logger
@@ -126,7 +127,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * [MethodArgumentTypeMismatchException]: 引数に対して型が不一致な場合にスローされる
      * [MethodArgumentNotValidException]: メソッドの引数に対する入力値検証で問題が見つかった場合にスローされる
      * [HttpMessageNotReadableException]: リクエスト内容をオブジェクトに展開できなかった場合にスローされる。たとえばnull非許容のプロパティにnullが送信された、型が合致しないなど
-     * [IllegalArgumentException]: パラメータに問題があった場合にスローされる汎用的な例外。 TODO できれば独自例外など内容の分かるものに見直したい
+     * [InvalidExpenseTypeException]: リクエストされた費目に問題があった場合にスローされる
      * [DateTimeParseException]: 年月日のパースに失敗した場合にスローされる
      */
     @Suppress("UNUSED")
@@ -134,7 +135,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
         MethodArgumentTypeMismatchException::class
         , MethodArgumentNotValidException::class
         , HttpMessageNotReadableException::class
-        , IllegalArgumentException::class
+        , InvalidExpenseTypeException::class
         , DateTimeParseException::class
     )
     fun handleValidationException(ex: Exception): ResponseEntity<Void> {
