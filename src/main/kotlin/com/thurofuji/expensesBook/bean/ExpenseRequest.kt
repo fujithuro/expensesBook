@@ -1,5 +1,6 @@
 package com.thurofuji.expensesBook.bean
 
+import com.thurofuji.expensesBook.annotation.ValidExpenseType
 import jakarta.validation.constraints.NotNull
 import java.time.LocalDate
 import java.util.UUID
@@ -15,6 +16,7 @@ data class ExpenseRequest(
     val price: Int?,
     val store: String = "",
     val usage: String = "",
+    @field:ValidExpenseType
     @field:NotNull
     val type: Int?
 )
