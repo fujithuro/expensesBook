@@ -22,7 +22,7 @@ class ExpenseBookExceptionHandler {
     @Suppress("UNUSED")
     @ExceptionHandler(MethodArgumentTypeMismatchException::class)
     fun handleMethodArgumentTypeMismatchException(ex: MethodArgumentTypeMismatchException): ResponseEntity<Void> {
-        logger.info("Invalid type for method parameter.: {}", ex.message)
+        logger.info("Argument type mismatch.: {}", ex.message)
         return ResponseEntity.badRequest().build()
     }
 
@@ -33,7 +33,7 @@ class ExpenseBookExceptionHandler {
     @Suppress("UNUSED")
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(ex: MethodArgumentNotValidException): ResponseEntity<Void> {
-        logger.info("Validation failed in request body.: {}", ex.message)
+        logger.info("Validation failed for request body parameters.: {}", ex.message)
         return ResponseEntity.badRequest().build()
     }
 
@@ -44,7 +44,7 @@ class ExpenseBookExceptionHandler {
     @Suppress("UNUSED")
     @ExceptionHandler(HandlerMethodValidationException::class)
     fun handleHandlerMethodValidationException(ex: HandlerMethodValidationException): ResponseEntity<Void> {
-        logger.info("Validation failed in method argument.: {}", ex.message)
+        logger.info("Validation failed for controller method.: {}", ex.message)
         return ResponseEntity.badRequest().build()
     }
 
@@ -55,7 +55,7 @@ class ExpenseBookExceptionHandler {
     @Suppress("UNUSED")
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun handleHttpMessageNotReadableException(ex: HttpMessageNotReadableException): ResponseEntity<Void> {
-        logger.info("Unable to read HTTP message.: {}", ex.message)
+        logger.info("Failed to parse HTTP request body.: {}", ex.message)
         return ResponseEntity.badRequest().build()
     }
 
