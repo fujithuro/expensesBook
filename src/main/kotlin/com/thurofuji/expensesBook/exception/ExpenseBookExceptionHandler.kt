@@ -57,7 +57,7 @@ class ExpenseBookExceptionHandler {
     }
 
     /**
-     * [InvalidExpenseTypeException]のハンドリングを行う
+     * リクエストされた費目が不正な場合にスローされる[InvalidExpenseTypeException]のハンドリングを行う
      */
     @Suppress("UNUSED")
     @ExceptionHandler(InvalidExpenseTypeException::class)
@@ -67,7 +67,7 @@ class ExpenseBookExceptionHandler {
     }
 
     /**
-     * [InvalidTargetYearMonthException]のハンドリングを行う
+     * リクエストされた対象年月が不正な場合にスローされる[InvalidTargetYearMonthException]のハンドリングを行う
      */
     @Suppress("UNUSED")
     @ExceptionHandler(InvalidTargetYearMonthException::class)
