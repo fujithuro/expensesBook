@@ -67,6 +67,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
 
     /**
      * リクエストされた出費（[request]）を新規登録する。
+     * [jwt]は認証済みのJWTトークン。
      *
      * 登録に成功した場合は`201 Created`で登録された出費を返す。
      */
@@ -80,6 +81,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
 
     /**
      * 指定された[id]の出費情報を[request]の内容に更新する。
+     * [jwt]は認証済みのJWTトークン。
      *
      * 更新が成功した場合には`204 No Content`を返しす。
      * 指定された[id]の出費が存在しない場合は`404 Not Found`を返し、新規登録は行わない。
