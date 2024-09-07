@@ -16,7 +16,8 @@ class ExpenseBookExceptionHandler {
     private val logger: Logger = LoggerFactory.getLogger(ExpenseBookExceptionHandler::class.java)
 
     /**
-     * [MethodArgumentTypeMismatchException]のハンドリングを行う
+     * Springでの入力値検証でスローされる[MethodArgumentTypeMismatchException]のハンドリングを行う。
+     * リクエストパラメータが、エンドポイントのメソッドや関数で期待されている型と一致しない場合にスローされる。
      */
     @Suppress("UNUSED")
     @ExceptionHandler(MethodArgumentTypeMismatchException::class)
@@ -26,7 +27,8 @@ class ExpenseBookExceptionHandler {
     }
 
     /**
-     * [MethodArgumentNotValidException]のハンドリングを行う
+     * Springでの入力値検証でスローされる[MethodArgumentNotValidException]のハンドリングを行う。
+     * `@Valid`や`@Validated`が付与されたオブジェクトのプロパティでバリデーションに失敗した際にスローされる。
      */
     @Suppress("UNUSED")
     @ExceptionHandler(MethodArgumentNotValidException::class)
@@ -36,7 +38,8 @@ class ExpenseBookExceptionHandler {
     }
 
     /**
-     * [HandlerMethodValidationException]のハンドリングを行う
+     * Springでの入力値検証でスローされる[HandlerMethodValidationException]のハンドリングを行う。
+     * Controllerが持つメソッドのパラメータに対する、メソッドレベルでのバリデーションに失敗した場合にスローされる。
      */
     @Suppress("UNUSED")
     @ExceptionHandler(HandlerMethodValidationException::class)
@@ -46,7 +49,8 @@ class ExpenseBookExceptionHandler {
     }
 
     /**
-     * [HttpMessageNotReadableException]のハンドリングを行う
+     * Springでの入力値検証でスローされる[HttpMessageNotReadableException]のハンドリングを行う。
+     * リクエストボディのJSONやXMLなどの形式に問題があり、適切にパースできない場合にスローされる。
      */
     @Suppress("UNUSED")
     @ExceptionHandler(HttpMessageNotReadableException::class)
