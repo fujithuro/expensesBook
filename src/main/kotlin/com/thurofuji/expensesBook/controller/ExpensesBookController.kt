@@ -68,7 +68,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     /**
      * リクエストされた出費（[request]）を新規登録する。
      *
-     * 登録に成功した場合は`201 Created`を返し、リクエストに問題があれば`400 Bad Request`を返す。
+     * 登録に成功した場合は`201 Created`で登録された出費を返す。
      */
     @PostMapping
     fun registerExpense(@Valid @RequestBody request: ExpenseRequest,
@@ -81,8 +81,8 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     /**
      * 指定された[id]の出費情報を[request]の内容に更新する。
      *
-     * 更新が成功した場合には`204 No Content`を返し、リクエストに問題があれば`400 Bad Request`を返す。
-     * 指定された[id]の出費が存在しなかった場合は`404 Not Found`を返し、新規登録は行わない。
+     * 更新が成功した場合には`204 No Content`を返しす。
+     * 指定された[id]の出費が存在しない場合は`404 Not Found`を返し、新規登録は行わない。
      */
     @PutMapping("/{id}")
     fun updateExpense(@PathVariable id: UUID,
