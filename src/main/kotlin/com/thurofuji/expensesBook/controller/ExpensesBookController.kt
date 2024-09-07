@@ -36,7 +36,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     private val logger: Logger = LoggerFactory.getLogger(ExpensesBookController::class.java)
 
     /**
-     * 指定された条件に合致する出費（[ExpenseResponse]）の[List]をレスポンスで返す。
+     * 指定された条件に合致する出費（[ExpenseResponse]）の[List]を取得するエンドポイント。
      *
      * パスパラメータ [yyyyMM]: 年月指定（yyyyMM形式）
      * クエリパラメータ [types]: 費目の絞り込み。複数指定可。省略された場合は費目での絞り込みを行わない
@@ -55,7 +55,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     }
 
     /**
-     * 指定された[id]に合致する出費（[ExpenseResponse]）を取得し、その詳細をレスポンスで返す。
+     * 指定された[id]に合致する出費（[ExpenseResponse]）を取得するエンドポイント。
      *
      * 出費が存在すれば`200 OK`でその詳細を返し、存在しなければ`404 Not Found`を返す。
      */
@@ -68,7 +68,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     }
 
     /**
-     * リクエストされた出費（[request]）を新規登録する。
+     * リクエストされた出費（[request]）を新規登録するエンドポイント。
      * [jwt]は認証済みのJWTトークン。
      *
      * 登録に成功した場合は`201 Created`で登録された出費を返す。
@@ -83,7 +83,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     }
 
     /**
-     * 指定された[id]の出費情報を[request]の内容に更新する。
+     * 指定された[id]の出費情報を[request]の内容に更新するエンドポイント。
      * [jwt]は認証済みのJWTトークン。
      *
      * 更新が成功した場合には`204 No Content`を返しす。
@@ -103,7 +103,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     }
 
     /**
-     * 指定された[id]の出費情報を削除する。
+     * 指定された[id]の出費情報を削除するエンドポイント。
      *
      * 更新が成功した場合には`204 No Content`を返す。
      * 指定された[id]の出費が存在しなかった場合は`404 Not Found`を返す。
