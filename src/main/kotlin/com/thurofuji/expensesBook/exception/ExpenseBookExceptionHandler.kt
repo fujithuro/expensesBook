@@ -7,6 +7,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.method.annotation.HandlerMethodValidationException
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import java.time.format.DateTimeParseException
 
@@ -33,6 +34,16 @@ class ExpenseBookExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(ex: MethodArgumentNotValidException): ResponseEntity<Void> {
         logger.info("Method argument failed validation.: {}", ex.message)
+        return ResponseEntity.badRequest().build()
+    }
+
+    /**
+     * [HandlerMethodValidationException]のハンドリングを行う
+     */
+    @Suppress("UNUSED")
+    @ExceptionHandler(HandlerMethodValidationException::class)
+    fun handleHandlerMethodValidationException(ex: HandlerMethodValidationException): ResponseEntity<Void> {
+        logger.info("Validation failed in method argument.: {}", ex.message)
         return ResponseEntity.badRequest().build()
     }
 
