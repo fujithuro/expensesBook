@@ -9,9 +9,12 @@ import java.util.UUID
  */
 data class ExpenseRequest(
     val id: UUID? = null,
-    @field:NotNull val date: LocalDate?,
-    @field:NotNull val price: Int?,
+    @field:NotNull
+    val date: LocalDate?,
+    @field:NotNull
+    val price: Int?,
     val store: String = "",
     val usage: String = "",
-    @field:NotNull val type: Int?
+    @field:NotNull
+    val type: Int?
 )
