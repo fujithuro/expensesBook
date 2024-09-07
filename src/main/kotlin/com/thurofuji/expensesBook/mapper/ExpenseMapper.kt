@@ -5,6 +5,7 @@ import com.thurofuji.expensesBook.dto.ExpenseDto
 import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.dto.NewExpenseDto
 import com.thurofuji.expensesBook.entity.出費履歴
+import com.thurofuji.expensesBook.exception.InvalidTargetYearMonthException
 import java.util.UUID
 
 /**
@@ -14,6 +15,8 @@ interface ExpenseMapper {
 
     /**
      * 対象年月（[yyyyMM]）と費目（[types]）から[ListSearchCondition]を作成する
+     *
+     * @throws InvalidTargetYearMonthException 対象年月が不正な値の場合にスローされる
      */
     fun toSearchCondition(yyyyMM: String, types: List<Int>): ListSearchCondition
 

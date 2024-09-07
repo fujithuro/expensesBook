@@ -68,12 +68,12 @@ class ExpenseBookExceptionHandler {
     }
 
     /**
-     * [DateTimeParseException]のハンドリングを行う
+     * [InvalidTargetYearMonthException]のハンドリングを行う
      */
     @Suppress("UNUSED")
-    @ExceptionHandler(DateTimeParseException::class)
-    fun handleDateTimeParseException(ex: DateTimeParseException): ResponseEntity<Void> {
-        logger.info("Failed to parse date or time: {}", ex.message)
+    @ExceptionHandler(InvalidTargetYearMonthException::class)
+    fun handleInvalidTargetYearMonthException(ex: InvalidTargetYearMonthException): ResponseEntity<Void> {
+        logger.info("Failed to parse YearMonth: {}", ex.message)
         return ResponseEntity.badRequest().build()
     }
 

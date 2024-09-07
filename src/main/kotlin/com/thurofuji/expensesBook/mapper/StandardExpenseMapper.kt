@@ -5,6 +5,7 @@ import com.thurofuji.expensesBook.dto.ExpenseDto
 import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.dto.NewExpenseDto
 import com.thurofuji.expensesBook.entity.出費履歴
+import com.thurofuji.expensesBook.exception.InvalidTargetYearMonthException
 import com.thurofuji.expensesBook.service.ExpenseTypeService
 import org.springframework.stereotype.Component
 import java.time.YearMonth
@@ -18,7 +19,10 @@ import java.util.UUID
 class StandardExpenseMapper(private val expenseTypeService: ExpenseTypeService): ExpenseMapper {
 
     override fun toSearchCondition(yyyyMM: String, types: List<Int>): ListSearchCondition {
-        val yearMonth = YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM"))
+        val yearMonth = runCatching {
+            YearMonth.parse(yyyyMM, DateTimeFormatter.ofPattern("yyyyMM"))
+        }.getOrElse { throw InvalidTargetYearMonthException("Invalid value for YearMonth.: $yyyyMM") }
+
         val start = yearMonth.atDay(1)
         val end = yearMonth.atEndOfMonth()
 
