@@ -44,6 +44,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * リストが取得できれば`200 OK`を返し、リクエストに問題があれば`400 Bad Request`を返す。
      * リクエストに問題はないが該当する出費が1件もない場合、`200 OK`で空のリストを返す。
      */
+    @Suppress("UNUSED")
     @GetMapping("/list/{yyyyMM}")
     fun getExpensesList(@PathVariable yyyyMM: String,
                         @RequestParam(required = false) types: List<Int> = emptyList()
@@ -58,6 +59,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      *
      * 出費が存在すれば`200 OK`でその詳細を返し、存在しなければ`404 Not Found`を返す。
      */
+    @Suppress("UNUSED")
     @GetMapping("/detail/{id}")
     fun getExpensesDetail(@PathVariable id: UUID): ResponseEntity<ExpenseResponse> {
         return service.findDetail(id)
@@ -71,6 +73,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      *
      * 登録に成功した場合は`201 Created`で登録された出費を返す。
      */
+    @Suppress("UNUSED")
     @PostMapping
     fun registerExpense(@Valid @RequestBody request: ExpenseRequest,
                         @AuthenticationPrincipal jwt: Jwt): ResponseEntity<ExpenseResponse> {
@@ -86,6 +89,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * 更新が成功した場合には`204 No Content`を返しす。
      * 指定された[id]の出費が存在しない場合は`404 Not Found`を返し、新規登録は行わない。
      */
+    @Suppress("UNUSED")
     @PutMapping("/{id}")
     fun updateExpense(@PathVariable id: UUID,
                       @Valid @RequestBody request: ExpenseRequest,
@@ -104,6 +108,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * 更新が成功した場合には`204 No Content`を返す。
      * 指定された[id]の出費が存在しなかった場合は`404 Not Found`を返す。
      */
+    @Suppress("UNUSED")
     @DeleteMapping("/{id}")
     fun deleteExpense(@PathVariable id: UUID): ResponseEntity<Void> {
         val deletedRows = service.delete(id)
@@ -124,6 +129,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * [IllegalArgumentException]: パラメータに問題があった場合にスローされる汎用的な例外。 TODO できれば独自例外など内容の分かるものに見直したい
      * [DateTimeParseException]: 年月日のパースに失敗した場合にスローされる
      */
+    @Suppress("UNUSED")
     @ExceptionHandler(
         MethodArgumentTypeMismatchException::class
         , MethodArgumentNotValidException::class
@@ -140,6 +146,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * 予期せぬ例外がスローされた場合のハンドリングを行う。
      * 例外の詳細を記録し、レスポンスとして`500 Internal Server Error`を返す
      */
+    @Suppress("UNUSED")
     @ExceptionHandler(Exception::class)
     fun handleException(ex: Exception): ResponseEntity<Void> {
         logger.error("Unexpected exception occurred: {}", ex.message, ex)
