@@ -15,7 +15,6 @@ class ExpenseBookExceptionHandler {
 
     private val logger: Logger = LoggerFactory.getLogger(ExpenseBookExceptionHandler::class.java)
 
-
     /**
      * [MethodArgumentTypeMismatchException]のハンドリングを行う
      */
