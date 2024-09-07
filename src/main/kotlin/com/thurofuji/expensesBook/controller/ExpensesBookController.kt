@@ -2,19 +2,13 @@ package com.thurofuji.expensesBook.controller
 
 import com.thurofuji.expensesBook.bean.ExpenseRequest
 import com.thurofuji.expensesBook.bean.ExpenseResponse
-import com.thurofuji.expensesBook.exception.InvalidExpenseTypeException
 import com.thurofuji.expensesBook.service.ExpensesBookService
 import jakarta.validation.Valid
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
-import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -23,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
-import java.time.format.DateTimeParseException
 import java.util.UUID
 
 /**
@@ -33,8 +25,6 @@ import java.util.UUID
 @RestController
 @RequestMapping("/api/expenseBook")
 class ExpensesBookController(private val service: ExpensesBookService) {
-
-    private val logger: Logger = LoggerFactory.getLogger(ExpensesBookController::class.java)
 
     /**
      * 指定された条件に合致する出費（[ExpenseResponse]）の[List]を取得するエンドポイント。
@@ -121,47 +111,6 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     }
 
     /**
-     * 入力値検証で例外がスローされた場合のハンドリングを行う。
-     * この例外ハンドラでは主に、「入力値の型やフォーマットが一致せず、引数に値を設定できなかった」など引数の問題で例外がスローされた場合のハンドリングを担当している。
-     *
-     * [MethodArgumentTypeMismatchException]: 引数に対して型が不一致な場合にスローされる
-     * [MethodArgumentNotValidException]: メソッドの引数に対する入力値検証で問題が見つかった場合にスローされる
-     * [HttpMessageNotReadableException]: リクエスト内容をオブジェクトに展開できなかった場合にスローされる。たとえばnull非許容のプロパティにnullが送信された、型が合致しないなど
-     * [InvalidExpenseTypeException]: リクエストされた費目に問題があった場合にスローされる
-     * [DateTimeParseException]: 年月日のパースに失敗した場合にスローされる
-     */
-    @Suppress("UNUSED")
-    @ExceptionHandler(
-        MethodArgumentTypeMismatchException::class
-        , MethodArgumentNotValidException::class
-        , HttpMessageNotReadableException::class
-        , InvalidExpenseTypeException::class
-        , DateTimeParseException::class
-    )
-    fun handleValidationException(ex: Exception): ResponseEntity<Void> {
-        logValidationError(ex)
-        return badRequest()
-    }
-
-    /**
-     * 予期せぬ例外がスローされた場合のハンドリングを行う。
-     * 例外の詳細を記録し、レスポンスとして`500 Internal Server Error`を返す
-     */
-    @Suppress("UNUSED")
-    @ExceptionHandler(Exception::class)
-    fun handleException(ex: Exception): ResponseEntity<Void> {
-        logger.error("Unexpected exception occurred: {}", ex.message, ex)
-        return internalServerError()
-    }
-
-    /**
-     * 入力値検証中に発生した[Throwable]のmessageを`INFO`レベルで記録する
-     */
-    private fun logValidationError(t: Throwable) {
-        logger.info("Input validation failed.: {}", t.message)
-    }
-
-    /**
      * `200 OK`を表す[ResponseEntity]を返す。レスポンスボディに含める情報は[body]に設定する。
      */
     private fun <T> ok(body: T? = null): ResponseEntity<T> = ResponseEntity.ok(body)
@@ -177,18 +126,8 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     private fun <T> noContent(body: T? = null): ResponseEntity<T> = ResponseEntity(body, HttpStatus.NO_CONTENT)
 
     /**
-     * `400 Bad Request`を表す[ResponseEntity]を返す。レスポンスボディに含める情報は[body]に設定する。
-     */
-    private fun <T> badRequest(body: T? = null): ResponseEntity<T> = ResponseEntity(body, HttpStatus.BAD_REQUEST)
-
-    /**
      * `404 Not Found`を表す[ResponseEntity]を返す。レスポンスボディに含める情報は[body]に設定する。
      */
     private fun <T> notFound(body: T? = null): ResponseEntity<T> = ResponseEntity(body, HttpStatus.NOT_FOUND)
-
-    /**
-     * `500 Internal Server Error`を表す[ResponseEntity]を返す。レスポンスボディに含める情報は[body]に設定する。
-     */
-    private fun <T> internalServerError(body: T? = null): ResponseEntity<T> = ResponseEntity(body, HttpStatus.INTERNAL_SERVER_ERROR)
 
 }
