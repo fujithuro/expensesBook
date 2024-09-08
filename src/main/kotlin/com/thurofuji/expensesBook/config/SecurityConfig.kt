@@ -7,9 +7,20 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.oauth2.core.authorization.OAuth2AuthorizationManagers.hasScope
 import org.springframework.security.web.SecurityFilterChain
 
+/**
+ * セキュリティに関する設定を管理するConfiguration
+ */
 @Configuration(proxyBeanMethods = false)
 class SecurityConfig {
 
+    /**
+     * JWTを使用した認可のための設定を追加する
+     *
+     * メソッド: GET
+     *   トークンのscopeに`expense:read`が必要
+     * メソッド: POST/PUT/DELETE
+     *   トークンのscopeに`expense:write`が必要
+     */
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http.authorizeHttpRequests { authZ -> authZ
