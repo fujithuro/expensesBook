@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 @Retention(AnnotationRetention.RUNTIME)
 @Constraint(validatedBy = [YearMonthValidator::class])
 annotation class ValidYearMonth(
-    val message: String = "Invalid year and month format. `yyyyMM` expected.",
+    val message: String = "Specify the year and month in `yyyyyMM`.",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<out Payload>> = []
 )
