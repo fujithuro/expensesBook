@@ -123,4 +123,15 @@ class ExpenseBookExceptionHandler {
         return ResponseEntity.internalServerError().build()
     }
 
+    /**
+     * エラーのレスポンスボディを表すモデル
+     */
+    data class ErrorResponseBody(
+        val timestamp: LocalDateTime = LocalDateTime.now(),
+        val status: String = HttpStatus.BAD_REQUEST.toString(),
+        val error: String,
+        val message: String,
+        val details: List<String>
+    )
+
 }
