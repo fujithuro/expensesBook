@@ -14,22 +14,15 @@ import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * 家計簿に関する情報の永続化、および永続化された情報へのアクセスを行うRepositoryクラス
+ * [JdbcClient]を使用してデータにアクセスする[ExpenseBookRepository]の実装クラス
  */
 @Repository
-class ExpenseBookJdbcClientRepository(private val jdbcClient: JdbcClient) {
-    /**
-     * [condition]に合致する出費一覧を[出費履歴]の[List]として取得する。
-     */
-    fun findList(condition: ListSearchCondition): List<出費履歴> =
+class ExpenseBookJdbcClientRepository(private val jdbcClient: JdbcClient): ExpenseBookRepository {
+
+    override fun findList(condition: ListSearchCondition): List<出費履歴> =
         findList(condition.start, condition.end, condition.typeList)
 
-    /**
-     * [start]から[end]までの期間の出費一覧を[出費履歴]の[List]として取得する。
-     * [start]および[end]と同日の出費も取得される。
-     * [typeList]が空でない場合、費目での絞り込みも行う。
-     */
-    fun findList(start: LocalDate, end: LocalDate, typeList: List<Int>): List<出費履歴> {
+    override fun findList(start: LocalDate, end: LocalDate, typeList: List<Int>): List<出費履歴> {
         val sql = """
             SELECT
               id, 支払日, 費目cd, 金額, 支払先, 使途, 最終更新者id, 最終更新日時
@@ -51,11 +44,7 @@ class ExpenseBookJdbcClientRepository(private val jdbcClient: JdbcClient) {
             .list()
     }
 
-    /**
-     * [id]で指定された出費を取得する。
-     * 該当する出費が存在しなければ`null`を返す
-     */
-    fun findDetail(id: UUID): 出費履歴? {
+    override fun findDetail(id: UUID): 出費履歴? {
         val sql = """
             SELECT
               id, 支払日, 費目cd, 金額, 支払先, 使途, 最終更新者id, 最終更新日時
@@ -71,10 +60,7 @@ class ExpenseBookJdbcClientRepository(private val jdbcClient: JdbcClient) {
             .optional().getOrNull()
     }
 
-    /**
-     * 出費情報（[expense]）を永続化し、登録された出費([ExpenseDto])を返す
-     */
-    fun register(expense: NewExpenseDto): ExpenseDto {
+    override fun register(expense: NewExpenseDto): ExpenseDto {
         val registeredID: UUID = jdbcClient.sql("""
             INSERT INTO 出費履歴 (支払日, 金額, 支払先, 使途, 費目cd, 最終更新者id)
             VALUES (:date, :price, :store, :usage, :type, :userId)
@@ -92,10 +78,7 @@ class ExpenseBookJdbcClientRepository(private val jdbcClient: JdbcClient) {
         return ExpenseDto(registeredID, expense)
     }
 
-    /**
-     * 既存の出費情報（[expense]）を更新し、更新された行数を返す
-     */
-    fun update(expense: ExpenseDto): Int {
+    override fun update(expense: ExpenseDto): Int {
         return jdbcClient.sql("""
             UPDATE
               出費履歴
@@ -120,10 +103,7 @@ class ExpenseBookJdbcClientRepository(private val jdbcClient: JdbcClient) {
             .update()
     }
 
-    /**
-     * [id]で指定された出費情報を削除し、削除された行数を返す
-     */
-    fun delete(id: UUID): Int {
+    override fun delete(id: UUID): Int {
         return jdbcClient.sql("""
             DELETE FROM
               出費履歴
@@ -134,10 +114,7 @@ class ExpenseBookJdbcClientRepository(private val jdbcClient: JdbcClient) {
             .update()
     }
 
-    /**
-     * [費目マスター]の一覧を取得する
-     */
-    fun findExpenseTypeList(): List<費目マスター> {
+    override fun findExpenseTypeList(): List<費目マスター> {
         return jdbcClient.sql("""
             SELECT
               費目cd, 費目名, 有効区分
