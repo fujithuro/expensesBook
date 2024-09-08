@@ -15,4 +15,4 @@ import java.time.format.DateTimeFormatter
  */
 fun String.parseYearMonth(): YearMonth = runCatching {
     YearMonth.parse(this, DateTimeFormatter.ofPattern("yyyyMM"))
-}.getOrElse { throw InvalidTargetYearMonthException("Invalid value for YearMonth.: $this") }
+}.getOrElse { throw InvalidTargetYearMonthException("Invalid value for YearMonth.: $this", it) }
