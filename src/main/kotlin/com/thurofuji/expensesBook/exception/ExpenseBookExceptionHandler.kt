@@ -59,9 +59,19 @@ class ExpenseBookExceptionHandler {
      */
     @Suppress("UNUSED")
     @ExceptionHandler(HandlerMethodValidationException::class)
-    fun handleHandlerMethodValidationException(ex: HandlerMethodValidationException): ResponseEntity<Void> {
-        logger.info("Validation failed for controller method.: {}", ex.message)
-        return ResponseEntity.badRequest().build()
+    fun handleHandlerMethodValidationException(ex: HandlerMethodValidationException): ResponseEntity<ErrorResponseBody> {
+        val errors = ex.allValidationResults.flatMap { result ->
+            result.resolvableErrors.map { error ->
+                "${result.argument}: ${error.defaultMessage}"
+            }
+        }
+        val errorResponse = ErrorResponseBody(
+            error = "Method Validation Failed",
+            message = "Invalid method parameters or return value",
+            details = errors
+        )
+        logger.info("Method Validation Failed: {}", errors)
+        return ResponseEntity.badRequest().body(errorResponse)
     }
 
     /**
