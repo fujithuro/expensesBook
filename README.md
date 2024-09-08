@@ -24,12 +24,25 @@ React（Next.js）でフロントエンドを作成する予定
 | [出費の更新](#出費の更新)       | PUT    | /api/expenseBook/{id}                               |
 | [出費の削除](#出費の削除)       | DELETE | /api/expenseBook/{id}                               |
 
+#### 認証について
+
+このREST APIでは、Json Web Token（JWT）による認証および認可を行っている。
+
+リクエストを送る際、ヘッダーの`Authorization`フィールドに、`Bearer {token}`の形式でJWTを送信する。
+JWTの発行機能はまだないため、開発者より個別に取得すること。
+
+##### 権限
+
+トークンには「閲覧用」と「編集用」の2種類の権限がある。
+必要な権限のトークンを取得すること。
+1つのトークンが両方の権限を持つこともできる。
 
 #### 出費の一覧を取得
 
 * 概要: 家計簿に登録済みされている特定の年月の出費一覧を取得する。費目での絞り込みも可能
 * URL: /api/expenseBook/list/{yyyyMM}
 * メソッド: `GET`
+* 認可: 閲覧用のトークンが必要
 
 ###### パスパラメータ
 
@@ -77,6 +90,7 @@ Content-Type: `application/json`
 * URL: /api/expenseBook/detail/{id}
 * メソッド: `GET`
 * 概要: 家計簿に登録済みされている出費の詳細を取得する
+* 認可: 閲覧用のトークンが必要
 
 ###### パスパラメータ
 
@@ -108,6 +122,7 @@ Content-Type: `application/json`
 * URL: /api/expenseBook
 * メソッド: `POST`
 * 概要: 出費1件を家計簿に登録する
+* 認可: 編集用のトークンが必要
 
 ##### リクエスト
 
@@ -157,6 +172,7 @@ Content-Type: `application/json`
 * URL: /api/expenseBook/{id}
 * メソッド: `PUT`
 * 概要: 家計簿に登録済みの出費1件を更新する
+* 認可: 編集用のトークンが必要
 
 ##### リクエスト
 
@@ -216,6 +232,7 @@ Content-Type: `application/json`
 * URL: /api/expenseBook/{id}
 * メソッド: `DELETE`
 * 概要: 家計簿に登録済みの出費1件を削除する
+* 認可: 編集用のトークンが必要
 
 ##### リクエスト
 
