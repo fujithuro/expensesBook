@@ -1,5 +1,7 @@
 package com.thurofuji.expensesBook.exception
 
+import com.thurofuji.expensesBook.annotation.ValidExpenseType
+import com.thurofuji.expensesBook.annotation.ValidYearMonth
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -94,6 +96,9 @@ class ExpenseBookExceptionHandler {
 
     /**
      * リクエストされた費目が不正な場合にスローされる[InvalidExpenseTypeException]のハンドリングを行う
+     *
+     * NOTE: パラメータ時点で[ValidExpenseType]アノテーションでチェックされることを期待しているため、
+     * 基本的には、この関数でのハンドリングは行われない想定
      */
     @Suppress("UNUSED")
     @ExceptionHandler(InvalidExpenseTypeException::class)
@@ -109,6 +114,9 @@ class ExpenseBookExceptionHandler {
 
     /**
      * リクエストされた対象年月が不正な場合にスローされる[InvalidTargetYearMonthException]のハンドリングを行う
+     *
+     * NOTE: パラメータ時点で[ValidYearMonth]アノテーションでチェックされることを期待しているため、
+     * 基本的には、この関数でのハンドリングは行われない想定
      */
     @Suppress("UNUSED")
     @ExceptionHandler(InvalidTargetYearMonthException::class)
