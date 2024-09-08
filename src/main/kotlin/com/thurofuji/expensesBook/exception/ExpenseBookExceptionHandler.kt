@@ -80,9 +80,16 @@ class ExpenseBookExceptionHandler {
      */
     @Suppress("UNUSED")
     @ExceptionHandler(HttpMessageNotReadableException::class)
-    fun handleHttpMessageNotReadableException(ex: HttpMessageNotReadableException): ResponseEntity<Void> {
-        logger.info("Failed to parse HTTP request body.: {}", ex.message)
-        return ResponseEntity.badRequest().build()
+    fun handleHttpMessageNotReadableException(ex: HttpMessageNotReadableException): ResponseEntity<ErrorResponseBody> {
+        // HttpMessageNotReadableExceptionから取得できる情報はソースコード内部の情報を含む場合がある
+        // セキュリティリスクを抑えるため、例外からの情報はユーザーには返さず、リクエストを処理できなかったことだけ伝える
+        val errorResponse = ErrorResponseBody(
+            error = "Invalid Request",
+            message = "Failed to process the request. Please ensure all required fields are correctly formatted and try again.",
+            details = emptyList()
+        )
+        logger.info("Failed to parse HTTP request body: {}", ex.mostSpecificCause.message)
+        return ResponseEntity.badRequest().body(errorResponse)
     }
 
     /**
