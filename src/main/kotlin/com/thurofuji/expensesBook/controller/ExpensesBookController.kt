@@ -34,8 +34,8 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      * パスパラメータ [yyyyMM]: 年月指定（yyyyMM形式）
      * クエリパラメータ [types]: 費目の絞り込み。複数指定可。省略された場合は費目での絞り込みを行わない
      *
-     * リストが取得できれば`200 OK`を返し、リクエストに問題があれば`400 Bad Request`を返す。
-     * リクエストに問題はないが該当する出費が1件もない場合、`200 OK`で空のリストを返す。
+     * 取得できれば`200 OK`でリストを返す。
+     * 該当する出費が1件もない場合、`200 OK`で空のリストを返す。
      */
     @Suppress("UNUSED")
     @GetMapping("/list/{yyyyMM}")
