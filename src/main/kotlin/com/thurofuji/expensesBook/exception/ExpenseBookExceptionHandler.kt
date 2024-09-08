@@ -2,6 +2,7 @@ package com.thurofuji.expensesBook.exception
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.HandlerMethodValidationException
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import java.time.LocalDateTime
 
 @RestControllerAdvice
 class ExpenseBookExceptionHandler {
@@ -21,9 +23,15 @@ class ExpenseBookExceptionHandler {
      */
     @Suppress("UNUSED")
     @ExceptionHandler(MethodArgumentTypeMismatchException::class)
-    fun handleMethodArgumentTypeMismatchException(ex: MethodArgumentTypeMismatchException): ResponseEntity<Void> {
-        logger.info("Argument type mismatch.: {}", ex.message)
-        return ResponseEntity.badRequest().build()
+    fun handleMethodArgumentTypeMismatchException(ex: MethodArgumentTypeMismatchException): ResponseEntity<ErrorResponseBody> {
+        val errorMessage = "Invalid value for parameter '${ex.name}'. Expected ${ex.requiredType?.simpleName}, but got '${ex.value}'."
+        val errorResponse = ErrorResponseBody(
+            error = "Argument Type Mismatch",
+            message = errorMessage,
+            details = listOf(errorMessage)
+        )
+        logger.info("Argument type mismatch: {}", errorMessage)
+        return ResponseEntity.badRequest().body(errorResponse)
     }
 
     /**
