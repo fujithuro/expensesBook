@@ -39,8 +39,12 @@ class ExpensesBookController(private val service: ExpensesBookService) {
      */
     @Suppress("UNUSED")
     @GetMapping("/list/{yyyyMM}")
-    fun getExpensesList(@PathVariable @ValidYearMonth yyyyMM: String,
-                        @RequestParam(required = false) @ValidExpenseType types: List<Int> = emptyList()
+    fun getExpensesList(@PathVariable
+                        @ValidYearMonth
+                        yyyyMM: String,
+                        @RequestParam(required = false)
+                        @ValidExpenseType
+                        types: List<Int> = emptyList()
     ): ResponseEntity<List<ExpenseResponse>> {
         return service.findList(yyyyMM, types)
             .map { ExpenseResponse(it) }
