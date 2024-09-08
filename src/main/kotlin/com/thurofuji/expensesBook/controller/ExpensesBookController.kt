@@ -31,8 +31,8 @@ class ExpensesBookController(private val service: ExpensesBookService) {
     /**
      * 指定された条件に合致する出費（[ExpenseResponse]）の[List]を取得するエンドポイント。
      *
-     * パスパラメータ [yyyyMM]: 年月指定（yyyyMM形式）
-     * クエリパラメータ [types]: 費目の絞り込み。複数指定可。省略された場合は費目での絞り込みを行わない
+     * * パスパラメータ [yyyyMM]: 年月指定（yyyyMM形式）
+     * * クエリパラメータ [types]: 費目の絞り込み。複数指定可。省略された場合は費目での絞り込みを行わない
      *
      * 取得できれば`200 OK`でリストを返す。
      * 該当する出費が1件もない場合、`200 OK`で空のリストを返す。
