@@ -97,9 +97,14 @@ class ExpenseBookExceptionHandler {
      */
     @Suppress("UNUSED")
     @ExceptionHandler(InvalidExpenseTypeException::class)
-    fun handleInvalidExpenseTypeException(ex: InvalidExpenseTypeException): ResponseEntity<Void> {
-        logger.info("Invalid expense type.: {}", ex.message)
-        return ResponseEntity.badRequest().build()
+    fun handleInvalidExpenseTypeException(ex: InvalidExpenseTypeException): ResponseEntity<ErrorResponseBody> {
+        val errorResponse = ErrorResponseBody(
+            error = "Invalid Expense Type",
+            message = ex.message ?: "Invalid expense type provided",
+            details = emptyList()
+        )
+        logger.info("Invalid expense type: {}", ex.message)
+        return ResponseEntity.badRequest().body(errorResponse)
     }
 
     /**
@@ -107,9 +112,14 @@ class ExpenseBookExceptionHandler {
      */
     @Suppress("UNUSED")
     @ExceptionHandler(InvalidTargetYearMonthException::class)
-    fun handleInvalidTargetYearMonthException(ex: InvalidTargetYearMonthException): ResponseEntity<Void> {
-        logger.info("Failed to parse YearMonth.: {}", ex.message)
-        return ResponseEntity.badRequest().build()
+    fun handleInvalidTargetYearMonthException(ex: InvalidTargetYearMonthException): ResponseEntity<ErrorResponseBody> {
+        val errorResponse = ErrorResponseBody(
+            error = "Invalid Target Year Month",
+            message = ex.message ?: "Invalid target year month provided",
+            details = emptyList()
+        )
+        logger.info("Failed to parse YearMonth: {}", ex.message)
+        return ResponseEntity.badRequest().body(errorResponse)
     }
 
     /**
