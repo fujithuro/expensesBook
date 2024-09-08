@@ -40,9 +40,17 @@ class ExpenseBookExceptionHandler {
      */
     @Suppress("UNUSED")
     @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun handleMethodArgumentNotValidException(ex: MethodArgumentNotValidException): ResponseEntity<Void> {
-        logger.info("Validation failed for request body parameters.: {}", ex.message)
-        return ResponseEntity.badRequest().build()
+    fun handleMethodArgumentNotValidException(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponseBody> {
+        val errors = ex.bindingResult.fieldErrors.map { error ->
+            "${error.field}: ${error.defaultMessage}"
+        }
+        val errorResponse = ErrorResponseBody(
+            error = "Validation Failed",
+            message = "Invalid input data",
+            details = errors
+        )
+        logger.info("Validation failed: {}", errors)
+        return ResponseEntity.badRequest().body(errorResponse)
     }
 
     /**
