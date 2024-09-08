@@ -17,7 +17,7 @@ import kotlin.jvm.optionals.getOrNull
  * 家計簿に関する情報の永続化、および永続化された情報へのアクセスを行うRepositoryクラス
  */
 @Repository
-class ExpenseBookRepository(private val jdbcClient: JdbcClient) {
+class ExpenseBookJdbcClientRepository(private val jdbcClient: JdbcClient) {
     /**
      * [condition]に合致する出費一覧を[出費履歴]の[List]として取得する。
      */

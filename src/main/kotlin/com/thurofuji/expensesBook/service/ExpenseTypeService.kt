@@ -2,7 +2,7 @@ package com.thurofuji.expensesBook.service
 
 import com.thurofuji.expensesBook.dto.ExpenseTypeDto
 import com.thurofuji.expensesBook.exception.InvalidExpenseTypeException
-import com.thurofuji.expensesBook.repository.ExpenseBookRepository
+import com.thurofuji.expensesBook.repository.ExpenseBookJdbcClientRepository
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
  * 費目に関するビジネスロジックを扱うServiceクラス
  */
 @Service
-class ExpenseTypeService(private val repository: ExpenseBookRepository) {
+class ExpenseTypeService(private val repository: ExpenseBookJdbcClientRepository) {
 
     /**
      * [code]に該当する有効な費目（[ExpenseTypeDto]）を取得する

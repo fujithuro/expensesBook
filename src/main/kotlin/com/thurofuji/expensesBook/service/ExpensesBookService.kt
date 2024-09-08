@@ -3,7 +3,7 @@ package com.thurofuji.expensesBook.service
 import com.thurofuji.expensesBook.bean.ExpenseRequest
 import com.thurofuji.expensesBook.dto.ExpenseDto
 import com.thurofuji.expensesBook.mapper.ExpenseMapper
-import com.thurofuji.expensesBook.repository.ExpenseBookRepository
+import com.thurofuji.expensesBook.repository.ExpenseBookJdbcClientRepository
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -11,7 +11,7 @@ import java.util.UUID
  * 家計簿のビジネスロジックを取り扱うServiceクラス
  */
 @Service
-class ExpensesBookService(private val repository: ExpenseBookRepository
+class ExpensesBookService(private val repository: ExpenseBookJdbcClientRepository
                           , private val mapper: ExpenseMapper
 ) {
     /**
