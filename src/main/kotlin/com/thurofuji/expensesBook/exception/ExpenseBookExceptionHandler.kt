@@ -128,9 +128,15 @@ class ExpenseBookExceptionHandler {
      */
     @Suppress("UNUSED")
     @ExceptionHandler(Exception::class)
-    fun handleException(ex: Exception): ResponseEntity<Void> {
+    fun handleException(ex: Exception): ResponseEntity<ErrorResponseBody> {
+        val errorResponse = ErrorResponseBody(
+            status = HttpStatus.INTERNAL_SERVER_ERROR.toString(),
+            error = "Internal Server Error",
+            message = "Unexpected error occurred",
+            details = emptyList()
+        )
         logger.error("Unexpected exception occurred: {}", ex.message, ex)
-        return ResponseEntity.internalServerError().build()
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse)
     }
 
     /**
