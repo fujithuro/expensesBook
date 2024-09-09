@@ -5,6 +5,7 @@ import com.thurofuji.expensesBook.exception.InvalidExpenseTypeException
 import com.thurofuji.expensesBook.repository.ExpenseBookRepository
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * 費目に関するビジネスロジックを扱うServiceクラス
@@ -18,6 +19,7 @@ class ExpenseTypeService(private val repository: ExpenseBookRepository) {
      * @throws InvalidExpenseTypeException [code]に該当する有効な費目が見つからない場合にスローされる
      */
     @Cacheable("expenseTypes")
+    @Transactional(readOnly = true)
     fun getExpenseType(code: Int): ExpenseTypeDto = getValidExpenseTypes().firstOrNull { it.費目cd == code }
         ?: throw InvalidExpenseTypeException("Invalid code for expense type.: $code")
 
