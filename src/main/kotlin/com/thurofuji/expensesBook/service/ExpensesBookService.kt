@@ -13,8 +13,7 @@ import java.util.UUID
  */
 @Service
 class ExpensesBookService(private val repository: ExpenseBookRepository
-                          , private val mapper: ExpenseMapper
-) {
+                          , private val mapper: ExpenseMapper) {
     /**
      * [yyyyMM]や[types]で指定された条件に該当する出費一覧を、[ExpenseDto]の[List]として返す。
      */
