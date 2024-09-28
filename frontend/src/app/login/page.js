@@ -54,6 +54,7 @@ export default function LoginPage() {
                                         border border-gray-300
                                         rounded-md
                                         shadow-sm
+                                        text-gray-800
                                         placeholder-gray-400
                                         focus:outline-none
                                         focus:ring-indigo-500
@@ -79,6 +80,7 @@ export default function LoginPage() {
                                         border border-gray-300
                                         rounded-md
                                         shadow-sm
+                                        text-gray-800
                                         placeholder-gray-400
                                         focus:outline-none
                                         focus:ring-indigo-500
