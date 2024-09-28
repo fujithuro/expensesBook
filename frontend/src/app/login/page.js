@@ -1,4 +1,31 @@
+'use client';
+
+import React, { useState } from 'react';
+
 export default function LoginPage() {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleSubmit = async (e) => {
+        try {
+            const response = await fetch('/api/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username, password }),
+                        });
+
+            if (response.ok) {
+                console.log('Login successful');
+            } else {
+                console.log('Login failed');
+            }
+        } catch (err) {
+            console.log(`Login Error`);
+        }
+
+
+    }
+
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -8,13 +35,17 @@ export default function LoginPage() {
             </div>
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                    <form className="space-y-6">
+                    <form className="space-y-6"
+                        onSubmit={handleSubmit}
+                    >
                         <div>
                             <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                                 Username:
                             </label>
                             <div className="mt-1">
                                 <input type="text" id="username" name="username" required
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
                                     className="{`
                                         appearance-none
                                         block
@@ -38,6 +69,8 @@ export default function LoginPage() {
                             </label>
                             <div className="mt-1">
                                 <input type="password" id="password" name="password" required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                     className="{`
                                         appearance-none
                                         block
