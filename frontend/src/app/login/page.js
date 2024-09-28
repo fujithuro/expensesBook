@@ -7,6 +7,8 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
 
     const handleSubmit = async (e) => {
+        e.preventDefault();
+
         try {
             const response = await fetch('/api/login', {
                             method: 'POST',
