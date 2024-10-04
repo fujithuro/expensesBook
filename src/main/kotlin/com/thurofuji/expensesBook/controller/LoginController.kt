@@ -23,6 +23,7 @@ class LoginController {
         return if (request.username == "admin") {
             ResponseEntity.ok().build()
         } else {
+            // TODO エラー内容に応じてレスポンスを変える、エラーメッセージを設定するなどの検討
             ResponseEntity.badRequest().build()
         }
     }

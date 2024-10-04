@@ -26,6 +26,7 @@ export default function LoginPage() {
                 console.log('Login successful');
                 router.push('/expenseBook');
             } else {
+                // TODO 失敗したら、エラーメッセージなどをログイン画面に表示させる
                 console.log('Login failed');
             }
         } catch (err) {
