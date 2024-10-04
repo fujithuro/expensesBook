@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Label from '@/components/Label';
 import TextField from '@/components/TextField';
 import Password from '@/components/Password';
@@ -8,6 +9,7 @@ import Password from '@/components/Password';
 export default function LoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,6 +23,7 @@ export default function LoginPage() {
 
             if (response.ok) {
                 console.log('Login successful');
+                router.push('/expenseBook');
             } else {
                 console.log('Login failed');
             }
