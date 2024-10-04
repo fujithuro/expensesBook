@@ -22,6 +22,7 @@ export default function LoginPage() {
                         });
 
             if (response.ok) {
+                // TODO JWTを取得してフロントエンドで保管
                 console.log('Login successful');
                 router.push('/expenseBook');
             } else {
