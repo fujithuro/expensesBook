@@ -15,7 +15,8 @@ class LoginController {
     @CrossOrigin(origins = ["http://localhost:3000"])
     @PostMapping("/api/login")
     fun login(@RequestBody request: LoginRequest): ResponseEntity<Void> {
-        // TODO ひとまず`ok`と`Bad Request`を分けるための最低限の実装のみ書いているので、正式なログイン処理に改善する
+        // TODO ひとまず`ok`と`Bad Request`を分けるための最低限の実装のみ書いている
+        //  ユーザーマスターなどへアクセスし、正しいユーザーであること、適切な権限を持っていることの確認を行う
 
         // TODO ログインに成功したらJWTのトークンを生成してフロントに返す
 
