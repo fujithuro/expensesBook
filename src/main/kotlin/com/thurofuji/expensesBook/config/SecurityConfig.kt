@@ -24,6 +24,7 @@ class SecurityConfig {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http.authorizeHttpRequests { authZ -> authZ
+            .requestMatchers(HttpMethod.POST, "/api/login").permitAll()     // ログイン処理は認証不要
             .requestMatchers(HttpMethod.GET).access(hasScope("expense:read"))
             .requestMatchers(HttpMethod.POST).access(hasScope("expense:write"))
             .requestMatchers(HttpMethod.PUT).access(hasScope("expense:write"))
