@@ -46,21 +46,13 @@ export default function LoginPage() {
                         <div>
                             <Label htmlFor="username">Username:</Label>
                             <div className="mt-1">
-                                <TextField required
-                                    id="username"
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                />
+                                <TextField required id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
                             </div>
                         </div>
                         <div>
                             <Label htmlFor="password">Password:</Label>
                             <div className="mt-1">
-                                <Password
-                                    id="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
+                                <Password id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                             </div>
                         </div>
                         <div>
