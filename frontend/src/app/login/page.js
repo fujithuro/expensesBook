@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Label from '@/components/Label';
 
 export default function LoginPage() {
     const [username, setUsername] = useState('');
@@ -41,9 +42,7 @@ export default function LoginPage() {
                         onSubmit={handleSubmit}
                     >
                         <div>
-                            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                                Username:
-                            </label>
+                            <Label htmlFor="username">Username:</Label>
                             <div className="mt-1">
                                 <input type="text" id="username" name="username" required
                                     value={username}
@@ -67,9 +66,7 @@ export default function LoginPage() {
                             </div>
                         </div>
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                                Password:
-                            </label>
+                            <Label htmlFor="password">Password:</Label>
                             <div className="mt-1">
                                 <input type="password" id="password" name="password" required
                                     value={password}
