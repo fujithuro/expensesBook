@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import Label from '@/components/Label';
+import TextField from '@/components/TextField';
+import Password from '@/components/Password';
 
 export default function LoginPage() {
     const [username, setUsername] = useState('');
@@ -44,48 +46,21 @@ export default function LoginPage() {
                         <div>
                             <Label htmlFor="username">Username:</Label>
                             <div className="mt-1">
-                                <input type="text" id="username" name="username" required
+                                <TextField required
+                                    id="username"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
-                                    className="{`
-                                        appearance-none
-                                        block
-                                        w-full
-                                        px-3 py-2
-                                        border border-gray-300
-                                        rounded-md
-                                        shadow-sm
-                                        text-gray-800
-                                        placeholder-gray-400
-                                        focus:outline-none
-                                        focus:ring-indigo-500
-                                        focus:border-indigo-500
-                                        sm:text-sm
-                                    `}"
                                 />
                             </div>
                         </div>
                         <div>
                             <Label htmlFor="password">Password:</Label>
                             <div className="mt-1">
-                                <input type="password" id="password" name="password" required
+                                <Password
+                                    id="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="{`
-                                        appearance-none
-                                        block
-                                        w-full
-                                        px-3 py-2
-                                        border border-gray-300
-                                        rounded-md
-                                        shadow-sm
-                                        text-gray-800
-                                        placeholder-gray-400
-                                        focus:outline-none
-                                        focus:ring-indigo-500
-                                        focus:border-indigo-500
-                                        sm:text-sm
-                                    `}"/>
+                                />
                             </div>
                         </div>
                         <div>
