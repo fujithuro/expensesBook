@@ -21,9 +21,9 @@ class LoginController {
 
         return if (request.username == "admin") {
             // TODO 決め打ちではなく、JWTを生成できるようにする
-            val jwt = LoginResponse("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaXNzdWVyIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwic2NvcGUiOlsiZXhwZW5zZTpyZWFkIiwiZXhwZW5zZTp3cml0ZSJdLCJpYXQiOjE3MjU0MjU1NTgsImV4cCI6MTczNTY1NzE5OX0.lwhFgN9LAXDG2iU3zCQtPfCRpbRNraK58UK0e4aZQ7wv68-0oaiLbX3Q2hJeo7rUDfKGCXPNXSz0_sKQLFo6cjqp4scB6E5aVI43O98kE8UwBVKNGS3uH0iz8pW__MyELe7mdfDLJAONgES1cuGJs6Uh9nXh2rUo8kC915BrT8dRqSwA0zqkDa9j8A05EejDWYFg_YWdalYUcLHrMnFzzSWt6x3JQoXAhnDkW0CEInoXhZpxnJkZ4IF6of20ec1MuHfOU0flusKQ5vlkvRsY9E3ltEyCMs6gxjDUEcEJW9bbziv2ljvcuPmMisiFvIxtvGqHN18JB7jJYMyzDvVuNA")
+            val res = LoginResponse("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaXNzdWVyIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwic2NvcGUiOlsiZXhwZW5zZTpyZWFkIiwiZXhwZW5zZTp3cml0ZSJdLCJpYXQiOjE3MjU0MjU1NTgsImV4cCI6MTczNTY1NzE5OX0.lwhFgN9LAXDG2iU3zCQtPfCRpbRNraK58UK0e4aZQ7wv68-0oaiLbX3Q2hJeo7rUDfKGCXPNXSz0_sKQLFo6cjqp4scB6E5aVI43O98kE8UwBVKNGS3uH0iz8pW__MyELe7mdfDLJAONgES1cuGJs6Uh9nXh2rUo8kC915BrT8dRqSwA0zqkDa9j8A05EejDWYFg_YWdalYUcLHrMnFzzSWt6x3JQoXAhnDkW0CEInoXhZpxnJkZ4IF6of20ec1MuHfOU0flusKQ5vlkvRsY9E3ltEyCMs6gxjDUEcEJW9bbziv2ljvcuPmMisiFvIxtvGqHN18JB7jJYMyzDvVuNA")
 
-            ResponseEntity.ok(jwt)
+            ResponseEntity.ok(res)
         } else {
             // TODO エラー内容に応じてレスポンスを変える、エラーメッセージを設定するなどの検討
             ResponseEntity.badRequest().build()
