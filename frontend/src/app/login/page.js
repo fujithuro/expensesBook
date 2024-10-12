@@ -22,7 +22,9 @@ export default function LoginPage() {
                         });
 
             if (response.ok) {
-                // TODO JWTを取得してフロントエンドで保管
+                const json = await response.json();
+                const accessToken = json.accessToken;
+                localStorage.setItem('access_token', accessToken);
                 console.log('Login successful');
                 router.push('/expenseBook');
             } else {
