@@ -22,8 +22,7 @@ export default function LoginPage() {
                         });
 
             if (response.ok) {
-                const json = await response.json();
-                const accessToken = json.accessToken;
+                const { accessToken } = await response.json();
                 localStorage.setItem('access_token', accessToken);
                 console.log('Login successful');
                 router.push('/expenseBook');
