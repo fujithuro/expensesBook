@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Label from '@/components/Label';
 import TextField from '@/components/TextField';
 import Password from '@/components/Password';
+import SubmitButton from '@/components/SubmitButton';
 
 export default function LoginPage() {
     const [username, setUsername] = useState('');
@@ -62,27 +63,7 @@ export default function LoginPage() {
                             </div>
                         </div>
                         <div>
-                            <button type="submit"
-                                    className="{`
-                                        w-full
-                                        flex
-                                        justify-center
-                                        py-2 px-4
-                                        border border-transparent
-                                        rounded-md
-                                        shadow-sm
-                                        text-sm
-                                        font-medium
-                                        text-white
-                                        bg-indigo-600
-                                        hover:bg-indigo-700
-                                        focus:outline-none
-                                        focus:ring-2
-                                        focus:ring-offset-2
-                                        focus:ring-indigo-500
-                                    `}">
-                                Login
-                            </button>
+                            <SubmitButton>Login</SubmitButton>
                         </div>
                     </form>
                 </div>
