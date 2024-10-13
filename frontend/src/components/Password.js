@@ -2,9 +2,8 @@
 
 import React from 'react';
 
-export default function Password({ id, value, onChange, required = true }) {
-    return (
-        <input type="password"
+const Password = ({ id, value, onChange, required = true }) => (
+    <input type="password"
             id={id}
             name={value}
             required={required}
@@ -25,6 +24,7 @@ export default function Password({ id, value, onChange, required = true }) {
                 focus:border-indigo-500
                 sm:text-sm
             `}"
-        />
-    );
-}
+    />
+);
+
+export default Password;

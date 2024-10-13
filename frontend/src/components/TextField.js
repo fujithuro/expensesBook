@@ -2,9 +2,8 @@
 
 import React from 'react';
 
-export default function TextField({ id, value, onChange, required = false }) {
-    return (
-        <input type="text"
+const TextField = ({ id, value, onChange, required = false }) => (
+    <input type="text"
             id={id}
             name={value}
             required={required}
@@ -25,6 +24,7 @@ export default function TextField({ id, value, onChange, required = false }) {
                 focus:border-indigo-500
                 sm:text-sm
             `}"
-        />
-    );
-}
+    />
+);
+
+export default TextField;
