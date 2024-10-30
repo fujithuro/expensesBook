@@ -17,7 +17,7 @@ class LoginController {
     @PostMapping("/api/login")
     fun login(@RequestBody request: LoginRequest): ResponseEntity<LoginResponse> {
         // TODO ひとまず`ok`と`Bad Request`を分けるための最低限の実装のみ書いている
-        //  ユーザーマスターなどへアクセスし、正しいユーザーであること、適切な権限を持っていることの確認を行う
+        //  できればSpringSecurityなどを利用して、真っ当なユーザー認証を実装する
 
         return if (request.username == "admin") {
             val tokenValue = createJWT()
