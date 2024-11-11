@@ -16,10 +16,13 @@ class SecurityConfig {
     /**
      * JWTを使用した認可のための設定を追加する
      *
-     * メソッド: GET
-     *   トークンのscopeに`expense:read`が必要
-     * メソッド: POST/PUT/DELETE
-     *   トークンのscopeに`expense:write`が必要
+     * 閲覧権限
+     * * メソッド: GET
+     * * トークンのscopeに`expense:read`が必要
+     *
+     * 編集権限
+     * * メソッド: POST/PUT/DELETE
+     * * トークンのscopeに`expense:write`が必要
      */
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
