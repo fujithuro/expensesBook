@@ -20,7 +20,7 @@ class ExpensesBookService(private val repository: ExpenseBookRepository
     @Transactional(readOnly = true)
     fun findList(yyyyMM: String, types: List<Int>): List<ExpenseDto> {
         return repository.findList(mapper.toSearchCondition(yyyyMM, types))
-            .map { mapper.toDto(it) }
+            .map { mapper.toDto(it) }   // TODO 全体的に関数参照にした方がスッキリしそう
     }
 
     /**
