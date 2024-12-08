@@ -47,7 +47,7 @@ class ExpensesBookController(private val service: ExpensesBookService) {
                         types: List<Int> = emptyList()
     ): ResponseEntity<List<ExpenseResponse>> {
         return service.findList(yyyyMM, types)
-            .map { ExpenseResponse(it) }
+            .map(::ExpenseResponse)
             .let { ok(it) }
     }
 

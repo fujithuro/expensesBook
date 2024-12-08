@@ -2,6 +2,7 @@ package com.thurofuji.expensesBook.mapper
 
 import com.thurofuji.expensesBook.bean.ExpenseRequest
 import com.thurofuji.expensesBook.dto.ExpenseDto
+import com.thurofuji.expensesBook.dto.ExpenseTypeDto
 import com.thurofuji.expensesBook.dto.ListSearchCondition
 import com.thurofuji.expensesBook.dto.NewExpenseDto
 import com.thurofuji.expensesBook.entity.出費履歴
@@ -21,7 +22,8 @@ class StandardExpenseMapper(private val expenseTypeService: ExpenseTypeService):
         val start = yearMonth.atDay(1)
         val end = yearMonth.atEndOfMonth()
 
-        val typeList = types.map { expenseTypeService.getExpenseType(it) }.map { it.費目cd }
+        val typeList = types.map(expenseTypeService::getExpenseType)
+                            .map(ExpenseTypeDto::費目cd)
 
         return ListSearchCondition(start, end, typeList)
     }

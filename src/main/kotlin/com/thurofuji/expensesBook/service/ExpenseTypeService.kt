@@ -1,6 +1,7 @@
 package com.thurofuji.expensesBook.service
 
 import com.thurofuji.expensesBook.dto.ExpenseTypeDto
+import com.thurofuji.expensesBook.entity.費目マスター
 import com.thurofuji.expensesBook.exception.InvalidExpenseTypeException
 import com.thurofuji.expensesBook.repository.ExpenseBookRepository
 import org.springframework.cache.annotation.Cacheable
@@ -27,6 +28,6 @@ class ExpenseTypeService(private val repository: ExpenseBookRepository) {
      * 有効な費目の一覧を[ExpenseTypeDto]の[List]として取得する
      */
     private fun getValidExpenseTypes(): List<ExpenseTypeDto> {
-        return repository.findExpenseTypeList().filter { it.有効区分 }.map { ExpenseTypeDto(it) }
+        return repository.findExpenseTypeList().filter(費目マスター::有効区分).map(::ExpenseTypeDto)
     }
 }
