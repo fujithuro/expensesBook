@@ -15,7 +15,7 @@ import java.util.UUID
 class ExpensesBookService(private val repository: ExpenseBookRepository
                           , private val mapper: ExpenseMapper) {
     /**
-     * [yyyyMM]や[types]で指定された条件に該当する出費一覧を、[ExpenseDto]の[List]として返す。
+     * 指定された年月（[yyyyMM]）や費目（[types]）に該当する出費一覧を、[ExpenseDto]の[List]として返す。
      */
     @Transactional(readOnly = true)
     fun findList(yyyyMM: String, types: List<Int>): List<ExpenseDto> {
